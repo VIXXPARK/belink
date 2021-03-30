@@ -2,6 +2,8 @@ package com.capstone.belink
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.databinding.ActivityMainBinding
 
@@ -9,18 +11,24 @@ class MainActivity : AppCompatActivity() {
     private var mBinding:ActivityMainBinding?=null
     private val binding get() = mBinding!!
 
-    private var fragmentList = listOf(FragmentMain(),FragmentFriend(),FragmentMap(),FragmentEtcetra())
+
+    var fragmentLists = listOf(FragmentMain(),FragmentFriend(),FragmentMap(),FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
 
         init()
     }
 
     private fun init() {
         var adapter = CustomFragmentStateAdapter(this)
-        adapter.fragmentList=fragmentList
+        adapter.fragmentList=fragmentLists
+
+
+
         binding.viewPager.adapter=adapter
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
@@ -45,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
     }
+
 
     override fun onDestroy() {
         mBinding=null
