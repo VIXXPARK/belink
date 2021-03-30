@@ -2,11 +2,14 @@ package com.capstone.belink
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
+import com.capstone.belink.Adapter.CustomFragmentStateAdapter
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.Ui.FragmentEtcetra
+import com.capstone.belink.Ui.FragmentFriend
+import com.capstone.belink.Ui.FragmentMain
+import com.capstone.belink.Ui.FragmentMap
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
 
@@ -17,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
 
-    var fragmentLists = listOf(FragmentMain(),FragmentFriend(),FragmentMap(),FragmentEtcetra())
+    var fragmentLists = listOf(FragmentMain(), FragmentFriend(), FragmentMap(), FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)

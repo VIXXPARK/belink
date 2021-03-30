@@ -1,16 +1,13 @@
-package com.capstone.belink
+package com.capstone.belink.Adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
-import java.util.*
-import kotlin.collections.ArrayList
+import com.capstone.belink.R
 
 class ProfileData(val profile:Int,val name:String,val groupMember:String,val updatedDt: String)
 

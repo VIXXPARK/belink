@@ -1,12 +1,11 @@
 package com.capstone.belink.Network
 
+import com.capstone.belink.Model.Hello
 import retrofit2.Call
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 
 interface RetrofitService {
 
-    @FormUrlEncoded
-    @GET("")
-    fun hello() : Call<String>
+    @GET("/")
+    fun hello() : Call<Void>
 }

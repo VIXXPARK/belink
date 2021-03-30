@@ -1,4 +1,4 @@
-   package com.capstone.belink
+   package com.capstone.belink.Ui
 
 import android.app.Activity
 import android.content.Context
@@ -8,6 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.belink.Adapter.CustomAdapter
+import com.capstone.belink.Adapter.ProfileData
+import com.capstone.belink.MainActivity
+import com.capstone.belink.R
 import com.capstone.belink.databinding.FragmentMainBinding
 
 
@@ -35,7 +39,7 @@ import com.capstone.belink.databinding.FragmentMainBinding
         val view = binding.root
 
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
-        val adapter =CustomAdapter(xContext)
+        val adapter = CustomAdapter(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter
 

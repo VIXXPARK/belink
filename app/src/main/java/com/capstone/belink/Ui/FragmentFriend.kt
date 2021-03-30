@@ -1,4 +1,4 @@
-package com.capstone.belink
+package com.capstone.belink.Ui
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.belink.Adapter.CustomFriendAdapter
+import com.capstone.belink.Adapter.FriendData
 import com.capstone.belink.databinding.FragmentFriendBinding
 
 class FragmentFriend:Fragment() {

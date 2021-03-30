@@ -1,4 +1,4 @@
-package com.capstone.belink
+package com.capstone.belink.Adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

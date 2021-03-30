@@ -1,21 +1,20 @@
-package com.capstone.belink
+package com.capstone.belink.Ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.capstone.belink.databinding.FragmentEtcetraBinding
 import com.capstone.belink.databinding.FragmentMapBinding
 
-class FragmentMap:Fragment() {
-    private var mBinding:FragmentMapBinding?=null
+class FragmentEtcetra:Fragment() {
+    private var mBinding:FragmentEtcetraBinding?=null
     private val binding get() = mBinding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        mBinding = FragmentMapBinding.inflate(inflater,container,false)
+        mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
-
-
         return view
     }
 
