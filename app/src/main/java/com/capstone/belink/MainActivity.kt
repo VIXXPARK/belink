@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
+import com.capstone.belink.Network.RetrofitClient
+import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.ActivityMainBinding
+import retrofit2.Retrofit
 
 class MainActivity : AppCompatActivity() {
     private var mBinding:ActivityMainBinding?=null
     private val binding get() = mBinding!!
 
+    private lateinit var retrofit : Retrofit
+    private lateinit var supplementService : RetrofitService
 
     var fragmentLists = listOf(FragmentMain(),FragmentFriend(),FragmentMap(),FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,9 +23,13 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
+        initRetrofit()
         init()
+    }
+
+    private fun initRetrofit() {
+        retrofit = RetrofitClient.getInstance()
+        supplementService = retrofit.create(RetrofitService::class.java)
     }
 
     private fun init() {
