@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -34,12 +35,12 @@ class FragmentMap:Fragment() {
         initRetrofit()
 
         binding.btnConnect.setOnClickListener {
-            supplementService.getuser("01080097408").enqueue(object :Callback<User>{
-                override fun onResponse(call: Call<User>, response: Response<User>) {
+            supplementService.getuser("01012345678").enqueue(object :Callback<SignDTO>{
+                override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
                     Log.d("response : ",response?.body().toString())
                 }
 
-                override fun onFailure(call: Call<User>, t: Throwable) {
+                override fun onFailure(call: Call<SignDTO>, t: Throwable) {
                     Log.d("status","fail")
                 }
 
