@@ -6,12 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.capstone.belink.Model.Hello
+import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentMapBinding
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,16 +34,14 @@ class FragmentMap:Fragment() {
         initRetrofit()
 
         binding.btnConnect.setOnClickListener {
-            supplementService.hello().enqueue(object : Callback<Void>{
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    Log.d("success",response.body().toString())
-
+            supplementService.getuser("01080097408").enqueue(object :Callback<User>{
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    Log.d("response : ",response?.body().toString())
                 }
 
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Log.d("fail","{$t}")
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Log.d("status","fail")
                 }
-
 
             })
 
