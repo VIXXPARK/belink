@@ -16,6 +16,6 @@ interface RetrofitService {
 
     @FormUrlEncoded
     @POST("/api/user/get-user")
-    fun getuser(@Field("phNum")phNum:String):Call<User>
+    fun getuser(@Field("phNum")phNum:String):Call<SignDTO>
 
 }
