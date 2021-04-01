@@ -1,5 +1,6 @@
 package com.capstone.belink.Network
 
+import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Model.User
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -11,7 +12,7 @@ interface RetrofitService {
     @POST("/api/user/signup")
     fun registerUser(
         @Field("phNum")phNum:String,@Field("username")username:String
-    ): Call<String>
+    ): Call<SignDTO>
 
     @FormUrlEncoded
     @POST("/api/user/get-user")

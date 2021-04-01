@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -53,13 +54,13 @@ class LoginActivity : AppCompatActivity() {
     private fun signup(Phone: String, name: String) {
 
 
-        supplementService.registerUser(Phone,name).enqueue(object : Callback<String>{
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDTO>{
+            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
                 Log.d("success",response.message())
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.d("fail","failure")
+            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+                Log.d("fail","$t")
 
             }
 
