@@ -21,10 +21,7 @@ class FragmentEtcetra:Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
-        binding.btnGoSignup.setOnClickListener {
-            val intent = Intent(xContext,LoginActivity::class.java)
-            startActivity(intent)
-        }
+
 
         return view
     }
