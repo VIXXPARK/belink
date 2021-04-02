@@ -1,5 +1,8 @@
 package com.capstone.belink
 
+import android.app.Activity
+import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,7 +25,9 @@ class LoginActivity : AppCompatActivity() {
     private var firstNum=""
     private var secondNum=""
     private var thirdNum=""
-    private var name=""
+
+    private var phoneNum:String?=null
+    private var name:String?=null
 
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
@@ -34,15 +39,35 @@ class LoginActivity : AppCompatActivity() {
 
         initRetrofit()
 
-        binding.btnSignupNext.setOnClickListener {
+        var auto:SharedPreferences = getSharedPreferences("auto", Activity.MODE_PRIVATE)
+        phoneNum=auto.getString("inputPhone",null)
+        name=auto.getString("inputName",null)
+
+        if(phoneNum !=null && name!=null){
+            login(phoneNum!!)
+        }
+        else if(phoneNum==null && name==null){
             firstNum=binding.etPhoneFirst.text.toString()
             secondNum=binding.etPhoneSecond.text.toString()
             thirdNum=binding.etPhoneThird.text.toString()
             name=binding.etName.text.toString()
-            firstNum+=secondNum+thirdNum
-            Toast.makeText(this,firstNum,Toast.LENGTH_SHORT).show()
-            signup(firstNum,name)
-
+            phoneNum=firstNum+secondNum+thirdNum
+            binding.btnSignupNext.setOnClickListener {
+                var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
+                var autoLogin:SharedPreferences.Editor = auto.edit()
+                autoLogin.putString("inputPhone",phoneNum)
+                autoLogin.putString("inputName",name)
+                autoLogin.commit()
+                signup(phoneNum!!,name!!)
+            }
+            binding.btnLogin.setOnClickListener {
+                var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
+                var autoLogin:SharedPreferences.Editor = auto.edit()
+                autoLogin.putString("inputPhone",phoneNum)
+                autoLogin.putString("inputName",name)
+                autoLogin.commit()
+                login(phoneNum!!)
+            }
         }
     }
 
@@ -67,6 +92,20 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    fun login(phoneNum: String) {
+
+        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDTO>{
+            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
+                if(response.message()=="OK"){
+                    val intent = Intent(this@LoginActivity,MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+            }
+        })
+    }
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()

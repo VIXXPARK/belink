@@ -22,3 +22,4 @@ object RetrofitClient {
         return instance!!
     }
 }
+

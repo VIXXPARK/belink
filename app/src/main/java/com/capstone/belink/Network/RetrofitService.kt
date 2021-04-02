@@ -18,4 +18,6 @@ interface RetrofitService {
     @POST("/api/user/get-user")
     fun getuser(@Field("phNum")phNum:String):Call<SignDTO>
 
+
+
 }
