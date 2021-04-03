@@ -1,11 +1,13 @@
    package com.capstone.belink.Ui
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.CustomAdapter
@@ -25,6 +27,8 @@ import com.capstone.belink.databinding.FragmentMainBinding
     private var mActivity: Activity?=null
     private val xActivity get() = mActivity!!
 
+
+
    val DataList = arrayListOf(
            ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
            ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
@@ -34,22 +38,29 @@ import com.capstone.belink.databinding.FragmentMainBinding
    )
 
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
+        (activity as AppCompatActivity).supportActionBar?.title="개인"
+
 
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
         val adapter = CustomAdapter(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter
 
+
         binding.fabPersonal.setOnClickListener {
             binding.fragMain.visibility=View.INVISIBLE
             binding.fragRecycler.visibility=View.VISIBLE
+
+            (activity as AppCompatActivity).supportActionBar?.title="그룹"
         }
         binding.fabRecycler.setOnClickListener {
             binding.fragMain.visibility=View.VISIBLE
             binding.fragRecycler.visibility=View.INVISIBLE
+            (activity as AppCompatActivity).supportActionBar?.title="개인"
         }
 
         return view
@@ -65,8 +76,6 @@ import com.capstone.belink.databinding.FragmentMainBinding
         mActivity = activity as MainActivity?
         super.onAttach(context)
     }
-
-
 
    override fun onDestroy() {
     mBinding=null

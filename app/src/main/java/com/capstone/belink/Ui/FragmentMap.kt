@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Model.User
@@ -32,6 +33,10 @@ class FragmentMap:Fragment() {
         mBinding = FragmentMapBinding.inflate(inflater,container,false)
         val view = binding.root
         initRetrofit()
+        (activity as AppCompatActivity).supportActionBar?.title="방문장소"
+
+
+
         binding.btnConnect.setOnClickListener {
             supplementService.getuser("01012345678").enqueue(object :Callback<SignDTO>{
                 override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {

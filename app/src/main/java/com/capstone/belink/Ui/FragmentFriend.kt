@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.CustomFriendAdapter
@@ -28,7 +29,7 @@ class FragmentFriend:Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentFriendBinding.inflate(inflater,container,false)
         val view = binding.root
-
+        (activity as AppCompatActivity).supportActionBar?.title="친구"
         init()
 
         return view

@@ -9,7 +9,7 @@
         android:id="@+id/frag_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
+        android:visibility="visible"
         tools:context=".Ui.FragmentMain">
 
         <TextView
@@ -40,7 +40,7 @@
         android:id="@+id/frag_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/view_recycler"
