@@ -44,46 +44,30 @@ class LoginActivity : AppCompatActivity() {
         phoneNum=auto.getString("inputPhone",null)
         name=auto.getString("inputName",null)
 
-        println("phone: $phoneNum")
-        println("name: $name")
         if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
             Log.d("status","first_if")
             login(phoneNum!!)
         }
 
         binding.btnSignupNext.setOnClickListener {
-            firstNum=binding.etPhoneFirst.text.toString()
-            secondNum=binding.etPhoneSecond.text.toString()
-            thirdNum=binding.etPhoneThird.text.toString()
-            name=binding.etName.text.toString()
-            phoneNum=firstNum+secondNum+thirdNum
-
-            autoLogin.clear()
-            autoLogin.putString("inputPhone",phoneNum)
-            autoLogin.putString("inputName",name)
+            getEditString()
             autoLogin.apply()
-            Log.d("inputPhone",phoneNum)
-            Log.d("inputName",name)
             signup(phoneNum!!,name!!)
-
-
         }
         binding.btnLogin.setOnClickListener {
-            firstNum=binding.etPhoneFirst.text.toString()
-            secondNum=binding.etPhoneSecond.text.toString()
-            thirdNum=binding.etPhoneThird.text.toString()
-            name=binding.etName.text.toString()
-            phoneNum=firstNum+secondNum+thirdNum
-            autoLogin.clear()
-            autoLogin.putString("inputPhone",phoneNum)
-            autoLogin.putString("inputName",name)
-            Log.d("phone",phoneNum)
-            Log.d("name",name)
+            getEditString()
             login(phoneNum!!)
-
-
         }
-
+    }
+    fun getEditString(){
+        firstNum=binding.etPhoneFirst.text.toString()
+        secondNum=binding.etPhoneSecond.text.toString()
+        thirdNum=binding.etPhoneThird.text.toString()
+        name=binding.etName.text.toString()
+        phoneNum=firstNum+secondNum+thirdNum
+        autoLogin.clear()
+        autoLogin.putString("inputPhone",phoneNum)
+        autoLogin.putString("inputName",name)
     }
 
     private fun initRetrofit() {
@@ -102,9 +86,7 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<SignDao>, t: Throwable) {
                 Log.d("fail","$t")
-
             }
-
         })
     }
 
