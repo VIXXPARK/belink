@@ -1,19 +1,21 @@
 package com.capstone.belink.Ui
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.capstone.belink.Model.SignDTO
-import com.capstone.belink.Model.User
+import com.capstone.belink.MainActivity
+import com.capstone.belink.Model.FriendDao
+import com.capstone.belink.Model.SignDao
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentMapBinding
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,14 +40,9 @@ class FragmentMap:Fragment() {
 
 
         binding.btnConnect.setOnClickListener {
-            supplementService.getuser("01012345678").enqueue(object :Callback<SignDTO>{
-                override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
-                    Log.d("response : ",response?.body().toString())
-                }
-                override fun onFailure(call: Call<SignDTO>, t: Throwable) {
-                    Log.d("status","fail")
-                }
-            })
+            var pref =(activity as MainActivity).getPreferences(Activity.MODE_PRIVATE)
+            println(pref.getString("userId","default"))
+            getFriendList()
         }
         return view
     }
@@ -54,6 +51,23 @@ class FragmentMap:Fragment() {
         retrofit = RetrofitClient.getInstance()
         supplementService = retrofit.create(RetrofitService::class.java)
     }
+
+    fun getFriendList() {
+        var pref =(activity as MainActivity).getPreferences(Activity.MODE_PRIVATE)
+
+        supplementService.getMyFriend(pref.getString("userId","01011111111")!!).enqueue(object :Callback<List<FriendDao>>{
+            override fun onResponse(call: Call<List<FriendDao>>, response: Response<List<FriendDao>>) {
+                Log.d("status",response.message())
+            }
+
+            override fun onFailure(call: Call<List<FriendDao>>, t: Throwable) {
+
+            }
+
+
+        })
+    }
+
     override fun onAttach(context: Context) {
         mContext=context
         super.onAttach(context)

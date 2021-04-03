@@ -3,6 +3,7 @@ package com.capstone.belink
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.CustomFragmentStateAdapter
@@ -32,6 +33,10 @@ class MainActivity : AppCompatActivity() {
 
         initRetrofit()
         init()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

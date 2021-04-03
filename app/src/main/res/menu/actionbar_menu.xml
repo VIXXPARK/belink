@@ -5,15 +5,20 @@
         android:id="@+id/action_search"
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_exchange"
         android:icon="@drawable/ic_baseline_loop_24"
         android:title="Exchange"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_plus"
+        android:icon="@drawable/ic_baseline_create_new_folder_24"
+        android:title="Create"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_setting"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="Setting"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>
