@@ -29,6 +29,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
 
+    private lateinit var auto:SharedPreferences
+    private lateinit var autoLogin:SharedPreferences.Editor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
@@ -36,38 +39,51 @@ class LoginActivity : AppCompatActivity() {
 
         initRetrofit()
 
-        var auto:SharedPreferences = getSharedPreferences("auto", Activity.MODE_PRIVATE)
+        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
+        autoLogin=auto.edit()
         phoneNum=auto.getString("inputPhone",null)
         name=auto.getString("inputName",null)
 
-        if(phoneNum !=null && name!=null){
+        println("phone: $phoneNum")
+        println("name: $name")
+        if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
+            Log.d("status","first_if")
             login(phoneNum!!)
         }
-        else if(phoneNum==null && name==null){
+
+        binding.btnSignupNext.setOnClickListener {
             firstNum=binding.etPhoneFirst.text.toString()
             secondNum=binding.etPhoneSecond.text.toString()
             thirdNum=binding.etPhoneThird.text.toString()
             name=binding.etName.text.toString()
             phoneNum=firstNum+secondNum+thirdNum
-            binding.btnSignupNext.setOnClickListener {
-                var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
-                var autoLogin:SharedPreferences.Editor = auto.edit()
-                autoLogin.putString("inputPhone",phoneNum)
-                autoLogin.putString("inputName",name)
-                signup(phoneNum!!,name!!)
-                autoLogin.commit()
 
-            }
-            binding.btnLogin.setOnClickListener {
-                var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
-                var autoLogin:SharedPreferences.Editor = auto.edit()
-                autoLogin.putString("inputPhone",phoneNum)
-                autoLogin.putString("inputName",name)
-                login(phoneNum!!)
-                autoLogin.commit()
+            autoLogin.clear()
+            autoLogin.putString("inputPhone",phoneNum)
+            autoLogin.putString("inputName",name)
+            autoLogin.apply()
+            Log.d("inputPhone",phoneNum)
+            Log.d("inputName",name)
+            signup(phoneNum!!,name!!)
 
-            }
+
         }
+        binding.btnLogin.setOnClickListener {
+            firstNum=binding.etPhoneFirst.text.toString()
+            secondNum=binding.etPhoneSecond.text.toString()
+            thirdNum=binding.etPhoneThird.text.toString()
+            name=binding.etName.text.toString()
+            phoneNum=firstNum+secondNum+thirdNum
+            autoLogin.clear()
+            autoLogin.putString("inputPhone",phoneNum)
+            autoLogin.putString("inputName",name)
+            Log.d("phone",phoneNum)
+            Log.d("name",name)
+            login(phoneNum!!)
+
+
+        }
+
     }
 
     private fun initRetrofit() {
@@ -77,9 +93,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signup(Phone: String, name: String) {
 
-
         supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDao>{
             override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
+                Log.d("Phone",Phone)
+                Log.d("Name",name)
                 Log.d("success",response.message())
             }
 
@@ -92,18 +109,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun login(phoneNum: String) {
-
         supplementService.getuser(phoneNum).enqueue(object :Callback<SignDao>{
             override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
                 if(response.message()=="OK"){
                     val intent = Intent(this@LoginActivity,MainActivity::class.java)
+                    autoLogin.putString("userId",response.body()?.data?.id.toString())
+                    println(response.body())
+                    println(response.body()?.data?.id.toString())
+                    autoLogin.apply()
                     startActivity(intent)
                     finish()
-                    var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
-                    var autoLogin:SharedPreferences.Editor = auto.edit()
-                    autoLogin.putString("userId",response?.body()?.data?.id.toString())
-                    println(response?.body()?.data?.id.toString())
-                    autoLogin.apply()
                 }
             }
             override fun onFailure(call: Call<SignDao>, t: Throwable) {
