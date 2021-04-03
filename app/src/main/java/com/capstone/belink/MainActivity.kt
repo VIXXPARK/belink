@@ -2,6 +2,8 @@ package com.capstone.belink
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import androidx.appcompat.app.ActionBar
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.CustomFragmentStateAdapter
 import com.capstone.belink.Network.RetrofitClient
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
 
+
+
     var fragmentLists = listOf(FragmentMain(), FragmentFriend(), FragmentMap(), FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         initRetrofit()
         init()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.actionbar_menu,menu)
+        return true
     }
 
     private fun initRetrofit() {
@@ -39,21 +48,33 @@ class MainActivity : AppCompatActivity() {
         var adapter = CustomFragmentStateAdapter(this)
         adapter.fragmentList=fragmentLists
 
-
-
         binding.viewPager.adapter=adapter
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 when(position){
-                    0 -> binding.bottomNavigationView.selectedItemId = R.id.main
-                    1 -> binding.bottomNavigationView.selectedItemId = R.id.friend
-                    2 -> binding.bottomNavigationView.selectedItemId = R.id.map
-                    3 -> binding.bottomNavigationView.selectedItemId = R.id.etcetra
+                    0 -> {
+                        binding.bottomNavigationView.selectedItemId = R.id.main
+                        supportActionBar?.title="개인"
+                    }
+                    1 -> {
+                        binding.bottomNavigationView.selectedItemId = R.id.friend
+                        supportActionBar?.title="친구"
+                    }
+                    2 -> {
+                        binding.bottomNavigationView.selectedItemId = R.id.map
+                        supportActionBar?.title="방문장소"
+                    }
+                    3 -> {
+                        binding.bottomNavigationView.selectedItemId = R.id.etcetra
+                        supportActionBar?.title="설정"
+                    }
                 }
             }
         })
+
+
 
         binding.bottomNavigationView.setOnNavigationItemSelectedListener{
             when(it.itemId){
