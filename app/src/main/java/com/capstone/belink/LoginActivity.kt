@@ -41,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
 
         auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
+
         phoneNum=auto.getString("inputPhone",null)
         name=auto.getString("inputName",null)
 
