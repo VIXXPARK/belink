@@ -7,7 +7,7 @@
     tools:context=".LoginActivity">
 
     <EditText
-        android:id="@+id/et_phone_first"
+        android:id="@+id/et_login_phone_first"
         android:layout_width="102dp"
         android:layout_height="55dp"
         android:ems="10"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_phone_second"
+        android:id="@+id/et_login_phone_second"
         android:layout_width="102dp"
         android:layout_height="55dp"
         android:ems="10"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_phone_third"
+        android:id="@+id/et_login_phone_third"
         android:layout_width="102dp"
         android:layout_height="55dp"
         android:layout_marginStart="12dp"
@@ -49,7 +49,7 @@
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_phone_first"
+        app:layout_constraintStart_toEndOf="@+id/et_login_phone_first"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -60,11 +60,11 @@
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/et_phone_second"
+        app:layout_constraintStart_toEndOf="@+id/et_login_phone_second"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/et_name"
+        android:id="@+id/et_login_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="17dp"
@@ -73,12 +73,12 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Name"
-        app:layout_constraintBottom_toTopOf="@+id/et_phone_first"
+        app:layout_constraintBottom_toTopOf="@+id/et_login_phone_first"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_signup_next"
+        android:id="@+id/btn_login_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="회원가입"
@@ -86,20 +86,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.78"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_phone_second"
+        app:layout_constraintTop_toBottomOf="@+id/et_login_phone_second"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_login_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="132dp"
         android:text="로그인"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_signup_next"
+        app:layout_constraintEnd_toStartOf="@+id/btn_login_signup"
         app:layout_constraintHorizontal_bias="0.68"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_phone_first"
+        app:layout_constraintTop_toBottomOf="@+id/et_login_phone_first"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

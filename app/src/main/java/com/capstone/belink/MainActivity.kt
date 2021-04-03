@@ -4,9 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.ActionBar
 import androidx.viewpager2.widget.ViewPager2
-import com.capstone.belink.Adapter.CustomFragmentStateAdapter
+import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Ui.FragmentEtcetra
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        var adapter = CustomFragmentStateAdapter(this)
+        var adapter = FragmentStateAdapter(this)
         adapter.fragmentList=fragmentLists
 
         binding.viewPager.adapter=adapter

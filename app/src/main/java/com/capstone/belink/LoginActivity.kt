@@ -50,21 +50,21 @@ class LoginActivity : AppCompatActivity() {
             login(phoneNum!!)
         }
 
-        binding.btnSignupNext.setOnClickListener {
+        binding.btnLoginSignup.setOnClickListener {
             getEditString()
             autoLogin.apply()
             signup(phoneNum!!,name!!)
         }
-        binding.btnLogin.setOnClickListener {
+        binding.btnLoginLogin.setOnClickListener {
             getEditString()
             login(phoneNum!!)
         }
     }
     fun getEditString(){
-        firstNum=binding.etPhoneFirst.text.toString()
-        secondNum=binding.etPhoneSecond.text.toString()
-        thirdNum=binding.etPhoneThird.text.toString()
-        name=binding.etName.text.toString()
+        firstNum=binding.etLoginPhoneFirst.text.toString()
+        secondNum=binding.etLoginPhoneSecond.text.toString()
+        thirdNum=binding.etLoginPhoneThird.text.toString()
+        name=binding.etLoginName.text.toString()
         phoneNum=firstNum+secondNum+thirdNum
         autoLogin.clear()
         autoLogin.putString("inputPhone",phoneNum)

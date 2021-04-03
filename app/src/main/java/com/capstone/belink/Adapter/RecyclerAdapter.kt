@@ -18,7 +18,7 @@ class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
     val tv_group_date = v.findViewById<TextView>(R.id.tv_group_date)
 }
 
-class CustomAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
+class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
     var DataList= listOf<ProfileData>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_list,parent,false)
