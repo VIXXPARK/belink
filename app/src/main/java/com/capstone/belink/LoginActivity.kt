@@ -57,16 +57,18 @@ class LoginActivity : AppCompatActivity() {
                 var autoLogin:SharedPreferences.Editor = auto.edit()
                 autoLogin.putString("inputPhone",phoneNum)
                 autoLogin.putString("inputName",name)
-                autoLogin.commit()
                 signup(phoneNum!!,name!!)
+                autoLogin.commit()
+
             }
             binding.btnLogin.setOnClickListener {
                 var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
                 var autoLogin:SharedPreferences.Editor = auto.edit()
                 autoLogin.putString("inputPhone",phoneNum)
                 autoLogin.putString("inputName",name)
-                autoLogin.commit()
                 login(phoneNum!!)
+                autoLogin.commit()
+
             }
         }
     }

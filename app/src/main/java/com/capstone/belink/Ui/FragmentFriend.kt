@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.capstone.belink.Adapter.CustomFriendAdapter
+import com.capstone.belink.Adapter.FriendAdapter
 import com.capstone.belink.Adapter.FriendData
 import com.capstone.belink.databinding.FragmentFriendBinding
 
@@ -37,7 +37,7 @@ class FragmentFriend:Fragment() {
 
     private fun init() {
         binding.friendRecycler.layoutManager = LinearLayoutManager(mContext)
-        val adapter = CustomFriendAdapter(xContext)
+        val adapter = FriendAdapter(xContext)
         adapter.DataList=DataList
         binding.friendRecycler.adapter=adapter
 

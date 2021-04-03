@@ -10,19 +10,19 @@ import com.capstone.belink.R
 
 class FriendData(val name:String)
 
-class CustomFriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
+class FriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
 
     val tv_friend_name = v.findViewById<TextView>(R.id.tv_friend_name)
 }
 
-class CustomFriendAdapter(val context: Context):RecyclerView.Adapter<CustomFriendViewHolder>(){
+class FriendAdapter(val context: Context):RecyclerView.Adapter<FriendViewHolder>(){
     var DataList = listOf<FriendData>()
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomFriendViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_friendlist,parent,false)
-        return CustomFriendViewHolder(cellForRow)
+        return FriendViewHolder(cellForRow)
     }
 
-    override fun onBindViewHolder(holder: CustomFriendViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
         holder.tv_friend_name.setText(DataList[position].name)
 
 
