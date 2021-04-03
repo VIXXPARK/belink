@@ -6,13 +6,10 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import com.capstone.belink.Model.SignDTO
-import com.capstone.belink.Model.User
+import com.capstone.belink.Model.SignDao
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.ActivityLoginBinding
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,12 +78,12 @@ class LoginActivity : AppCompatActivity() {
     private fun signup(Phone: String, name: String) {
 
 
-        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDTO>{
-            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
+        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDao>{
+            override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
                 Log.d("success",response.message())
             }
 
-            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+            override fun onFailure(call: Call<SignDao>, t: Throwable) {
                 Log.d("fail","$t")
 
             }
@@ -96,15 +93,20 @@ class LoginActivity : AppCompatActivity() {
 
     fun login(phoneNum: String) {
 
-        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDTO>{
-            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
+        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDao>{
+            override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
                 if(response.message()=="OK"){
                     val intent = Intent(this@LoginActivity,MainActivity::class.java)
                     startActivity(intent)
                     finish()
+                    var auto:SharedPreferences = getSharedPreferences("auto",Activity.MODE_PRIVATE)
+                    var autoLogin:SharedPreferences.Editor = auto.edit()
+                    autoLogin.putString("userId",response?.body()?.data?.id.toString())
+                    println(response?.body()?.data?.id.toString())
+                    autoLogin.apply()
                 }
             }
-            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+            override fun onFailure(call: Call<SignDao>, t: Throwable) {
             }
         })
     }

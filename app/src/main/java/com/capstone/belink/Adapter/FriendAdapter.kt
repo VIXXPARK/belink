@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.capstone.belink.Model.FriendUserDao
 import com.capstone.belink.R
 
-class FriendData(val name:String)
 
 class FriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
 
@@ -16,14 +16,14 @@ class FriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
 }
 
 class FriendAdapter(val context: Context):RecyclerView.Adapter<FriendViewHolder>(){
-    var DataList = listOf<FriendData>()
+    var DataList = listOf<FriendUserDao>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_friendlist,parent,false)
         return FriendViewHolder(cellForRow)
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
-        holder.tv_friend_name.setText(DataList[position].name)
+        holder.tv_friend_name.setText(DataList[position].username)
 
 
     }
