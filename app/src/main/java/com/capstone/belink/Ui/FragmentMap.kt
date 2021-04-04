@@ -42,22 +42,7 @@ class FragmentMap:Fragment() {
         auto =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
 
-        binding.etFragMapName.setText(auto.getString("inputName","홍길동"))
-        binding.etFragMapPhone.setText(auto.getString("inputPhone","01012345678"))
-
         initRetrofit()
-
-        (activity as AppCompatActivity).supportActionBar?.title="방문장소"
-
-        binding.btnFragMapSend.setOnClickListener {
-            val phoneNumber = binding.etFragMapPhone.text.toString()
-            val name = binding.etFragMapName.text.toString()
-            val id = auto.getString("userId","")!!
-            connectUpdateInfo(phoneNumber,name,id)
-        }
-
-
-
         return view
     }
 

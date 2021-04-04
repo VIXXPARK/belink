@@ -21,7 +21,7 @@ class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
 class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
     var DataList= listOf<ProfileData>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
-        val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_list,parent,false)
+        val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_grouplist,parent,false)
         return CustomViewHolder(cellForRow)
     }
 
