@@ -2,6 +2,7 @@ package com.capstone.belink.Ui
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.capstone.belink.MainActivity
 import com.capstone.belink.Model.FriendListDTO
+import com.capstone.belink.Model.User
+import com.capstone.belink.Model.successDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentMapBinding
@@ -29,20 +32,48 @@ class FragmentMap:Fragment() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
 
+    private lateinit var auto: SharedPreferences
+    private lateinit var autoLogin: SharedPreferences.Editor
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentMapBinding.inflate(inflater,container,false)
         val view = binding.root
+
+        auto =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
+        autoLogin=auto.edit()
+
+        binding.etFragMapName.setText(auto.getString("inputName","홍길동"))
+        binding.etFragMapPhone.setText(auto.getString("inputPhone","01012345678"))
+
         initRetrofit()
+
         (activity as AppCompatActivity).supportActionBar?.title="방문장소"
 
-
-
-        binding.btnConnect.setOnClickListener {
-            var pref =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
-            println(pref.getString("userId","default"))
-            getFriendList()
+        binding.btnFragMapSend.setOnClickListener {
+            val phoneNumber = binding.etFragMapPhone.text.toString()
+            val name = binding.etFragMapName.text.toString()
+            val id = auto.getString("userId","")!!
+            connectUpdateInfo(phoneNumber,name,id)
         }
+
+
+
         return view
+    }
+
+    private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
+        val user = User(id,phoneNumber,name)
+        supplementService.editUser(user).enqueue(object :Callback<successDTO>{
+            override fun onResponse(call: Call<successDTO>, response: Response<successDTO>) {
+                Log.d("success",response.body().toString())
+            }
+
+            override fun onFailure(call: Call<successDTO>, t: Throwable) {
+                Log.d("fail","$t")
+            }
+
+        })
+
     }
 
     private fun initRetrofit() {
@@ -50,22 +81,7 @@ class FragmentMap:Fragment() {
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 
-    fun getFriendList() {
-        var pref =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
 
-        supplementService.getMyFriend(pref.getString("userId","userId")!!).enqueue(object :Callback<FriendListDTO>{
-            override fun onResponse(call: Call<FriendListDTO>, response: Response<FriendListDTO>) {
-                Log.d("status",response.message())
-                println(response.body().toString())
-            }
-
-            override fun onFailure(call: Call<FriendListDTO>, t: Throwable) {
-                Log.d("status","$t")
-            }
-
-
-        })
-    }
 
     override fun onAttach(context: Context) {
         mContext=context
