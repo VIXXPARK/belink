@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
@@ -44,6 +45,8 @@ class FragmentEtcetra:Fragment() {
     private lateinit var autoLogin: SharedPreferences.Editor
 
     private var checkView:Int=0
+
+    private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
@@ -107,11 +110,29 @@ class FragmentEtcetra:Fragment() {
     override fun onAttach(context: Context) {
         mContext=context
         super.onAttach(context)
+        callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if(checkView==1){
+                    binding.fragEtcetra.isVisible=true
+                    binding.fragEditView.isVisible=false
+                    checkView=0
+                }else{
+                    isEnabled = false
+                    (activity as MainActivity).onBackPressed()
+                }
+
+            }
+        }
+
+        (activity as MainActivity).onBackPressedDispatcher.addCallback(this,callback)
+
+
     }
 
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()
+        callback.remove()
     }
 
 
