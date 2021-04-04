@@ -1,14 +1,17 @@
 package com.capstone.belink.Ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.capstone.belink.LoginActivity
+import com.capstone.belink.MainActivity
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentEtcetraBinding
@@ -29,7 +32,16 @@ class FragmentEtcetra:Fragment() {
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="설정"
 
+        binding.btnLogout.setOnClickListener {
+            val intent = Intent(xContext,LoginActivity::class.java)
+            startActivity(intent)
+            val auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
+            val editor = auto.edit()
+            editor.clear()
+            editor.apply()
+            Toast.makeText(xContext,"Logout",Toast.LENGTH_SHORT).show()
 
+        }
 
         return view
     }
