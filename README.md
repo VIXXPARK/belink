@@ -6,6 +6,7 @@
 1. LoginActivity의 버튼을 네이밍을 한다면 btn_login_function 순으로 한다.
 2. FragmentMap의 경우에 관한 버튼을 네이밍 한다면 btn_frag_map_function 순으로 한다.
 3. EditText나 ImageView 같이 카멜 형식을 취한 이름은 대문자 두글자를 et_ , iv_ 형식으로 진행한다.
+4. Class 네이밍은 Pascal Casing(ex AppleTree)로 .
 ```
 Git 규칙
 ```
