@@ -2,9 +2,9 @@ package com.capstone.belink.Model
 
 import java.util.*
 
-data class FriendDao (
+data class FriendDTO (
         val hidden:Boolean,
         val updatedAt:Date,
-        val deviceUser:FriendUserDao,
-        val myFriendUser:FriendUserDao
+        val deviceUser:FriendUserDTO,
+        val myFriendUser:FriendUserDTO
         )

@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.capstone.belink.Model.SignDao
+import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.ActivityLoginBinding
@@ -78,22 +78,22 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signup(Phone: String, name: String) {
 
-        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDao>{
-            override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
+        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDTO>{
+            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
                 Log.d("Phone",Phone)
                 Log.d("Name",name)
                 Log.d("success",response.message())
             }
 
-            override fun onFailure(call: Call<SignDao>, t: Throwable) {
+            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
                 Log.d("fail","$t")
             }
         })
     }
 
     fun login(phoneNum: String) {
-        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDao>{
-            override fun onResponse(call: Call<SignDao>, response: Response<SignDao>) {
+        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDTO>{
+            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
                 if(response.message()=="OK"){
                     val intent = Intent(this@LoginActivity,MainActivity::class.java)
                     autoLogin.putString("userId",response.body()?.data?.id.toString())
@@ -104,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
             }
-            override fun onFailure(call: Call<SignDao>, t: Throwable) {
+            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
             }
         })
     }

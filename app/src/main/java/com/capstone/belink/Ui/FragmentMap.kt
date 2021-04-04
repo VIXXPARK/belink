@@ -7,13 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.capstone.belink.MainActivity
-import com.capstone.belink.Model.FriendDao
-import com.capstone.belink.Model.FriendListDao
-import com.capstone.belink.Model.SignDao
+import com.capstone.belink.Model.FriendListDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentMapBinding
@@ -56,13 +53,13 @@ class FragmentMap:Fragment() {
     fun getFriendList() {
         var pref =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
 
-        supplementService.getMyFriend(pref.getString("userId","userId")!!).enqueue(object :Callback<FriendListDao>{
-            override fun onResponse(call: Call<FriendListDao>, response: Response<FriendListDao>) {
+        supplementService.getMyFriend(pref.getString("userId","userId")!!).enqueue(object :Callback<FriendListDTO>{
+            override fun onResponse(call: Call<FriendListDTO>, response: Response<FriendListDTO>) {
                 Log.d("status",response.message())
                 println(response.body().toString())
             }
 
-            override fun onFailure(call: Call<FriendListDao>, t: Throwable) {
+            override fun onFailure(call: Call<FriendListDTO>, t: Throwable) {
                 Log.d("status","$t")
             }
 
