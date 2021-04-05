@@ -11,23 +11,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.capstone.belink.Interface.IOnBackPressed
 import com.capstone.belink.LoginActivity
 import com.capstone.belink.MainActivity
 import com.capstone.belink.Model.User
 import com.capstone.belink.Model.successDTO
+import com.capstone.belink.Model.successIntDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentEtcetraBinding
-import com.capstone.belink.databinding.FragmentMapBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,8 +58,13 @@ class FragmentEtcetra:Fragment() {
         binding.etFragEditPhone.setText(auto.getString("inputPhone","01012345678"))
 
         initRetrofit()
+        textViewClickListen()
 
+        return view
 
+    }
+
+    private fun textViewClickListen() {
         binding.tvEtcetraEditInfo.setOnClickListener {
             if(binding.fragEtcetra.isVisible){
                 binding.fragEtcetra.isVisible=false
@@ -80,8 +81,22 @@ class FragmentEtcetra:Fragment() {
             var listener = object : DialogInterface.OnClickListener{
                 override fun onClick(dialog: DialogInterface?, which: Int) {
                     when(which){
-                        DialogInterface.BUTTON_POSITIVE -> Log.d("signout","탈퇴")
-                        DialogInterface.BUTTON_NEGATIVE -> Log.d("signout","철회")
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            Log.d("signout", "탈퇴")
+                            val id = auto.getString("userId","")!!
+                            supplementService.deleteUser(id).enqueue(object : Callback<successIntDTO>{
+                                override fun onResponse(call: Call<successIntDTO>, response: Response<successIntDTO>) {
+                                    if(response.message()=="OK")
+                                        logOut()
+                                }
+
+                                override fun onFailure(call: Call<successIntDTO>, t: Throwable) {
+                                    Log.d("fail","$t")
+                                }
+
+                            })
+                        }
+                        DialogInterface.BUTTON_NEGATIVE -> Log.d("signout", "철회")
                     }
                 }
 
@@ -91,6 +106,11 @@ class FragmentEtcetra:Fragment() {
             builder.show()
         }
 
+        binding.tvEtcetraLogOut.setOnClickListener {
+            logOut()
+            Toast.makeText(xContext,"Logout",Toast.LENGTH_SHORT).show()
+
+        }
 
         binding.btnFragEditSend.setOnClickListener {
             val phoneNumber = binding.etFragEditPhone.text.toString()
@@ -98,8 +118,15 @@ class FragmentEtcetra:Fragment() {
             val id = auto.getString("userId","")!!
             connectUpdateInfo(phoneNumber,name,id)
         }
+    }
 
-        return view
+    fun logOut(){
+        val intent = Intent(xContext, LoginActivity::class.java)
+        startActivity(intent)
+        val auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
+        val editor = auto.edit()
+        editor.clear()
+        editor.apply()
     }
 
 
@@ -162,13 +189,3 @@ class FragmentEtcetra:Fragment() {
 
 
 
-//binding.btnLogout.setOnClickListener {
-//    val intent = Intent(xContext,LoginActivity::class.java)
-//    startActivity(intent)
-//    val auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
-//    val editor = auto.edit()
-//    editor.clear()
-//    editor.apply()
-//    Toast.makeText(xContext,"Logout",Toast.LENGTH_SHORT).show()
-//
-//}

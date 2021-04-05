@@ -4,16 +4,10 @@ import android.app.Activity
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
-import com.capstone.belink.Interface.IOnBackPressed
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Ui.*
@@ -51,10 +45,6 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-//        val fragment = this.supportFragmentManager.findFragmentById(R.id.frag_main)
-//        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
-//            super.onBackPressed()
-//        }
         super.onBackPressed()
 
     }

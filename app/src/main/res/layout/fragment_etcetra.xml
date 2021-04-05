@@ -60,6 +60,15 @@
             android:layout_marginBottom="4dp"
             android:textColor="@color/black"
             android:id="@+id/tv_etcetra_userOut"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="로그아웃"
+            android:textSize="24sp"
+            android:layout_marginBottom="4dp"
+            android:textColor="@color/black"
+            android:id="@+id/tv_etcetra_logOut"/>
+
     </LinearLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
