@@ -1,7 +1,9 @@
 package com.capstone.belink.Ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -69,6 +71,26 @@ class FragmentEtcetra:Fragment() {
                 checkView=1
             }
         }
+
+        binding.tvEtcetraUserOut.setOnClickListener {
+            var builder = AlertDialog.Builder(xContext)
+            builder.setTitle("회원탈퇴")
+            builder.setMessage("정말로 회원탈퇴 하시겠습니까?")
+
+            var listener = object : DialogInterface.OnClickListener{
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    when(which){
+                        DialogInterface.BUTTON_POSITIVE -> Log.d("signout","탈퇴")
+                        DialogInterface.BUTTON_NEGATIVE -> Log.d("signout","철회")
+                    }
+                }
+
+            }
+            builder.setPositiveButton("확인",listener)
+            builder.setNegativeButton("취소",listener)
+            builder.show()
+        }
+
 
         binding.btnFragEditSend.setOnClickListener {
             val phoneNumber = binding.etFragEditPhone.text.toString()
