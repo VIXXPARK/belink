@@ -28,5 +28,9 @@ interface RetrofitService {
     @POST("api/user/get-my-friend")
     fun getMyFriend(@Field("id")id:String,@Field("hidden")hidden:Boolean):Call<FriendListDTO>
 
+    @FormUrlEncoded
+    @POST("api/user/edit-team")
+    fun makeTeam(@Field("teamName")teamName:String):Call<SignDTO>
+
 
 }
