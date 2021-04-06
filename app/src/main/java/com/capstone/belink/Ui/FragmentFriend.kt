@@ -45,7 +45,6 @@ class FragmentFriend:Fragment() {
 
         auto =(activity as MainActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
-
         (activity as AppCompatActivity).supportActionBar?.title="친구"
         initRetrofit()
         init()
@@ -54,8 +53,7 @@ class FragmentFriend:Fragment() {
 
     private fun adaptFriend(DataList:MutableList<FriendUserDTO>) {
         binding.friendRecycler.layoutManager = LinearLayoutManager(mContext)
-        val adapter = FriendAdapter(xContext)
-        adapter.DataList=DataList
+        val adapter = FriendAdapter(xContext,DataList)
         binding.friendRecycler.adapter=adapter
     }
 
@@ -72,12 +70,13 @@ class FragmentFriend:Fragment() {
         supplementService.getMyFriend(id,false).enqueue(object : Callback<FriendListDTO>{
             override fun onResponse(call: Call<FriendListDTO>, response: Response<FriendListDTO>) {
                 val freind= response.body()?.data
-                var DataList=mutableListOf<FriendUserDTO>()
+                val DataList=mutableListOf<FriendUserDTO>()
                 for(i in freind!!.indices){
                     val id = freind[i].myFriendUser.id
                     val phNum = freind[i].myFriendUser.phNum
                     val username = freind[i].myFriendUser.username
-                    DataList.add(FriendUserDTO(id,phNum,username))
+                    DataList.add(FriendUserDTO(id,username,phNum))
+                    Log.d("$i","$id, $phNum, $username")
                 }
                 adaptFriend(DataList)
             }

@@ -15,8 +15,8 @@ class FriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
     val tv_friend_name = v.findViewById<TextView>(R.id.tv_friend_name)
 }
 
-class FriendAdapter(val context: Context):RecyclerView.Adapter<FriendViewHolder>(){
-    var DataList = listOf<FriendUserDTO>()
+class FriendAdapter(val context: Context, private val DataList:MutableList<FriendUserDTO>):RecyclerView.Adapter<FriendViewHolder>(){
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_friendlist,parent,false)
         return FriendViewHolder(cellForRow)
