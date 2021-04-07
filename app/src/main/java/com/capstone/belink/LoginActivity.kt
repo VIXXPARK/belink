@@ -3,9 +3,11 @@ package com.capstone.belink
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.text.format.Formatter.formatIpAddress
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.SignDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -14,6 +16,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.util.*
+
 
 class LoginActivity : AppCompatActivity() {
     private var mBinding:ActivityLoginBinding?=null
@@ -42,24 +46,26 @@ class LoginActivity : AppCompatActivity() {
         auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
 
-        phoneNum=auto.getString("inputPhone",null)
-        name=auto.getString("inputName",null)
+        phoneNum=auto.getString("inputPhone", null)
+        name=auto.getString("inputName", null)
 
         if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
-            Log.d("status","first_if")
+            Log.d("status", "first_if")
             login(phoneNum!!)
         }
 
         binding.btnLoginSignup.setOnClickListener {
             getEditString()
             autoLogin.apply()
-            signup(phoneNum!!,name!!)
+            signup(phoneNum!!, name!!)
         }
         binding.btnLoginLogin.setOnClickListener {
             getEditString()
             login(phoneNum!!)
         }
+
     }
+
     fun getEditString(){
         firstNum=binding.etLoginPhoneFirst.text.toString()
         secondNum=binding.etLoginPhoneSecond.text.toString()
@@ -67,8 +73,8 @@ class LoginActivity : AppCompatActivity() {
         name=binding.etLoginName.text.toString()
         phoneNum=firstNum+secondNum+thirdNum
         autoLogin.clear()
-        autoLogin.putString("inputPhone",phoneNum)
-        autoLogin.putString("inputName",name)
+        autoLogin.putString("inputPhone", phoneNum)
+        autoLogin.putString("inputName", name)
     }
 
     private fun initRetrofit() {
@@ -78,25 +84,25 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signup(Phone: String, name: String) {
 
-        supplementService.registerUser(Phone,name).enqueue(object : Callback<SignDTO>{
+        supplementService.registerUser(Phone, name).enqueue(object : Callback<SignDTO> {
             override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
-                Log.d("Phone",Phone)
-                Log.d("Name",name)
-                Log.d("success",response.message())
+                Log.d("Phone", Phone)
+                Log.d("Name", name)
+                Log.d("success", response.message())
             }
 
             override fun onFailure(call: Call<SignDTO>, t: Throwable) {
-                Log.d("fail","$t")
+                Log.d("fail", "$t")
             }
         })
     }
 
     fun login(phoneNum: String) {
-        supplementService.getuser(phoneNum).enqueue(object :Callback<SignDTO>{
+        supplementService.getuser(phoneNum).enqueue(object : Callback<SignDTO> {
             override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
-                if(response.message()=="OK"){
-                    val intent = Intent(this@LoginActivity,MainActivity::class.java)
-                    autoLogin.putString("userId",response.body()?.data?.id.toString())
+                if (response.message() == "OK") {
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    autoLogin.putString("userId", response.body()?.data?.id.toString())
                     println(response.body())
                     println(response.body()?.data?.id.toString())
                     autoLogin.apply()
@@ -104,6 +110,7 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
             }
+
             override fun onFailure(call: Call<SignDTO>, t: Throwable) {
             }
         })

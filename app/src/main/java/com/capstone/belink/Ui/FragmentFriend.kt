@@ -48,6 +48,7 @@ class FragmentFriend:Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title="친구"
         initRetrofit()
         init()
+
         return view
     }
 
@@ -84,6 +85,7 @@ class FragmentFriend:Fragment() {
             override fun onFailure(call: Call<FriendListDTO>, t: Throwable) {
                 Log.d("status","fail")
             }
+
 
         })
 

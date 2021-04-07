@@ -68,6 +68,12 @@ class MainActivity : AppCompatActivity() {
 
                 true
             }
+            R.id.action_alert ->{
+                //activtiy or dialog
+                println("alert")
+
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
