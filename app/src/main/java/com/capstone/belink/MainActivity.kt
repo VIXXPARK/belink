@@ -1,32 +1,27 @@
 package com.capstone.belink
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
+
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.Toast
+import android.view.View
+import androidx.core.view.isVisible
+
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
-import com.capstone.belink.Model.successIntDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Ui.*
 import com.capstone.belink.databinding.ActivityMainBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 
 class MainActivity : AppCompatActivity() {
     private var mBinding:ActivityMainBinding?=null
-    private val binding get() = mBinding!!
+    val binding get() = mBinding!!
 
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
@@ -35,7 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-
+    private var fragmentFreind = FragmentFriend()
+    private val fragmentTeam = FragmentTeam()
 
     var fragmentLists = listOf(FragmentMain(), FragmentFriend(), FragmentMap(), FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,20 +48,33 @@ class MainActivity : AppCompatActivity() {
         init()
     }
 
-
-
     override fun onBackPressed() {
         super.onBackPressed()
-
     }
+
+    fun openFragmentOnFrameLayoutFriend(int: Int){
+        val transaction = supportFragmentManager.beginTransaction()
+        when(int){
+            1 -> {
+                transaction.replace(R.id.main_frame, fragmentFreind)
+//                transaction.addToBackStack(null)
+
+            }
+
+        }
+        transaction.commit()
+    }
+
 
     // 액션 바 관련 override
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
 
-                val intent = Intent(this,TeamActivity::class.java)
-                startActivity(intent)
+                binding.activeMain.visibility= View.INVISIBLE
 
+                val transaction = supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frame,fragmentTeam)
+                transaction.commit()
                 true
             }
             R.id.action_alert ->{
@@ -132,19 +141,19 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.main -> {
                     binding.viewPager.setCurrentItem(0)
-                    prefEdit.putInt("nowPage",R.id.frag_main)
+
                 }
                 R.id.friend -> {
                     binding.viewPager.setCurrentItem(1)
-                    prefEdit.putInt("nowPage",R.id.frag_recycler)
+
                 }
                 R.id.map -> {
                     binding.viewPager.setCurrentItem(2)
-                    prefEdit.putInt("nowPage",R.id.frag_map)
+
                 }
                 R.id.etcetra -> {
                     binding.viewPager.setCurrentItem(3)
-                    prefEdit.putInt("nowPage",R.id.frag_etcetra)
+
                 }
             }
             prefEdit.apply()
@@ -153,8 +162,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()
     }
 }
+

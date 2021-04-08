@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,11 +38,14 @@ class FragmentFriend:Fragment() {
     private lateinit var auto: SharedPreferences
     private lateinit var autoLogin: SharedPreferences.Editor
 
+    private lateinit var callback: OnBackPressedCallback
 
+    var checkView = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentFriendBinding.inflate(inflater,container,false)
         val view = binding.root
+        binding.fragmentFriendLayout.visibility=View.VISIBLE
 
         auto =(activity as MainActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
@@ -94,6 +98,29 @@ class FragmentFriend:Fragment() {
     override fun onAttach(context: Context) {
         mContext=context
         super.onAttach(context)
+
+
+        val fm = (activity as MainActivity).supportFragmentManager
+        callback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                if(checkView==1){
+                    checkView=0
+                }else if(checkView==-1){
+                    isEnabled = false
+                    checkView=0
+//                    (activity as MainActivity).binding.activeMain.visibility=View.VISIBLE
+                    (activity as MainActivity).onBackPressed()
+                }
+                else{
+                    checkView=-1
+                    binding.fragmentFriendLayout.visibility=View.INVISIBLE
+                    (activity as MainActivity).binding.activeMain.visibility=View.VISIBLE
+                }
+
+            }
+        }
+
+        (activity as MainActivity).onBackPressedDispatcher.addCallback(this,callback)
     }
 
     override fun onDestroy() {
