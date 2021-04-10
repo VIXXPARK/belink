@@ -3,12 +3,10 @@ package com.capstone.belink
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.text.format.Formatter.formatIpAddress
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.capstone.belink.Model.SignDTO
+import com.capstone.belink.Model.Sign
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.ActivityLoginBinding
@@ -84,22 +82,22 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signup(Phone: String, name: String) {
 
-        supplementService.registerUser(Phone, name).enqueue(object : Callback<SignDTO> {
-            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
+        supplementService.registerUser(Phone, name).enqueue(object : Callback<Sign> {
+            override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
                 Log.d("Phone", Phone)
                 Log.d("Name", name)
                 Log.d("success", response.message())
             }
 
-            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+            override fun onFailure(call: Call<Sign>, t: Throwable) {
                 Log.d("fail", "$t")
             }
         })
     }
 
     fun login(phoneNum: String) {
-        supplementService.getuser(phoneNum).enqueue(object : Callback<SignDTO> {
-            override fun onResponse(call: Call<SignDTO>, response: Response<SignDTO>) {
+        supplementService.getuser(phoneNum).enqueue(object : Callback<Sign> {
+            override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
                 if (response.message() == "OK") {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     autoLogin.putString("userId", response.body()?.data?.id.toString())
@@ -111,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<SignDTO>, t: Throwable) {
+            override fun onFailure(call: Call<Sign>, t: Throwable) {
             }
         })
     }

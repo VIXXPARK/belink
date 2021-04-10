@@ -2,6 +2,6 @@ package com.capstone.belink.Model
 
 import java.util.*
 
-data class getMyFriendDTO (
+data class getMyFriend (
             val myFriendUser:User
         )

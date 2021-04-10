@@ -1,5 +1,5 @@
 package com.capstone.belink.Model
 
-data class successDTO (
+data class success (
         val success:List<Int>
         )

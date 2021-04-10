@@ -1,6 +1,6 @@
 package com.capstone.belink.Model
 
-data class FriendUserDTO (
+data class FriendUser (
         val id:String,
         val username:String,
         val phNum:String

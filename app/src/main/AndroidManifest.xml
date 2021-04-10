@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TeamActivity"></activity>
+        <activity android:name=".AlarmActivity"></activity>
+        <activity android:name=".TeamActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
