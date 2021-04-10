@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
+    tools:context=".UIActivity.MainActivity"
     android:id="@+id/main_frame"
     xmlns:android="http://schemas.android.com/apk/res/android">
 

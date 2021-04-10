@@ -1,4 +1,4 @@
-package com.capstone.belink
+package com.capstone.belink.UIActivity
 
 import android.app.Activity
 import android.content.Intent
@@ -6,16 +6,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.core.view.isVisible
 
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.R
 import com.capstone.belink.Ui.*
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
@@ -38,8 +36,6 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         prefEdit=pref.edit()
 
@@ -56,12 +52,12 @@ class MainActivity : AppCompatActivity() {
     // 액션 바 관련 override
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
-                val intent = Intent(this,TeamActivity::class.java)
+                val intent = Intent(this, TeamActivity::class.java)
                 startActivity(intent)
                 true
             }
             R.id.action_alert ->{
-                val intent = Intent(this,AlarmActivity::class.java)
+                val intent = Intent(this, AlarmActivity::class.java)
                 startActivity(intent)
                 println("alert")
 
@@ -85,6 +81,8 @@ class MainActivity : AppCompatActivity() {
         retrofit = RetrofitClient.getInstance()
         supplementService = retrofit.create(RetrofitService::class.java)
     }
+
+
 
 
     //fragment 뷰페이저에 맵핑

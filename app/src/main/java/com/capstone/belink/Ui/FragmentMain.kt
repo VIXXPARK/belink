@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.Adapter.ProfileData
-import com.capstone.belink.MainActivity
+import com.capstone.belink.UIActivity.MainActivity
 import com.capstone.belink.R
 import com.capstone.belink.databinding.FragmentMainBinding
 
@@ -42,7 +40,6 @@ import com.capstone.belink.databinding.FragmentMainBinding
         mBinding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="개인"
-
 
         return view
     }
