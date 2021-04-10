@@ -20,7 +20,6 @@ import com.capstone.belink.LoginActivity
 import com.capstone.belink.MainActivity
 import com.capstone.belink.Model.User
 import com.capstone.belink.Model.successDTO
-import com.capstone.belink.Model.successIntDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentEtcetraBinding
@@ -84,13 +83,13 @@ class FragmentEtcetra:Fragment() {
                         DialogInterface.BUTTON_POSITIVE -> {
                             Log.d("signout", "탈퇴")
                             val id = auto.getString("userId","")!!
-                            supplementService.deleteUser(id).enqueue(object : Callback<successIntDTO>{
-                                override fun onResponse(call: Call<successIntDTO>, response: Response<successIntDTO>) {
+                            supplementService.deleteUser(id).enqueue(object : Callback<successDTO>{
+                                override fun onResponse(call: Call<successDTO>, response: Response<successDTO>) {
                                     if(response.message()=="OK")
                                         logOut()
                                 }
 
-                                override fun onFailure(call: Call<successIntDTO>, t: Throwable) {
+                                override fun onFailure(call: Call<successDTO>, t: Throwable) {
                                     Log.d("fail","$t")
                                 }
 
