@@ -18,6 +18,7 @@ import com.capstone.belink.Model.FriendListDTO
 import com.capstone.belink.Model.FriendUserDTO
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.TeamActivity
 import com.capstone.belink.databinding.FragmentFriendBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,18 +39,14 @@ class FragmentFriend:Fragment() {
     private lateinit var auto: SharedPreferences
     private lateinit var autoLogin: SharedPreferences.Editor
 
-    private lateinit var callback: OnBackPressedCallback
 
-    var checkView = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentFriendBinding.inflate(inflater,container,false)
         val view = binding.root
-        binding.fragmentFriendLayout.visibility=View.VISIBLE
 
-        auto =(activity as MainActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
+        auto =(activity as TeamActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
-        (activity as AppCompatActivity).supportActionBar?.title="친구"
         initRetrofit()
         init()
 
@@ -71,11 +68,10 @@ class FragmentFriend:Fragment() {
 
     private fun init() {
         val id = auto.getString("userId","")!!
-
+        val DataList=mutableListOf<FriendUserDTO>()
         supplementService.getMyFriend(id,false).enqueue(object : Callback<FriendListDTO>{
             override fun onResponse(call: Call<FriendListDTO>, response: Response<FriendListDTO>) {
                 val freind= response.body()?.data
-                val DataList=mutableListOf<FriendUserDTO>()
                 for(i in freind!!.indices){
                     val id = freind[i].myFriendUser.id
                     val phNum = freind[i].myFriendUser.phNum
@@ -88,6 +84,8 @@ class FragmentFriend:Fragment() {
 
             override fun onFailure(call: Call<FriendListDTO>, t: Throwable) {
                 Log.d("status","fail")
+                DataList.add(FriendUserDTO("1","010111111111","vixx"))
+                adaptFriend(DataList)
             }
 
 
@@ -98,29 +96,6 @@ class FragmentFriend:Fragment() {
     override fun onAttach(context: Context) {
         mContext=context
         super.onAttach(context)
-
-
-        val fm = (activity as MainActivity).supportFragmentManager
-        callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                if(checkView==1){
-                    checkView=0
-                }else if(checkView==-1){
-                    isEnabled = false
-                    checkView=0
-//                    (activity as MainActivity).binding.activeMain.visibility=View.VISIBLE
-                    (activity as MainActivity).onBackPressed()
-                }
-                else{
-                    checkView=-1
-                    binding.fragmentFriendLayout.visibility=View.INVISIBLE
-                    (activity as MainActivity).binding.activeMain.visibility=View.VISIBLE
-                }
-
-            }
-        }
-
-        (activity as MainActivity).onBackPressedDispatcher.addCallback(this,callback)
     }
 
     override fun onDestroy() {

@@ -22,7 +22,7 @@ interface RetrofitService {
     fun editUser(@Body user: User): Call<successDTO>
 
     @GET("api/user/edit-info/{id}")
-    fun deleteUser(@Path("id")id:String):Call<successIntDTO>
+    fun deleteUser(@Path("id")id:String):Call<successDTO>
 
     @FormUrlEncoded
     @POST("api/user/get-my-friend")

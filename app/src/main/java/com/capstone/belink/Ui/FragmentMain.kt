@@ -44,24 +44,6 @@ import com.capstone.belink.databinding.FragmentMainBinding
         (activity as AppCompatActivity).supportActionBar?.title="개인"
 
 
-        binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
-        val adapter = RecyclerAdapter(xContext)
-        adapter.DataList=DataList
-        binding.viewRecycler.adapter=adapter
-
-
-        binding.fabPersonal.setOnClickListener {
-            binding.fragMain.visibility=View.INVISIBLE
-            binding.fragRecycler.visibility=View.VISIBLE
-
-            (activity as AppCompatActivity).supportActionBar?.title="그룹"
-        }
-        binding.fabRecycler.setOnClickListener {
-            binding.fragMain.visibility=View.VISIBLE
-            binding.fragRecycler.visibility=View.INVISIBLE
-            (activity as AppCompatActivity).supportActionBar?.title="개인"
-        }
-
         return view
     }
 

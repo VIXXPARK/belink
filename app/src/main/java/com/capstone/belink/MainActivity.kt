@@ -1,6 +1,7 @@
 package com.capstone.belink
 
 import android.app.Activity
+import android.content.Intent
 
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -30,10 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-    private var fragmentFreind = FragmentFriend()
-    private val fragmentTeam = FragmentTeam()
 
-    var fragmentLists = listOf(FragmentMain(), FragmentFriend(), FragmentMap(), FragmentEtcetra())
+    var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -52,29 +51,19 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun openFragmentOnFrameLayoutFriend(int: Int){
-        val transaction = supportFragmentManager.beginTransaction()
-        when(int){
-            1 -> {
-                transaction.replace(R.id.main_frame, fragmentFreind)
-//                transaction.addToBackStack(null)
-
-            }
-
-        }
-        transaction.commit()
-    }
 
 
     // 액션 바 관련 override
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
 
-                binding.activeMain.visibility= View.INVISIBLE
-
-                val transaction = supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frame,fragmentTeam)
-                transaction.commit()
+//                binding.activeMain.visibility= View.INVISIBLE
+//
+//                val transaction = supportFragmentManager.beginTransaction()
+//                        .replace(R.id.main_frame,fragmentTeam)
+//                transaction.commit()
+                val intent = Intent(this,TeamActivity::class.java)
+                startActivity(intent)
                 true
             }
             R.id.action_alert ->{
