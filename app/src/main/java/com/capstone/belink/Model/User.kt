@@ -2,9 +2,9 @@ package com.capstone.belink.Model
 
 import java.util.*
 
-data class User(val id:String,
-                val phNum:String="01082828282",
-                val username:String="belink",
+data class User(val id:String="",
+                val phNum:String="",
+                val username:String="",
                 val active:Boolean=true,
                 val admin:Boolean=false,
                 val infect:Int=0,

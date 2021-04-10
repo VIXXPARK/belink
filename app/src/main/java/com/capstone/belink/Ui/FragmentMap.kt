@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.capstone.belink.MainActivity
+import com.capstone.belink.UIActivity.MainActivity
 import com.capstone.belink.Model.User
 import com.capstone.belink.Model.success
 import com.capstone.belink.Network.RetrofitClient

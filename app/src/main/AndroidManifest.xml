@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -13,16 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AlarmActivity"></activity>
-        <activity android:name=".TeamActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".UIActivity.FriendSettingActivity"></activity>
+        <activity android:name=".UIActivity.AlarmActivity" />
+        <activity android:name=".UIActivity.TeamActivity" />
+        <activity android:name=".UIActivity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".UIActivity.MainActivity" />
     </application>
 
 </manifest>

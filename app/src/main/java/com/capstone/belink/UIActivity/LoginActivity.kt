@@ -1,4 +1,4 @@
-package com.capstone.belink
+package com.capstone.belink.UIActivity
 
 import android.app.Activity
 import android.content.Intent

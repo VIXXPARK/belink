@@ -1,8 +1,9 @@
-package com.capstone.belink
+package com.capstone.belink.UIActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.capstone.belink.R
 import com.capstone.belink.Ui.FragmentTeam
 import com.capstone.belink.databinding.ActivityTeamBinding
 

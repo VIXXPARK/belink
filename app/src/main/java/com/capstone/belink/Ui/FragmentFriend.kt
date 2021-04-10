@@ -15,7 +15,7 @@ import com.capstone.belink.Model.FriendList
 import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
-import com.capstone.belink.TeamActivity
+import com.capstone.belink.UIActivity.TeamActivity
 import com.capstone.belink.databinding.FragmentFriendBinding
 import retrofit2.Call
 import retrofit2.Callback

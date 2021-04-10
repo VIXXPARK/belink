@@ -16,12 +16,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.capstone.belink.LoginActivity
-import com.capstone.belink.MainActivity
+import com.capstone.belink.UIActivity.LoginActivity
+import com.capstone.belink.UIActivity.MainActivity
 import com.capstone.belink.Model.User
 import com.capstone.belink.Model.success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.UIActivity.FriendSettingActivity
 import com.capstone.belink.databinding.FragmentEtcetraBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,11 +60,21 @@ class FragmentEtcetra:Fragment() {
         initRetrofit()
         textViewClickListen()
 
+
+
         return view
 
     }
 
     private fun textViewClickListen() {
+
+        binding.tvEtcetraManageFriend.setOnClickListener {
+            val intent = Intent(xContext,FriendSettingActivity::class.java)
+            startActivity(intent)
+
+        }
+
+
         binding.tvEtcetraEditInfo.setOnClickListener {
             if(binding.fragEtcetra.isVisible){
                 binding.fragEtcetra.isVisible=false
