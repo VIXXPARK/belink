@@ -72,19 +72,24 @@ class FragmentFriend:Fragment() {
         supplementService.getMyFriend(id,false).enqueue(object : Callback<FriendListDTO>{
             override fun onResponse(call: Call<FriendListDTO>, response: Response<FriendListDTO>) {
                 val freind= response.body()?.data
-                for(i in freind!!.indices){
-                    val id = freind[i].myFriendUser.id
-                    val phNum = freind[i].myFriendUser.phNum
-                    val username = freind[i].myFriendUser.username
-                    DataList.add(FriendUserDTO(id,username,phNum))
-                    Log.d("$i","$id, $phNum, $username")
+                if(freind!=null){
+                    for(i in freind!!.indices){
+                        val id = freind[i].myFriendUser.id
+                        val phNum = freind[i].myFriendUser.phNum
+                        val username = freind[i].myFriendUser.username
+                        DataList.add(FriendUserDTO(id,username,phNum))
+                        Log.d("$i","$id, $phNum, $username")
+                    }
+                    adaptFriend(DataList)
                 }
-                adaptFriend(DataList)
+                else{
+                    (activity as TeamActivity).replaceFragment(FragmentEmpty())
+                }
+
             }
 
             override fun onFailure(call: Call<FriendListDTO>, t: Throwable) {
                 Log.d("status","fail")
-                DataList.add(FriendUserDTO("1","010111111111","vixx"))
                 adaptFriend(DataList)
             }
 

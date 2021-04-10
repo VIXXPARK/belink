@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     1 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.friend
-                        supportActionBar?.title="친구"
+                        supportActionBar?.title="그룹"
                     }
                     2 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.map
