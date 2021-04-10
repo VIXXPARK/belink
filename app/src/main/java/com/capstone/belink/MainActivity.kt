@@ -56,18 +56,13 @@ class MainActivity : AppCompatActivity() {
     // 액션 바 관련 override
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
-
-//                binding.activeMain.visibility= View.INVISIBLE
-//
-//                val transaction = supportFragmentManager.beginTransaction()
-//                        .replace(R.id.main_frame,fragmentTeam)
-//                transaction.commit()
                 val intent = Intent(this,TeamActivity::class.java)
                 startActivity(intent)
                 true
             }
             R.id.action_alert ->{
-                //activtiy or dialog
+                val intent = Intent(this,AlarmActivity::class.java)
+                startActivity(intent)
                 println("alert")
 
                 true
