@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.capstone.belink.Model.Sign
+import com.capstone.belink.Model.Team
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.UIActivity.TeamActivity
@@ -43,13 +44,13 @@ class FragmentTeam:Fragment() {
                     Toast.makeText(_context,"이름을 적어주세요",Toast.LENGTH_SHORT).show()
                 }
                 else{
-                        supplementService.makeTeam(binding.etTeamMakeName.text.toString()).enqueue(object :Callback<Sign>{
-                            override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
+                        supplementService.makeTeam(binding.etTeamMakeName.text.toString()).enqueue(object :Callback<Team>{
+                            override fun onResponse(call: Call<Team>, response: Response<Team>) {
                                 if(response.message()=="OK"){
                                     (activity as TeamActivity).replaceFragment(FragmentFriend())
                                 }
                             }
-                            override fun onFailure(call: Call<Sign>, t: Throwable) {
+                            override fun onFailure(call: Call<Team>, t: Throwable) {
                                 Log.d("그룹생성 실패","fail")
                             }
                         })

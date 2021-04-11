@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.capstone.belink.UIActivity.MainActivity
 import com.capstone.belink.Model.User
-import com.capstone.belink.Model.success
+import com.capstone.belink.Model.Success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.databinding.FragmentMapBinding
@@ -46,12 +46,12 @@ class FragmentMap:Fragment() {
 
     private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
         val user = User(id,phoneNumber,name)
-        supplementService.editUser(user).enqueue(object :Callback<success>{
-            override fun onResponse(call: Call<success>, response: Response<success>) {
+        supplementService.editUser(user).enqueue(object :Callback<Success>{
+            override fun onResponse(call: Call<Success>, response: Response<Success>) {
                 Log.d("success",response.body().toString())
             }
 
-            override fun onFailure(call: Call<success>, t: Throwable) {
+            override fun onFailure(call: Call<Success>, t: Throwable) {
                 Log.d("fail","$t")
             }
 

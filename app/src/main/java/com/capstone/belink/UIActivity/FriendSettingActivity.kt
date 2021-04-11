@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.ContactInfo
+import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -49,10 +50,10 @@ class FriendSettingActivity : AppCompatActivity() {
             getContact()
             val contactUser=getStringArrayPref(this,"contact")
             println("map.isEmpty() is ${contactUser.isEmpty()}")
-            println("           contactUser.keys is ${contactUser.keys}")
+            println("contactUser.keys is ${contactUser.keys}")
             val phNumList=contactUser.keys
-            println("           phNumList is $phNumList")
-            val userList:MutableList<User> = ArrayList()
+            println("phNumList is $phNumList")
+            val userList:MutableList<FriendUser> = ArrayList()
             supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
                 override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                     val data = response.body()?.data
@@ -65,7 +66,7 @@ class FriendSettingActivity : AppCompatActivity() {
                             val username = data[i].username
                             val phNum = data[i].phNum
                             println("$id  $username   $phNum")
-                            userList.add(User(id=id,username=username,phNum = phNum))
+                            userList.add(FriendUser(id=id,username=username,phNum = phNum))
                         }
                     }
                     setStringArrayPref((this@FriendSettingActivity),"contact",userList)
@@ -78,10 +79,10 @@ class FriendSettingActivity : AppCompatActivity() {
 
             })
         }
-        binding.btnGetContact.setOnClickListener {
-            getStringArrayPref(this,"contact")
-        }
+        binding.btnGetInfo.setOnClickListener {
+            println(getStringArrayPref(this,"contact").toString())
 
+        }
     }
 
 
@@ -96,7 +97,7 @@ class FriendSettingActivity : AppCompatActivity() {
     }
 
     fun getContact(){
-        val contactList: MutableList<User> = ArrayList()
+        val contactList: MutableList<FriendUser> = ArrayList()
         val contacts = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             null,
@@ -107,7 +108,7 @@ class FriendSettingActivity : AppCompatActivity() {
         while (contacts!!.moveToNext()){
             val name = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             val number = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            val obj = User(username = name, phNum = number)
+            val obj = FriendUser(id="",username = name, phNum = number)
 
             contactList.add(obj)
         }
