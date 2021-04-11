@@ -70,12 +70,10 @@
         app:srcCompat="@drawable/ic_baseline_settings_24" />
 
     <Button
-        android:id="@+id/btn_get_contact"
+        android:id="@+id/btnGetInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="46dp"
-        android:layout_marginBottom="56dp"
         android:text="가져오기"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.UIActivity.TeamActivity
 import com.capstone.belink.Utils.getStringArrayPref
+import com.capstone.belink.Utils.getStringArraySaved
 import com.capstone.belink.databinding.FragmentFriendBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -69,33 +70,12 @@ class FragmentFriend:Fragment() {
 
     private fun init() {
         val id = auto.getString("userId","")!!
-        val DataList=mutableListOf<FriendUser>()
-        supplementService.getMyFriend(id,false).enqueue(object : Callback<FriendList>{
-            override fun onResponse(call: Call<FriendList>, response: Response<FriendList>) {
-                val freind= response.body()?.data
-                if(freind!=null){
-                    for(i in freind!!.indices){
-                        val id = freind[i].myFriendUser.id
-                        val phNum = freind[i].myFriendUser.phNum
-                        val username = freind[i].myFriendUser.username
-                        DataList.add(FriendUser(id,username,phNum))
-                        Log.d("$i","$id, $phNum, $username")
-                    }
-                    adaptFriend(DataList)
-                }
-                else{
-                    (activity as TeamActivity).replaceFragment(FragmentEmpty())
-                }
-
-            }
-
-            override fun onFailure(call: Call<FriendList>, t: Throwable) {
-                Log.d("status","fail")
-                adaptFriend(DataList)
-            }
-
-
-        })
+        val userList= getStringArraySaved(xContext,"contact")
+        if(userList.isNotEmpty()){
+            adaptFriend(userList)
+        }else{
+                (activity as TeamActivity).replaceFragment(FragmentEmpty())
+        }
 
     }
 

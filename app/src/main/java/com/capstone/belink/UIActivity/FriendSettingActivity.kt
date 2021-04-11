@@ -78,10 +78,10 @@ class FriendSettingActivity : AppCompatActivity() {
 
             })
         }
-        binding.btnGetContact.setOnClickListener {
-            getStringArrayPref(this,"contact")
-        }
+        binding.btnGetInfo.setOnClickListener {
+            println(getStringArrayPref(this,"contact").toString())
 
+        }
     }
 
 
