@@ -103,6 +103,7 @@ fun setMemberPref(context: Context,key:String,values:HashMap<String,Boolean>){
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val edit: SharedPreferences.Editor = pref.edit()
     edit.putString(key, null)
+    pref.edit().clear().apply()
     val dataList= JSONArray()
     for((k,v) in values){
         val tempJsonObject = JSONObject()

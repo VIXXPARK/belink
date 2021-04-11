@@ -1,5 +1,5 @@
 package com.capstone.belink.Model
 
-data class success (
+data class Success (
         val success:Boolean
         )
