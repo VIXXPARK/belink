@@ -1,5 +1,7 @@
 package com.capstone.belink.UIActivity
 
+import android.app.Activity
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -38,6 +40,8 @@ class TeamActivity : AppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.team_frame_layout,FragmentFriend()).commit()
 
+
+
     }
 
     private fun initRetrofit() {
@@ -72,6 +76,7 @@ class TeamActivity : AppCompatActivity() {
                 supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {
                     override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                         val data = response.body()?.data
+                        println("idContactUser")
                         println(data.toString())
                         if (data != null) {
                             for (i in data.indices) {
@@ -82,6 +87,7 @@ class TeamActivity : AppCompatActivity() {
                                 }
                             }
                         }
+                        teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
                         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {
                             override fun onResponse(call: Call<Team>, response: Response<Team>) {
                                 if (response.message() == "OK") {
@@ -94,26 +100,23 @@ class TeamActivity : AppCompatActivity() {
                                         supplementService.makeMember(teamList).enqueue(object : Callback<Success> {
                                             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                                                 if (response.message() == "OK") {
-                                                    Toast.makeText(this@TeamActivity, "만들어졌습니다", Toast.LENGTH_SHORT).show()
+                                                    getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()
+                                                    setResult(Activity.RESULT_OK)
+                                                    finish()
                                                 }
                                             }
-
                                             override fun onFailure(call: Call<Success>, t: Throwable) {
                                                 Log.d("memberFail", "$t")
                                             }
-
                                         })
                                     }
                                 }
                             }
-
                             override fun onFailure(call: Call<Team>, t: Throwable) {
                                 Log.d("makeTeamFail", "$t")
                             }
-
                         })
                     }
-
                     override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
                         Log.d("contactUserFail", "$t")
                     }
