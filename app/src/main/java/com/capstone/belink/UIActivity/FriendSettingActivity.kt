@@ -45,39 +45,10 @@ class FriendSettingActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRetrofit()
 
-
         binding.tvFriendReadContact.setOnClickListener {
             getContact()
-            val contactUser=getStringArrayPref(this,"contact")
-            println("map.isEmpty() is ${contactUser.isEmpty()}")
-            println("contactUser.keys is ${contactUser.keys}")
-            val phNumList=contactUser.keys
-            println("phNumList is $phNumList")
-            val userList:MutableList<FriendUser> = ArrayList()
-            supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
-                override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
-                    val data = response.body()?.data
-                    println("pass the response")
-                    println("${response.body()?.data}")
-                    if(data!=null){
-                        for(i in data.indices){
-                            println("pass the for loop")
-                            val id = data[i].id
-                            val username = data[i].username
-                            val phNum = data[i].phNum
-                            println("$id  $username   $phNum")
-                            userList.add(FriendUser(id=id,username=username,phNum = phNum))
-                        }
-                    }
-                    setStringArrayPref((this@FriendSettingActivity),"contact",userList)
+            syncContact()
 
-                }
-
-                override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
-                    Log.d("fail","$t")
-                }
-
-            })
         }
         binding.btnGetInfo.setOnClickListener {
             println(getStringArrayPref(this,"contact").toString())
@@ -94,9 +65,10 @@ class FriendSettingActivity : AppCompatActivity() {
 
     fun readContacts(view: View){
         getContact()
+        syncContact()
     }
 
-    fun getContact(){
+    private fun getContact(){ //주소 연락처 가져오기
         val contactList: MutableList<FriendUser> = ArrayList()
         val contacts = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -114,9 +86,43 @@ class FriendSettingActivity : AppCompatActivity() {
         }
         contacts.close()
 
-        setStringArrayPref(this,"contact",contactList)
+        setStringArrayPref(this,"contact",contactList)//연락처를 preferences에 저장
 
         Toast.makeText(this, "연락처 정보를 가져왔습니다.", Toast.LENGTH_SHORT).show()
+    }
+
+
+    private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
+        val contactUser=getStringArrayPref(this,"contact")
+        println("map.isEmpty() is ${contactUser.isEmpty()}")
+        println("contactUser.keys is ${contactUser.keys}")
+        val phNumList=contactUser.keys
+        println("phNumList is $phNumList")
+        val userList:MutableList<FriendUser> = ArrayList()
+        supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
+            override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
+                val data = response.body()?.data
+                println("pass the response")
+                println("${response.body()?.data}")
+                if(data!=null){
+                    for(i in data.indices){
+                        println("pass the for loop")
+                        val id = data[i].id
+                        val username = data[i].username
+                        val phNum = data[i].phNum
+                        println("$id  $username   $phNum")
+                        userList.add(FriendUser(id=id,username=username,phNum = phNum))
+                    }
+                }
+                setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신
+
+            }
+
+            override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
+                Log.d("fail","$t")
+            }
+
+        })
     }
 
 

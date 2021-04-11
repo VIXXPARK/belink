@@ -15,7 +15,6 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.FragmentFriend
-import com.capstone.belink.Ui.FragmentTeam
 import com.capstone.belink.Utils.getMemberPref
 import com.capstone.belink.databinding.ActivityTeamBinding
 import retrofit2.Call
@@ -39,9 +38,6 @@ class TeamActivity : AppCompatActivity() {
 
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.add(R.id.team_frame_layout,FragmentFriend()).commit()
-
-
-
     }
 
     private fun initRetrofit() {
@@ -49,38 +45,38 @@ class TeamActivity : AppCompatActivity() {
         supplementService=retrofit.create(RetrofitService::class.java)
     }
 
-    fun replaceFragment(fragment:Fragment){
+    fun replaceFragment(fragment:Fragment){ //액티비티에서 프라그먼토 교체 함수
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.team_frame_layout,fragment).commit()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean { //팀 액티비티에 관한 액션바 아이콘 수정
         menuInflater.inflate(R.menu.team_menu,menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
-            R.id.action_check -> {
-                val member = getMemberPref(this, "team")
+            R.id.action_check -> { //확인 클릭시 그룹방 만들기
+                val member = getMemberPref(this, "team") // 그룹에 관한 멤버 가져오기, 이에 관한 값들은 adapter에서 사용중
                 var teamMember: MutableList<String> = ArrayList()
                 for ((k, v) in member) {
                     println("$k  $v")
-                    if (v) {
+                    if (v) {// 아이디 중 체크박스 중 체크된 것들만 가져오기
                         teamMember.add(k)
                     }
                 }
                 var teamName: String = ""
                 println(teamMember.toString())
-                supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {
+                supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
                     override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                         val data = response.body()?.data
                         println("idContactUser")
                         println(data.toString())
                         if (data != null) {
                             for (i in data.indices) {
-                                teamName += if(i != data.size - 1) {
+                                teamName += if(i != data.size - 1) {// 그룹 이름을 유저 이름 제외한 유저이름들로 구성
                                     data[i].username + " , "
                                 } else {
                                     data[i].username
@@ -88,7 +84,7 @@ class TeamActivity : AppCompatActivity() {
                             }
                         }
                         teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
-                        supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {
+                        supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
                             override fun onResponse(call: Call<Team>, response: Response<Team>) {
                                 if (response.message() == "OK") {
                                     val id = response.body()?.id
@@ -97,7 +93,7 @@ class TeamActivity : AppCompatActivity() {
                                         for (i in 0 until teamMember.size) {
                                             teamList.add(Member(id, teamMember[i]))
                                         }
-                                        supplementService.makeMember(teamList).enqueue(object : Callback<Success> {
+                                        supplementService.makeMember(teamList).enqueue(object : Callback<Success> { // 유저와 그룹 맵핑
                                             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                                                 if (response.message() == "OK") {
                                                     getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()

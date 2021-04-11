@@ -10,7 +10,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-fun setStringArrayPref(context: Context,key:String,values:MutableList<FriendUser>){
+fun setStringArrayPref(context: Context,key:String,values:MutableList<FriendUser>){ //연락처 정보 저장
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val edit: SharedPreferences.Editor = pref.edit()
     if(key=="contact") {
@@ -33,7 +33,7 @@ fun setStringArrayPref(context: Context,key:String,values:MutableList<FriendUser
 }
 
 
-fun getStringArraySaved(context: Context,key: String):MutableList<FriendUser>{
+fun getStringArraySaved(context: Context,key: String):MutableList<FriendUser>{ //연락처를 MutableList로 가져오기
     val pref : SharedPreferences = context.getSharedPreferences(key,AppCompatActivity.MODE_PRIVATE)
     val json = pref.getString(key,null)
     val list: MutableList<FriendUser> = ArrayList()
@@ -56,7 +56,7 @@ fun getStringArraySaved(context: Context,key: String):MutableList<FriendUser>{
 }
 
 
-fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{
+fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{ //연락처를 HashMap으로 가져오기
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val json=pref.getString(key,null)
     var uri : HashMap<String,String> = HashMap()
@@ -79,7 +79,7 @@ fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{
     return uri
 }
 
-fun getMemberPref(context: Context,key: String):HashMap<String,Boolean>{
+fun getMemberPref(context: Context,key: String):HashMap<String,Boolean>{ // 그룹에 관한 연락처 가져오기
     val pref : SharedPreferences = context.getSharedPreferences(key,AppCompatActivity.MODE_PRIVATE)
     val json = pref.getString(key,null)
     val list: HashMap<String,Boolean> = HashMap()
@@ -99,7 +99,7 @@ fun getMemberPref(context: Context,key: String):HashMap<String,Boolean>{
     return list
 }
 
-fun setMemberPref(context: Context,key:String,values:HashMap<String,Boolean>){
+fun setMemberPref(context: Context,key:String,values:HashMap<String,Boolean>){ // 그룹에 관한 연락처 저장하기
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val edit: SharedPreferences.Editor = pref.edit()
     edit.putString(key, null)
