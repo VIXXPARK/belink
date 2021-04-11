@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
@@ -43,6 +44,17 @@ class MainActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode==Activity.RESULT_OK){
+            when(requestCode){
+                0 ->{
+                    Toast.makeText(this,"방이 만들어졌습니다.",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
     }
@@ -58,7 +70,8 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_alert ->{
                 val intent = Intent(this, AlarmActivity::class.java)
-                startActivity(intent)
+//                startActivity(intent)
+                startActivityForResult(intent,0)
                 println("alert")
 
                 true
