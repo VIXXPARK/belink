@@ -18,6 +18,7 @@ fun setStringArrayPref(context: Context,key:String,values:MutableList<User>){
         val tempJsonObject = JSONObject()
         Log.d("이름","${values[i].username}")
         Log.d("전화번호","${values[i].phNum}")
+        tempJsonObject.put("id",values[i].id)
         tempJsonObject.put("username",values[i].username)
         tempJsonObject.put("phNum",values[i].phNum)
         dataList.put(tempJsonObject)
@@ -30,11 +31,12 @@ fun setStringArrayPref(context: Context,key:String,values:MutableList<User>){
     edit.apply()
 }
 
-fun getStringArrayPref(context: Context,key:String):MutableList<User>{
+fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val edit: SharedPreferences.Editor = pref.edit()
     val json=pref.getString(key,null)
-    var uri : MutableList<User> = ArrayList()
+    var uri : HashMap<String,String> = HashMap()
+    Log.d("getStringArrayPref","확인")
     if(json != null){
         try{
             val temp = JSONArray(json)
@@ -43,13 +45,14 @@ fun getStringArrayPref(context: Context,key:String):MutableList<User>{
                 val username = iObject.getString("username")
                 val phNum = iObject.getString("phNum")
                 val obj = User(username=username,phNum = phNum)
-                uri.add(obj)
+                uri[phNum]=username
                 Log.d("$phNum","$username")
             }
         }catch (e: JSONException){
             e.printStackTrace()
         }
     }
+    Log.d("uri 값 확인",uri.toString())
     return uri
 
 

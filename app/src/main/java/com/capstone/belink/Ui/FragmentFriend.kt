@@ -16,6 +16,7 @@ import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.UIActivity.TeamActivity
+import com.capstone.belink.Utils.getStringArrayPref
 import com.capstone.belink.databinding.FragmentFriendBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,7 +37,7 @@ class FragmentFriend:Fragment() {
     private lateinit var auto: SharedPreferences
     private lateinit var autoLogin: SharedPreferences.Editor
 
-
+    private lateinit var contactUser: HashMap<String,String>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentFriendBinding.inflate(inflater,container,false)
@@ -44,8 +45,11 @@ class FragmentFriend:Fragment() {
 
         auto =(activity as TeamActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
+
         initRetrofit()
         init()
+
+
 
         return view
     }
