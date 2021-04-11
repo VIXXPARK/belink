@@ -31,5 +31,9 @@ interface RetrofitService {
     @POST("api/user/edit-team")
     fun makeTeam(@Field("teamName")teamName:String):Call<Sign>
 
+    @FormUrlEncoded
+    @POST("api/user/contact-user")
+    fun contactUser(@Field("phNum")phNum:List<String>):Call<ContactInfo>
+
 
 }
