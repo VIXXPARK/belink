@@ -2,9 +2,15 @@ package com.capstone.belink.UIActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.capstone.belink.Adapter.FriendAdapter
 import com.capstone.belink.R
+import com.capstone.belink.Ui.FragmentFriend
 import com.capstone.belink.Ui.FragmentTeam
+import com.capstone.belink.Utils.getMemberPref
 import com.capstone.belink.databinding.ActivityTeamBinding
 
 class TeamActivity : AppCompatActivity() {
@@ -16,7 +22,7 @@ class TeamActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.team_frame_layout,FragmentTeam()).commit()
+        fragmentTransaction.add(R.id.team_frame_layout,FragmentFriend()).commit()
 
     }
 
@@ -24,6 +30,25 @@ class TeamActivity : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.team_frame_layout,fragment).commit()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.team_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_check -> {
+                println(getMemberPref(this,"team").toString())
+                Toast.makeText(this,"hello",Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+
     }
 
     override fun onDestroy() {
