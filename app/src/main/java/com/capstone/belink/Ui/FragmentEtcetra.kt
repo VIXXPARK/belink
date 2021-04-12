@@ -22,6 +22,7 @@ import com.capstone.belink.Model.User
 import com.capstone.belink.Model.Success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.UIActivity.EditInfoActivity
 import com.capstone.belink.UIActivity.FriendSettingActivity
 import com.capstone.belink.databinding.FragmentEtcetraBinding
 import retrofit2.Call
@@ -40,28 +41,15 @@ class FragmentEtcetra:Fragment() {
     private lateinit var supplementService : RetrofitService
 
     private lateinit var auto: SharedPreferences
-    private lateinit var autoLogin: SharedPreferences.Editor
 
-    private var checkView:Int=0
-
-    private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="설정"
 
-        auto =(activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
-        autoLogin=auto.edit()
-
-        binding.etFragEditName.setText(auto.getString("inputName","홍길동"))
-        binding.etFragEditPhone.setText(auto.getString("inputPhone","01012345678"))
-
         initRetrofit()
         textViewClickListen()
-
-
-
         return view
 
     }
@@ -76,11 +64,9 @@ class FragmentEtcetra:Fragment() {
 
 
         binding.tvEtcetraEditInfo.setOnClickListener {
-            if(binding.fragEtcetra.isVisible){
-                binding.fragEtcetra.isVisible=false
-                binding.fragEditView.isVisible=true
-                checkView=1
-            }
+            val intent = Intent(xContext,EditInfoActivity::class.java)
+            startActivityForResult(intent,200)
+
         }
 
         binding.tvEtcetraUserOut.setOnClickListener {
@@ -122,12 +108,7 @@ class FragmentEtcetra:Fragment() {
 
         }
 
-        binding.btnFragEditSend.setOnClickListener {
-            val phoneNumber = binding.etFragEditPhone.text.toString()
-            val name = binding.etFragEditName.text.toString()
-            val id = auto.getString("userId","")!!
-            connectUpdateInfo(phoneNumber,name,id)
-        }
+
     }
 
     fun logOut(){
@@ -137,26 +118,6 @@ class FragmentEtcetra:Fragment() {
         val editor = auto.edit()
         editor.clear()
         editor.apply()
-    }
-
-
-    private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
-        val user = User(id,phoneNumber,name)
-        supplementService.editUser(user).enqueue(object : Callback<Success> {
-            override fun onResponse(call: Call<Success>, response: Response<Success>) {
-                Log.d("success",response.body().toString())
-            }
-
-            override fun onFailure(call: Call<Success>, t: Throwable) {
-                Log.d("fail","$t")
-            }
-
-        })
-
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 
     private fun initRetrofit() {
@@ -169,29 +130,11 @@ class FragmentEtcetra:Fragment() {
     override fun onAttach(context: Context) {
         mContext=context
         super.onAttach(context)
-        callback = object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                if(checkView==1){
-                    binding.fragEtcetra.isVisible=true
-                    binding.fragEditView.isVisible=false
-                    checkView=0
-                }else{
-                    isEnabled = false
-                    (activity as MainActivity).onBackPressed()
-                }
-
-            }
-        }
-
-        (activity as MainActivity).onBackPressedDispatcher.addCallback(this,callback)
-
-
     }
 
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()
-        callback.remove()
     }
 
 
