@@ -24,18 +24,6 @@ import com.capstone.belink.databinding.FragmentMainBinding
     private var mActivity: Activity?=null
     private val xActivity get() = mActivity!!
 
-
-
-   val DataList = arrayListOf(
-           ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
-           ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
-           ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
-           ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29"),
-           ProfileData(R.drawable.picachu,"팀플용","박수한,김현진,김민섭,김경재","2021-03-29")
-   )
-
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root

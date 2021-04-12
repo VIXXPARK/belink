@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
-        <activity android:name=".UIActivity.FriendSettingActivity"></activity>
+        <activity android:name=".UIActivity.EditInfoActivity"></activity>
+        <activity android:name=".UIActivity.FriendSettingActivity" />
         <activity android:name=".UIActivity.AlarmActivity" />
         <activity android:name=".UIActivity.TeamActivity" />
         <activity android:name=".UIActivity.LoginActivity">

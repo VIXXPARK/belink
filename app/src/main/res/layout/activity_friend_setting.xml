@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="주소록 불러오기"
+        android:text="갱신하기"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,37 +37,6 @@
         android:text="최신 갱신 날짜: 2021/04/10"
         app:layout_constraintEnd_toStartOf="@+id/iv_friend_read_contact"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_sync_updatedat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="76dp"
-        android:text="최신 갱신 날짜: 2021/04/10"
-        app:layout_constraintEnd_toStartOf="@+id/iv_sync"
-        app:layout_constraintTop_toBottomOf="@+id/tv_read_contact_updatedat" />
-
-    <TextView
-        android:id="@+id/tv_friend_sync"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
-        android:text="동기화 하기"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_friend_read_contact" />
-
-    <ImageView
-        android:id="@+id/iv_sync"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_friend_read_contact"
-        app:srcCompat="@drawable/ic_baseline_settings_24" />
 
     <Button
         android:id="@+id/btnGetInfo"

@@ -71,48 +71,7 @@
             android:id="@+id/tv_etcetra_logOut"/>
 
     </LinearLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:id="@+id/frag_edit_view"
-        android:visibility="invisible"
-        android:layout_height="match_parent">
 
-
-        <EditText
-            android:id="@+id/et_frag_edit_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Name"
-            app:layout_constraintBottom_toTopOf="@+id/et_frag_edit_phone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/et_frag_edit_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="phone"
-            android:hint="01011111111"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btn_frag_edit_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="next"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_frag_edit_phone" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </FrameLayout>
