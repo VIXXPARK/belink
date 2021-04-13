@@ -65,7 +65,7 @@ class FragmentEtcetra:Fragment() {
 
         binding.tvEtcetraEditInfo.setOnClickListener {
             val intent = Intent(xContext,EditInfoActivity::class.java)
-            startActivityForResult(intent,200)
+            (activity as MainActivity).startActivityForResult(intent,2)
 
         }
 

@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         println("requestCode: $requestCode, resultCode: $resultCode")
-        if(resultCode==Activity.RESULT_OK){
+//        if(resultCode==Activity.RESULT_OK ){
             when(requestCode){
                 0 ->{
                     Log.d("0번","팀액티비티 아웃")
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this,"회원 정보 수정이 완료 되었습니다.",Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+//        }
     }
 
     override fun onBackPressed() {
@@ -72,12 +72,14 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
                 val intent = Intent(this, TeamActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent,0)
+
                 true
             }
             R.id.action_alert ->{
                 val intent = Intent(this, AlarmActivity::class.java)
-                startActivityForResult(intent,100)
+                startActivity(intent)
+                overridePendingTransition(17432578,17432579)
                 println("alert")
 
                 true
@@ -141,19 +143,19 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener{
             when(it.itemId){
                 R.id.main -> {
-                    binding.viewPager.setCurrentItem(0)
+                    binding.viewPager.currentItem = 0
 
                 }
                 R.id.friend -> {
-                    binding.viewPager.setCurrentItem(1)
+                    binding.viewPager.currentItem = 1
 
                 }
                 R.id.map -> {
-                    binding.viewPager.setCurrentItem(2)
+                    binding.viewPager.currentItem = 2
 
                 }
                 R.id.etcetra -> {
-                    binding.viewPager.setCurrentItem(3)
+                    binding.viewPager.currentItem = 3
 
                 }
             }
