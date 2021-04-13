@@ -94,7 +94,7 @@ class FriendSettingActivity : AppCompatActivity() {
 
     private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
         val contactUser=getStringArrayPref(this,"contact")
-        println("map.isEmpty() is ${contactUser.isEmpty()}")
+        println("contactUser.isEmpty() is ${contactUser.isEmpty()}")
         println("contactUser.keys is ${contactUser.keys}")
         val phNumList=contactUser.keys
         println("phNumList is $phNumList")

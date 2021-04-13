@@ -67,9 +67,8 @@ fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{ //ì—
                 val iObject = temp.getJSONObject(i)
                 val username = iObject.getString("username")
                 val phNum = iObject.getString("phNum")
-                val obj = User(username=username,phNum = phNum)
                 uri[phNum]=username
-                Log.d("$phNum","$username")
+                Log.d(phNum, username)
             }
         }catch (e: JSONException){
             e.printStackTrace()

@@ -88,6 +88,7 @@ class TeamActivity : AppCompatActivity() {
                             override fun onResponse(call: Call<Team>, response: Response<Team>) {
                                 if (response.message() == "OK") {
                                     val id = response.body()?.id
+
                                     if (id!!.isNotEmpty()) {
                                         var teamList: MutableList<Member> = ArrayList()
                                         for (i in 0 until teamMember.size) {
@@ -124,7 +125,6 @@ class TeamActivity : AppCompatActivity() {
                 super.onOptionsItemSelected(item)
             }
         }
-
     }
 
     override fun onDestroy() {
