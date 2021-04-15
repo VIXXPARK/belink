@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.FriendUser
+import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Model.User
 import org.json.JSONArray
 import org.json.JSONException
@@ -117,3 +118,61 @@ fun setMemberPref(context: Context,key:String,values:HashMap<String,Boolean>){ /
     }
     edit.apply()
 }
+
+fun setGroupPref(context: Context,key:String,values:MutableList<TeamRoom>){
+    val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
+    val edit: SharedPreferences.Editor = pref.edit()
+    edit.putString(key,null)
+    val dataList=JSONArray()
+    for(i in values.indices){
+        val tempJSONObject = JSONObject()
+        tempJSONObject.put("id", values[i].id)
+        tempJSONObject.put("teamName", values[i].teamName)
+        val jsonArr1 = JSONArray()
+        for(j in values[i].data.indices) {
+            val subJSONObject = JSONObject()
+            subJSONObject.put("id", (values[i].data)[j])
+            jsonArr1.put(subJSONObject)
+        }
+       tempJSONObject.put("data",jsonArr1.toString())
+        dataList.put(tempJSONObject)
+    }
+    if(values.isNotEmpty()) {
+        edit.putString(key, dataList.toString())
+    }else{
+        edit.putString(key,null)
+    }
+    edit.apply()
+}
+
+fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
+    val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
+    val json = pref.getString(key,null)
+    val list: MutableList<TeamRoom> = ArrayList()
+
+    if(json!=null){
+        try{
+            val temp = JSONArray(json)
+            for(i in 0 until temp.length()){
+                val iObject = temp.getJSONObject(i)
+                val id = iObject.getString("id")
+                val teamName = iObject.getString("teamName")
+                val jsonArr2 = iObject.getJSONArray("data")
+                val friend:MutableList<String> = ArrayList()
+                for(j in 0 until jsonArr2.length()){
+                    val subObject = jsonArr2.getJSONObject(j)
+                    val id = subObject.getString("id")
+                    friend.add(id)
+                }
+                val obj = TeamRoom(id=id, teamName=teamName, data=friend)
+                list.add(obj)
+            }
+        }catch (e:JSONException){
+            e.printStackTrace()
+        }
+    }
+    return list
+}
+
+
+

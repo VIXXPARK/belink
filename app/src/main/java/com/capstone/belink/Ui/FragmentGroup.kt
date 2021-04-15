@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.R
+import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.FragmentGroupBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -61,6 +62,9 @@ class FragmentGroup : Fragment() {
         mBinding = FragmentGroupBinding.inflate(inflater,container,false)
 
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
+        val teamList= getGroupPref(xContext,"groupContext")
+
+
         val adapter = RecyclerAdapter(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter

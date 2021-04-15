@@ -15,7 +15,9 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.FragmentFriend
+import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.Utils.getMemberPref
+import com.capstone.belink.Utils.setGroupPref
 import com.capstone.belink.databinding.ActivityTeamBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,7 +99,13 @@ class TeamActivity : AppCompatActivity() {
                                         supplementService.makeMember(teamList).enqueue(object : Callback<Success> { // 유저와 그룹 맵핑
                                             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                                                 if (response.message() == "OK") {
+                                                    val teamList= getGroupPref(this@TeamActivity,"groupContext")
+                                                    val obj = TeamRoom(id=id!!,teamName = teamName, data=teamMember)
+                                                    teamList.add(obj)
+                                                    setGroupPref(this@TeamActivity,"groupContext",teamList)
+
                                                     getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()
+
                                                     setResult(Activity.RESULT_OK)
                                                     finish()
                                                 }
