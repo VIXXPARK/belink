@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.R
+import com.capstone.belink.Utils.ItemMoveCallbackListener
 import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.FragmentGroupBinding
 
@@ -33,6 +35,8 @@ class FragmentGroup : Fragment() {
 
     private var mContext: Context?=null
     private val xContext get() = mContext!!
+
+    private lateinit var touchHelper: ItemTouchHelper
 
 
     override fun onAttach(context: Context) {
@@ -61,11 +65,16 @@ class FragmentGroup : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentGroupBinding.inflate(inflater,container,false)
 
-        binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
+
         val teamList= getGroupPref(xContext,"groupContext")
 
 
+
         val adapter = RecyclerAdapter(xContext)
+        val callback:ItemTouchHelper.Callback = ItemMoveCallbackListener(adapter)
+        touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(binding.viewRecycler)
+        binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter
 
