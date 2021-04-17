@@ -14,12 +14,10 @@ class ProfileData(val profile:Int,val name:String,val groupMember:String,val upd
 class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
     val iv_profile = v.findViewById<ImageView>(R.id.iv_profile)
     val tv_group_name = v.findViewById<TextView>(R.id.tv_group_name)
-    val tv_group_total_name = v.findViewById<TextView>(R.id.tv_group_total_name)
-    val tv_group_date = v.findViewById<TextView>(R.id.tv_group_date)
 }
 
 class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
-    var DataList= listOf<ProfileData>()
+    var DataList= ArrayList<ProfileData>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_grouplist,parent,false)
         return CustomViewHolder(cellForRow)
@@ -27,9 +25,7 @@ class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolde
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.iv_profile.setImageResource(DataList[position].profile)
-        holder.tv_group_name.setText(DataList[position].name)
-        holder.tv_group_total_name.setText(DataList[position].groupMember)
-        holder.tv_group_date.setText(DataList[position].updatedDt)
+        holder.tv_group_name.text = DataList[position].name
     }
 
     override fun getItemCount(): Int {

@@ -3,16 +3,20 @@
 
    <item
        android:id="@+id/main"
-       android:title="Main"/>
+       android:icon="@drawable/ic_baseline_person_24"
+       android:title="개인"/>
     <item
         android:id="@+id/friend"
-        android:title="Friend"/>
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="그룹"/>
     <item
         android:id="@+id/map"
-        android:title="Map"/>
+        android:icon="@drawable/ic_baseline_map_24"
+        android:title="방문장소"/>
     <item
         android:id="@+id/etcetra"
-        android:title="Etcetra"/>
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="설정"/>
 
 
 </menu>
