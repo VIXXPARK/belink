@@ -50,10 +50,7 @@ class FriendSettingActivity : AppCompatActivity() {
             syncContact()
 
         }
-        binding.btnGetInfo.setOnClickListener {
-            println(getStringArrayPref(this,"contact").toString())
 
-        }
     }
 
 

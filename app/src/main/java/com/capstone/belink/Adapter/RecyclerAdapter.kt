@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.capstone.belink.R
 
-class ProfileData(val profile:Int,val name:String,val groupMember:String,val updatedDt: String)
+class ProfileData(val profile:Int,val name:String)
 
 class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
     val iv_profile = v.findViewById<ImageView>(R.id.iv_profile)

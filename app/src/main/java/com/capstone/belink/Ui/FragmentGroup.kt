@@ -51,11 +51,11 @@ class FragmentGroup : Fragment() {
     }
 
     val DataList = arrayListOf(
-        ProfileData(R.drawable.picachu, "팀플용", "박수한,김현진,김민섭,김경재", "2021-03-29"),
-        ProfileData(R.drawable.picachu, "팀플용", "박수한,김현진,김민섭,김경재", "2021-03-29"),
-        ProfileData(R.drawable.picachu, "팀플용", "박수한,김현진,김민섭,김경재", "2021-03-29"),
-        ProfileData(R.drawable.picachu, "팀플용", "박수한,김현진,김민섭,김경재", "2021-03-29"),
-        ProfileData(R.drawable.picachu, "팀플용", "박수한,김현진,김민섭,김경재", "2021-03-29")
+        ProfileData(R.drawable.picachu, "팀플용"),
+        ProfileData(R.drawable.picachu, "팀플용"),
+        ProfileData(R.drawable.picachu, "팀플용"),
+        ProfileData(R.drawable.picachu, "팀플용"),
+        ProfileData(R.drawable.picachu, "팀플용")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

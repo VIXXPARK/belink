@@ -38,11 +38,4 @@
         app:layout_constraintEnd_toStartOf="@+id/iv_friend_read_contact"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnGetInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="가져오기"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
