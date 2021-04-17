@@ -61,7 +61,6 @@ class FragmentGroup : Fragment() {
     }
 
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentGroupBinding.inflate(inflater,container,false)
 
@@ -74,6 +73,10 @@ class FragmentGroup : Fragment() {
         val callback:ItemTouchHelper.Callback = ItemMoveCallbackListener(adapter)
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(binding.viewRecycler)
+
+
+
+
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter

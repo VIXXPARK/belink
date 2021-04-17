@@ -69,7 +69,8 @@ class LoginActivity : AppCompatActivity() {
         secondNum=binding.etLoginPhoneSecond.text.toString()
         thirdNum=binding.etLoginPhoneThird.text.toString()
         name=binding.etLoginName.text.toString()
-        phoneNum=firstNum+secondNum+thirdNum
+        phoneNum= "$firstNum-$secondNum-$thirdNum"
+//        phoneNum =firstNum+secondNum+thirdNum
         autoLogin.clear()
         autoLogin.putString("inputPhone", phoneNum)
         autoLogin.putString("inputName", name)
@@ -105,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
                     println(response.body()?.data?.id.toString())
                     autoLogin.apply()
                     startActivity(intent)
-                    finish()
+                    this@LoginActivity.finish()
                 }
             }
 

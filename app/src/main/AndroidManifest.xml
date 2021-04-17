@@ -14,16 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
-        <activity android:name=".UIActivity.EditInfoActivity"></activity>
-        <activity android:name=".UIActivity.FriendSettingActivity" />
-        <activity android:name=".UIActivity.AlarmActivity" />
-        <activity android:name=".UIActivity.TeamActivity" />
-        <activity android:name=".UIActivity.LoginActivity">
+        <activity android:name=".UIActivity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".UIActivity.EditInfoActivity" />
+        <activity android:name=".UIActivity.FriendSettingActivity" />
+        <activity android:name=".UIActivity.AlarmActivity" />
+        <activity android:name=".UIActivity.TeamActivity" />
+        <activity android:name=".UIActivity.LoginActivity">
+
         </activity>
         <activity android:name=".UIActivity.MainActivity" />
     </application>
