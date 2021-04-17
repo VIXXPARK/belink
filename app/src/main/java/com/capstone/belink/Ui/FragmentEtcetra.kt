@@ -41,13 +41,15 @@ class FragmentEtcetra:Fragment() {
     private lateinit var supplementService : RetrofitService
 
     private lateinit var auto: SharedPreferences
-
+    private lateinit var autoLogin:SharedPreferences.Editor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="설정"
 
+        auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)!!
+        autoLogin=auto.edit()
         initRetrofit()
         textViewClickListen()
         return view
@@ -65,7 +67,9 @@ class FragmentEtcetra:Fragment() {
 
         binding.tvEtcetraEditInfo.setOnClickListener {
             val intent = Intent(xContext,EditInfoActivity::class.java)
-            (activity as MainActivity).startActivityForResult(intent,2)
+            intent.putExtra("inputName",auto.getString("inputName",""))
+            intent.putExtra("inputPhone",auto.getString("inputPhone",""))
+            (activity as MainActivity).startActivityForResult(intent,1)
 
         }
 
@@ -114,10 +118,8 @@ class FragmentEtcetra:Fragment() {
     fun logOut(){
         val intent = Intent(xContext, LoginActivity::class.java)
         startActivity(intent)
-        val auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)
-        val editor = auto.edit()
-        editor.clear()
-        editor.apply()
+        autoLogin.clear()
+        autoLogin.apply()
     }
 
     private fun initRetrofit() {

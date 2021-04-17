@@ -34,8 +34,10 @@ class EditInfoActivity : AppCompatActivity() {
         pref = getSharedPreferences("auto",Activity.MODE_PRIVATE)
         edit= pref.edit()
         initRetrofit()
+
         binding.etEditName.setText(pref.getString("inputName","홍길동"))
         binding.etEditPhone.setText(pref.getString("inputPhone","01012345678"))
+
         binding.btnEditSend.setOnClickListener {
             val phoneNumber = binding.etEditPhone.text.toString()
             val name = binding.etEditName.text.toString()
@@ -53,6 +55,11 @@ class EditInfoActivity : AppCompatActivity() {
         supplementService.editUser(user).enqueue(object : Callback<Success> {
             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                 Log.d("success",response.body().toString())
+                println("inputName${binding.etEditName.text}")
+                println("inputName${binding.etEditPhone.text}")
+                edit.putString("inputName",binding.etEditName.text.toString())
+                edit.putString("inputPhone",binding.etEditPhone.text.toString())
+                edit.apply()
                 setResult(Activity.RESULT_OK)
                 finish()
             }

@@ -48,18 +48,21 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         println("requestCode: $requestCode, resultCode: $resultCode")
-//        if(resultCode==Activity.RESULT_OK ){
             when(requestCode){
                 0 ->{
-                    Log.d("0번","팀액티비티 아웃")
-                    Toast.makeText(this,"방이 만들어졌습니다.",Toast.LENGTH_SHORT).show()
+                    if(resultCode==Activity.RESULT_OK ) {
+                        Log.d("0번", "팀액티비티 아웃")
+                        Toast.makeText(this, "방이 만들어졌습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 1 ->{
-                    Log.d("1번","개인정보수정액티비티 아웃")
-                    Toast.makeText(this,"회원 정보 수정이 완료 되었습니다.",Toast.LENGTH_SHORT).show()
+                    if(resultCode==Activity.RESULT_OK ) {
+                        Log.d("1번", "개인정보수정액티비티 아웃")
+                        Toast.makeText(this, "회원 정보 수정이 완료 되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-//        }
+
     }
 
     override fun onBackPressed() {
