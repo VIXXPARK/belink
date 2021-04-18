@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     // 서버 관련 함수
     private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
+        retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 

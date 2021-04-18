@@ -12,20 +12,14 @@ interface RetrofitService {
         @Field("phNum")phNum:String,@Field("username")username:String
     ): Call<Sign>
 
-    @FormUrlEncoded
-    @POST("/api/user/get-user")
-    fun getuser(@Field("phNum")phNum:String):Call<Sign>
-
-
     @PUT("api/user/edit-info")
     fun editUser(@Body user: User): Call<Success>
 
-    @GET("api/user/edit-info/{id}")
-    fun deleteUser(@Path("id")id:String):Call<Success>
+    @GET("api/user/edit-info")
+    fun deleteUser():Call<Success>
 
-    @FormUrlEncoded
-    @POST("api/user/get-my-friend")
-    fun getMyFriend(@Field("id")id:String,@Field("hidden")hidden:Boolean):Call<FriendList>
+    @GET("api/user/get-my-friend")
+    fun getMyFriend():Call<FriendList>
 
     @FormUrlEncoded
     @POST("api/user/edit-team")
@@ -42,6 +36,13 @@ interface RetrofitService {
 
     @POST("api/user/make-member")
     fun makeMember(@Body teamList:MutableList<Member>):Call<Success>
+
+    @FormUrlEncoded
+    @POST("api/user/login")
+    fun login(@Field("phNum")phNum: String):Call<LoginResponse>
+
+    @GET("api/user/check")
+    fun check():Call<Success>
 
 
 

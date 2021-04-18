@@ -55,7 +55,7 @@ class FragmentMap:Fragment() {
 
 
     private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
+        retrofit = RetrofitClient.getInstance(xContext)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 

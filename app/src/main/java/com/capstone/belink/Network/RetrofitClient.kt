@@ -1,8 +1,13 @@
 package com.capstone.belink.Network
 
+import android.content.Context
 import com.google.gson.GsonBuilder
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 
 object RetrofitClient {
     private var instance: Retrofit?=null
@@ -13,15 +18,22 @@ object RetrofitClient {
 
 
     //SingleTon
-    fun getInstance(): Retrofit{
+    fun getInstance(context: Context): Retrofit{
         if(instance == null){
             instance = Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                    .client(okhttpClient(context))
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
 
         return instance!!
+    }
+
+    private fun okhttpClient(context: Context):OkHttpClient{
+        return OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor(context))
+                .build()
     }
 }
 

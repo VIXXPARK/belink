@@ -43,7 +43,7 @@ class TeamActivity : AppCompatActivity() {
     }
 
     private fun initRetrofit() {
-        retrofit=RetrofitClient.getInstance()
+        retrofit=RetrofitClient.getInstance(this)
         supplementService=retrofit.create(RetrofitService::class.java)
     }
 

@@ -6,9 +6,11 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.capstone.belink.Model.LoginResponse
 import com.capstone.belink.Model.Sign
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.Network.SessionManager
 import com.capstone.belink.databinding.ActivityLoginBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,10 +36,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auto:SharedPreferences
     private lateinit var autoLogin:SharedPreferences.Editor
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sessionManager = SessionManager(this)
 
         initRetrofit()
 
@@ -77,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
+        retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 
@@ -97,22 +103,31 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun login(phoneNum: String) {
-        supplementService.getuser(phoneNum).enqueue(object : Callback<Sign> {
-            override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
-                if (response.message() == "OK") {
+
+        supplementService.login(phoneNum).enqueue(object : Callback<LoginResponse>{
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                val loginResponse = response.body()
+
+                if(response.message()=="OK" && loginResponse?.accessToken!=null){
+                    sessionManager.saveAuthToken(loginResponse!!.accessToken)
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    autoLogin.putString("userId", response.body()?.data?.id.toString())
+                    autoLogin.putString("userToken", response.body()?.accessToken)
+                    autoLogin.putString("inputName",name)
+                    autoLogin.putString("inputPhone", phoneNum)
                     println(response.body())
-                    println(response.body()?.data?.id.toString())
+                    println(response.body()?.accessToken)
                     autoLogin.apply()
                     startActivity(intent)
                     this@LoginActivity.finish()
                 }
             }
 
-            override fun onFailure(call: Call<Sign>, t: Throwable) {
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+
             }
+
         })
+
     }
     override fun onDestroy() {
         mBinding=null

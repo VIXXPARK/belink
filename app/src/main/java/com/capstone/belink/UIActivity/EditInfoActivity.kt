@@ -5,10 +5,12 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.capstone.belink.Model.Success
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.Network.SessionManager
 import com.capstone.belink.R
 import com.capstone.belink.databinding.ActivityEditInfoBinding
 import retrofit2.Call
@@ -26,6 +28,8 @@ class EditInfoActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding= ActivityEditInfoBinding.inflate(layoutInflater)
@@ -33,6 +37,7 @@ class EditInfoActivity : AppCompatActivity() {
 
         pref = getSharedPreferences("auto",Activity.MODE_PRIVATE)
         edit= pref.edit()
+        sessionManager = SessionManager(this)
         initRetrofit()
 
         binding.etEditName.setText(pref.getString("inputName","홍길동"))
@@ -44,15 +49,28 @@ class EditInfoActivity : AppCompatActivity() {
             val id = pref.getString("userId","")!!
             connectUpdateInfo(phoneNumber,name,id)
         }
+
+        binding.btnCheck.setOnClickListener{
+            supplementService.check()
+                    .enqueue(object : Callback<Success>{
+                        override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                            Toast.makeText(this@EditInfoActivity,"${response.body()}",Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onFailure(call: Call<Success>, t: Throwable) {
+                        }
+
+                    })
+        }
     }
     private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
+        retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 
     private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
         val user = User(id,phoneNumber,name)
-        supplementService.editUser(user).enqueue(object : Callback<Success> {
+        supplementService.editUser().enqueue(object : Callback<Success> {
             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                 Log.d("success",response.body().toString())
                 println("inputName${binding.etEditName.text}")

@@ -22,6 +22,7 @@ import com.capstone.belink.Model.User
 import com.capstone.belink.Model.Success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.Network.SessionManager
 import com.capstone.belink.UIActivity.EditInfoActivity
 import com.capstone.belink.UIActivity.FriendSettingActivity
 import com.capstone.belink.databinding.FragmentEtcetraBinding
@@ -43,6 +44,8 @@ class FragmentEtcetra:Fragment() {
     private lateinit var auto: SharedPreferences
     private lateinit var autoLogin:SharedPreferences.Editor
 
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
@@ -50,6 +53,7 @@ class FragmentEtcetra:Fragment() {
 
         auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
+        sessionManager = SessionManager(xContext)
         initRetrofit()
         textViewClickListen()
         return view
@@ -78,28 +82,25 @@ class FragmentEtcetra:Fragment() {
             builder.setTitle("회원탈퇴")
             builder.setMessage("정말로 회원탈퇴 하시겠습니까?")
 
-            var listener = object : DialogInterface.OnClickListener{
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    when(which){
-                        DialogInterface.BUTTON_POSITIVE -> {
-                            Log.d("signout", "탈퇴")
-                            val id = auto.getString("userId","")!!
-                            supplementService.deleteUser(id).enqueue(object : Callback<Success>{
-                                override fun onResponse(call: Call<Success>, response: Response<Success>) {
-                                    if(response.message()=="OK")
-                                        logOut()
-                                }
+            var listener = DialogInterface.OnClickListener { dialog, which ->
+                when(which){
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        Log.d("signOut", "탈퇴")
+                        val id = auto.getString("userId","")!!
+                        supplementService.deleteUser().enqueue(object : Callback<Success>{
+                            override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                                if(response.message()=="OK")
+                                    logOut()
+                            }
 
-                                override fun onFailure(call: Call<Success>, t: Throwable) {
-                                    Log.d("fail","$t")
-                                }
+                            override fun onFailure(call: Call<Success>, t: Throwable) {
+                                Log.d("fail","$t")
+                            }
 
-                            })
-                        }
-                        DialogInterface.BUTTON_NEGATIVE -> Log.d("signout", "철회")
+                        })
                     }
+                    DialogInterface.BUTTON_NEGATIVE -> Log.d("signout", "철회")
                 }
-
             }
             builder.setPositiveButton("확인",listener)
             builder.setNegativeButton("취소",listener)
@@ -123,7 +124,7 @@ class FragmentEtcetra:Fragment() {
     }
 
     private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance()
+        retrofit = RetrofitClient.getInstance(xContext)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 
