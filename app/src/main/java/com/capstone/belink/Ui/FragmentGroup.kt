@@ -83,7 +83,7 @@ class FragmentGroup : Fragment() {
 
 
         val teamList= getGroupPref(xContext, "groupContext")
-        
+
         setHasOptionsMenu(true)
 
         adapter = RecyclerAdapter(xContext)

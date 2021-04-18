@@ -114,6 +114,7 @@ class LoginActivity : AppCompatActivity() {
                     autoLogin.putString("userToken", response.body()?.accessToken)
                     autoLogin.putString("inputName",name)
                     autoLogin.putString("inputPhone", phoneNum)
+                    autoLogin.putString("userId",response.body()!!.id)
                     println(response.body())
                     println(response.body()?.accessToken)
                     autoLogin.apply()
