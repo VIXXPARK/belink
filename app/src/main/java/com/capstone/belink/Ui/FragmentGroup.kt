@@ -3,9 +3,7 @@ package com.capstone.belink.Ui
 import android.content.Context
 import android.graphics.*
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,6 +64,15 @@ class FragmentGroup : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.group_menu,menu)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity!!.invalidateOptionsMenu()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,8 +83,8 @@ class FragmentGroup : Fragment() {
 
 
         val teamList= getGroupPref(xContext, "groupContext")
-
-
+        
+        setHasOptionsMenu(true)
 
         adapter = RecyclerAdapter(xContext)
         val callback:ItemTouchHelper.Callback = ItemMoveCallbackListener(adapter)
@@ -86,11 +93,9 @@ class FragmentGroup : Fragment() {
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
         adapter.DataList=DataList
         binding.viewRecycler.adapter=adapter
-
-
-
         return binding.root
     }
+
 
 
     companion object {

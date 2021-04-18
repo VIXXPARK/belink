@@ -3,9 +3,7 @@
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.capstone.belink.Adapter.ProfileData
@@ -29,12 +27,9 @@ import com.capstone.belink.databinding.FragmentMainBinding
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="개인"
 
+
+
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onAttach(context: Context) {

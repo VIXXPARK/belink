@@ -9,7 +9,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
@@ -31,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-
     var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +42,13 @@ class MainActivity : AppCompatActivity() {
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         prefEdit=pref.edit()
 
+        invalidateOptionsMenu()
+
         initRetrofit()
         init()
     }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -76,21 +81,15 @@ class MainActivity : AppCompatActivity() {
             R.id.action_plus ->{
                 val intent = Intent(this, TeamActivity::class.java)
                 startActivityForResult(intent,0)
-
                 true
             }
             R.id.action_alert ->{
                 val intent = Intent(this, AlarmActivity::class.java)
                 startActivity(intent)
-                overridePendingTransition(17432578,17432579)
-                println("alert")
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -107,8 +106,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     //fragment 뷰페이저에 맵핑
     private fun init() {
         var adapter = FragmentStateAdapter(this)
@@ -123,21 +120,26 @@ class MainActivity : AppCompatActivity() {
                     0 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.main
                         supportActionBar?.title="개인"
+                        println("개인페이지")
+
                     }
                     1 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.friend
                         supportActionBar?.title="그룹"
+                        println("그룹페이지")
                     }
                     2 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.map
                         supportActionBar?.title="방문장소"
+                        println("방문장소페이지")
                     }
                     3 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.etcetra
                         supportActionBar?.title="설정"
+                        println("설정페이지")
                     }
-
                 }
+
             }
         })
 
@@ -147,19 +149,15 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.main -> {
                     binding.viewPager.currentItem = 0
-
                 }
                 R.id.friend -> {
                     binding.viewPager.currentItem = 1
-
                 }
                 R.id.map -> {
                     binding.viewPager.currentItem = 2
-
                 }
                 R.id.etcetra -> {
                     binding.viewPager.currentItem = 3
-
                 }
             }
             prefEdit.apply()

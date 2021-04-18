@@ -70,7 +70,7 @@ class EditInfoActivity : AppCompatActivity() {
 
     private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
         val user = User(id,phoneNumber,name)
-        supplementService.editUser().enqueue(object : Callback<Success> {
+        supplementService.editUser(user).enqueue(object : Callback<Success> {
             override fun onResponse(call: Call<Success>, response: Response<Success>) {
                 Log.d("success",response.body().toString())
                 println("inputName${binding.etEditName.text}")

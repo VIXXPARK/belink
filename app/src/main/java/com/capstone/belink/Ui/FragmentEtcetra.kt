@@ -8,9 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +21,7 @@ import com.capstone.belink.Model.Success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Network.SessionManager
+import com.capstone.belink.R
 import com.capstone.belink.UIActivity.EditInfoActivity
 import com.capstone.belink.UIActivity.FriendSettingActivity
 import com.capstone.belink.databinding.FragmentEtcetraBinding
@@ -46,10 +45,14 @@ class FragmentEtcetra:Fragment() {
 
     private lateinit var sessionManager: SessionManager
 
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentEtcetraBinding.inflate(inflater,container,false)
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="설정"
+
+
 
         auto = (activity as MainActivity).getSharedPreferences("auto",Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
@@ -59,6 +62,8 @@ class FragmentEtcetra:Fragment() {
         return view
 
     }
+
+
 
     private fun textViewClickListen() {
 
