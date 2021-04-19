@@ -47,11 +47,16 @@ class TeamActivity : AppCompatActivity() {
         supplementService=retrofit.create(RetrofitService::class.java)
     }
 
+    /**
+     * 프라그먼트에서 직접적으로 프라그먼트를 교체할 수 없기에 액티비티에서 프라그먼트를
+     * 교체하는 함수를 미리 정의한다. 그러면 프라그먼트의 교체를 용이하게 할 수 있다.*/
+
     fun replaceFragment(fragment:Fragment){ //액티비티에서 프라그먼토 교체 함수
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.team_frame_layout,fragment).commit()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean { //팀 액티비티에 관한 액션바 아이콘 수정
         menuInflater.inflate(R.menu.team_menu,menu)
@@ -60,6 +65,8 @@ class TeamActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
+            /**
+             * 클릭된 유저중에 true 값을 가진 유저만을 따로 저장한다.*/
             R.id.action_check -> { //확인 클릭시 그룹방 만들기
                 val member = getMemberPref(this, "team") // 그룹에 관한 멤버 가져오기, 이에 관한 값들은 adapter에서 사용중
                 var teamMember: MutableList<String> = ArrayList()
@@ -71,6 +78,9 @@ class TeamActivity : AppCompatActivity() {
                 }
                 var teamName: String = ""
                 println(teamMember.toString())
+
+                /**
+                 * 팀 이름을 나 자신을 제외한 유저 이름으로 하기 위해 호출된 서비스이다.*/
                 supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
                     override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                         val data = response.body()?.data
@@ -85,6 +95,11 @@ class TeamActivity : AppCompatActivity() {
                                 }
                             }
                         }
+
+                    /**
+                     * 데이터베이스에 저장될 때 만든 장본인도 저장되어야 하므로 sharedPreferences에 저장되어 있는 유저 아이디를 추가한다.
+                     * 그리고 위에서 만든 팀이름을 데이터베이스에 저장한 다음에 그를 통해 구한 팀 아이디와 유정 아이디들을 맵핑하여
+                     * 멤버 테이블에 저장한다. 그리고 따로 앱에서 그룹에 관련된 정보들도 또한 저장한다(setGroupPref)*/
                         teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
                         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
                             override fun onResponse(call: Call<Team>, response: Response<Team>) {

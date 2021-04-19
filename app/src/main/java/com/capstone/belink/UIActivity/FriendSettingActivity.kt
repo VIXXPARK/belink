@@ -65,6 +65,14 @@ class FriendSettingActivity : AppCompatActivity() {
         syncContact()
     }
 
+
+    /**
+     * 디바이스에 있는 주소록 정보를 가져오는 함수
+     * 처음에 주소록 내용을 담을 리스트를 만든다.
+     * 그리고 주소록을 불러올 contentResolver 객체를 호출하고 그에 맞는 메소드를 호출한다.
+     * 그리고 주소록에 있는 정보 중에 필요한 정보인 이름과 전화번호를 추출하고 데이터클래스에 맵핑하여 저장한다.
+     * 해당 주소록에 관한 일이 끝났으면 close()를 할 것
+     * setStringArrayPref는 Utils.ConactInfo안에 있는 함수로서 주소록 정보를 json형식으로 바꾼 뒤 스트링 형식으로 저장하는 함수이다*/
     private fun getContact(){ //주소 연락처 가져오기
         val contactList: MutableList<FriendUser> = ArrayList()
         val contacts = contentResolver.query(
@@ -88,6 +96,12 @@ class FriendSettingActivity : AppCompatActivity() {
         Toast.makeText(this, "연락처 정보를 가져왔습니다.", Toast.LENGTH_SHORT).show()
     }
 
+
+    /**
+     * DataBase안에 있는 유저와 주소록 안에 있는 유저를 비교하여 DataBase에 있는 유저 정보만을 디바이스가 가지도록 하는
+     * 함수이다. 여기서 getStringArrayPref는 현재 주소록을 저장하고 있는 String을 hashmap형태로 불러오는 함수이다
+     * 여기서 필요한 것은 전화번호이므로 .keys를 통해 해당 전화번호만을 추출한다. 그리고 contactUser 서비스를 통해
+     * 디비 안에 저장되어 있는 유저 정보를 가져오고 이를 다시 디바이스에 저장한다.*/
 
     private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
         val contactUser=getStringArrayPref(this,"contact")

@@ -22,7 +22,7 @@ object RetrofitClient {
         if(instance == null){
             instance = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                    .client(okhttpClient(context))
+                    .client(okhttpClient(context))//인터셉터를 추가하기 위한 구문
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
@@ -32,7 +32,7 @@ object RetrofitClient {
 
     private fun okhttpClient(context: Context):OkHttpClient{
         return OkHttpClient.Builder()
-                .addInterceptor(AuthInterceptor(context))
+                .addInterceptor(AuthInterceptor(context))//okhttpclient 에 인터셉터를 추가한다.
                 .build()
     }
 }

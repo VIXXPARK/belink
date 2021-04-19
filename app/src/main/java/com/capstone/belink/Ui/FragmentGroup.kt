@@ -66,12 +66,16 @@ class FragmentGroup : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.group_menu,menu)
+        inflater.inflate(R.menu.group_menu,menu)//그룹 화면으로 변했을 때 액션바에서 세팅 아이콘 추가
     }
 
-    override fun onResume() {
+    /**
+    * 활동이 재개됨 상태로 전환되었을 때 onResume 생명주기가 실행된다. 앱이 실질적으로 실행되기전 단계
+    * 이 상태에서 수명 주기 구성요소가 foreground에서 사용자에게 보이는 동안 실행해야 하는 모든 기능을 활성화
+    * 그러므로 onResume 생명주기때 액션바에 장착된 메뉴바를 다시 그리게 하는 메소드인 invalidate~~ 를 쓰는 이유가 된다.*/
+    override fun onResume() {//생명주기 중 한 부분
         super.onResume()
-        activity!!.invalidateOptionsMenu()
+        activity!!.invalidateOptionsMenu() // 메뉴를 다시 그리게 할 때 쓰이는 메소드
     }
 
     override fun onCreateView(
@@ -84,7 +88,7 @@ class FragmentGroup : Fragment() {
 
         val teamList= getGroupPref(xContext, "groupContext")
 
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(true)//세팅 아이콘 추가로 할 때 쓰이는 메소드(액티비티의 옵션보다 우선순위를 높이기 위한 메소드)
 
         adapter = RecyclerAdapter(xContext)
         val callback:ItemTouchHelper.Callback = ItemMoveCallbackListener(adapter)

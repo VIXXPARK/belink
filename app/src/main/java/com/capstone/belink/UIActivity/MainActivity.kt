@@ -50,6 +50,12 @@ class MainActivity : AppCompatActivity() {
 
 
 
+
+    /**
+     * onActivityResult 상속 함수는 startActivityForResult 인텐트된 액티비티에서 활동을 끝나고 값을 전달했을떼
+     * 그에 관한 처리를 담당하는 함수
+     * requestCode는 코드작성자가 명시한 숫자로서 그에 대하여 when 분기문으로 처리하면 된다.
+     * 그리고 resultCode를 통해 해당 메시지에 따른 처리를 어떻게 할 것인지 결정하면 된다.*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         println("requestCode: $requestCode, resultCode: $resultCode")
@@ -76,7 +82,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    // 액션 바 관련 override
+    /**
+     * 액션바의 메뉴를 클릭했을 때 그에 해당하는 내용을 처리할 수 있는 상속 함수
+     * 반환값은 진리값으로 반환한다.*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
             R.id.action_plus ->{
                 val intent = Intent(this, TeamActivity::class.java)
@@ -92,6 +100,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    /**
+     * 우리가 원하는 메뉴를 추가하고 싶을 때에는 onCreateOptionMenu 상속 함수를 호출하고
+     * menuInflater를 호출하여 여기에 해당하는 메뉴를 inflate 시키면 된다.*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.actionbar_menu,menu)
         return true
@@ -106,7 +117,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //fragment 뷰페이저에 맵핑
+    /**
+     * 뷰페이저에 관한 것을 묶은 함수
+     * 처음에 해당 컨텍스트를 adapter에 전달하고 뷰페이저에 전달할 fragmentList를 전달한다.
+     * 그리고 페이지가 넘어감에 따라 when 분기문으로 그에 맞는 내용을 작성한다.
+     * 밑에 바텀네비게이션뷰에 대한 처리는 해당 페이지가 넘어갔을 때 그에 맞는 아이콘을 표시하기 위해
+     * 처리한 구문이다.*/
     private fun init() {
         var adapter = FragmentStateAdapter(this)
         adapter.fragmentList=fragmentLists

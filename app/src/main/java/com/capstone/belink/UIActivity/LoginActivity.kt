@@ -18,7 +18,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.*
 
-
+/**
+ * LoginActivity는 로그인 또는 회원가입에 관한 액티비티
+ * 이때 해당 유저이름과 전화번호를 sharedPreferences에 key-value 형식으로 저장한다.
+ * 그리고 로그인 버튼을 눌렀을 때 jwt토큰을 저장하기 위해 sessionManager를 호출하여
+ * saveAuthToken메소드를 호출한다.
+ * */
 class LoginActivity : AppCompatActivity() {
     private var mBinding:ActivityLoginBinding?=null
     private val binding get() = mBinding!!
@@ -115,8 +120,6 @@ class LoginActivity : AppCompatActivity() {
                     autoLogin.putString("inputName",name)
                     autoLogin.putString("inputPhone", phoneNum)
                     autoLogin.putString("userId",response.body()!!.id)
-                    println(response.body())
-                    println(response.body()?.accessToken)
                     autoLogin.apply()
                     startActivity(intent)
                     this@LoginActivity.finish()

@@ -16,7 +16,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-
+/**
+ * StartActivity는 처음 화면이 나오는 액티비티로서
+ * 로그인 유무를 판단하고 로그인이 되었을 때에는 바로 메인액티비티로 전환
+ * 그렇지 않을 경우에는 로그인 페이지로 전달한다.
+ * 로그인 확인은 jwt토큰의 유무로 판단*/
 class StartActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var supplementService : RetrofitService
@@ -36,6 +40,9 @@ class StartActivity : AppCompatActivity() {
         autoLogin=auto.edit()
         sessionManager= SessionManager(this)
 
+
+        /**
+         * 액션바를 없앨 때에는 해당 액션바를 부른 supportActionbar를 호출하고 hide()메소드를 호출하면 끝!*/
         var actionBar = supportActionBar
         actionBar?.hide()
 

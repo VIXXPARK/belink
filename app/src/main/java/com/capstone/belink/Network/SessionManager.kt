@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.capstone.belink.R
 
+/*
+* 토큰을 저장하고 저장한 것을 가져오기 위한 클래스*/
 class SessionManager(context: Context) {
     private var pref: SharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name),Context.MODE_PRIVATE)
 
