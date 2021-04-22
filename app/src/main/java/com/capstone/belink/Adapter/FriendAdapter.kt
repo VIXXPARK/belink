@@ -8,7 +8,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.capstone.belink.Model.FriendUser
+import com.capstone.belink.Model.User
 import com.capstone.belink.R
 import com.capstone.belink.Utils.getMemberPref
 import com.capstone.belink.Utils.setMemberPref
@@ -22,7 +22,7 @@ class FriendViewHolder(v:View) : RecyclerView.ViewHolder(v){
 
 }
 
-class FriendAdapter(val context: Context, private val dataList:MutableList<FriendUser>):RecyclerView.Adapter<FriendViewHolder>(){
+class FriendAdapter(val context: Context, private val dataList:MutableList<User>):RecyclerView.Adapter<FriendViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_friendlist,parent,false)
@@ -30,7 +30,7 @@ class FriendAdapter(val context: Context, private val dataList:MutableList<Frien
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
-        holder.tv_friend_name.setText(dataList[position].username)
+        holder.tv_friend_name.text = dataList[position].username
 
         holder.itemView.setOnClickListener {
             Toast.makeText(context,position.toString(),Toast.LENGTH_SHORT).show()

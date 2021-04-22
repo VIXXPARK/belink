@@ -9,5 +9,6 @@ data class User(val id:String="",
                 val admin:Boolean=false,
                 val infect:Int=0,
                 val createdAt: Date=Date(),
-                val updatedAt: Date=Date()
+                val updatedAt: Date=Date(),
+                var isSelected:Boolean=false
                 )

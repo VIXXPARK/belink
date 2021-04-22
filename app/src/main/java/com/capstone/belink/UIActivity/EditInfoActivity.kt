@@ -6,12 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.capstone.belink.Model.Success
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Network.SessionManager
-import com.capstone.belink.R
 import com.capstone.belink.databinding.ActivityEditInfoBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -52,12 +50,12 @@ class EditInfoActivity : AppCompatActivity() {
 
         binding.btnCheck.setOnClickListener{
             supplementService.check()
-                    .enqueue(object : Callback<Success>{
-                        override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                    .enqueue(object : Callback<Map<String,Boolean>>{
+                        override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                             Toast.makeText(this@EditInfoActivity,"${response.body()}",Toast.LENGTH_SHORT).show()
                         }
 
-                        override fun onFailure(call: Call<Success>, t: Throwable) {
+                        override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
                         }
 
                     })
@@ -70,8 +68,8 @@ class EditInfoActivity : AppCompatActivity() {
 
     private fun connectUpdateInfo(phoneNumber: String, name: String,id:String) {
         val user = User(id,phoneNumber,name)
-        supplementService.editUser(user).enqueue(object : Callback<Success> {
-            override fun onResponse(call: Call<Success>, response: Response<Success>) {
+        supplementService.editUser(user).enqueue(object : Callback<Map<String,Boolean>> {
+            override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                 Log.d("success",response.body().toString())
                 println("inputName${binding.etEditName.text}")
                 println("inputName${binding.etEditPhone.text}")
@@ -82,7 +80,7 @@ class EditInfoActivity : AppCompatActivity() {
                 finish()
             }
 
-            override fun onFailure(call: Call<Success>, t: Throwable) {
+            override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
                 Log.d("fail","$t")
             }
 

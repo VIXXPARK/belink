@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.FriendAdapter
-import com.capstone.belink.Model.FriendUser
+import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.UIActivity.TeamActivity
@@ -46,7 +46,7 @@ class FragmentFriend:Fragment() {
         return view
     }
 
-    private fun adaptFriend(dataList:MutableList<FriendUser>) {
+    private fun adaptFriend(dataList:MutableList<User>) {
         binding.friendRecycler.layoutManager = LinearLayoutManager(mContext)
         adapter = FriendAdapter(xContext,dataList)
         binding.friendRecycler.adapter=adapter

@@ -10,18 +10,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.capstone.belink.UIActivity.LoginActivity
 import com.capstone.belink.UIActivity.MainActivity
-import com.capstone.belink.Model.User
-import com.capstone.belink.Model.Success
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Network.SessionManager
-import com.capstone.belink.R
 import com.capstone.belink.UIActivity.EditInfoActivity
 import com.capstone.belink.UIActivity.FriendSettingActivity
 import com.capstone.belink.databinding.FragmentEtcetraBinding
@@ -92,13 +87,13 @@ class FragmentEtcetra:Fragment() {
                     DialogInterface.BUTTON_POSITIVE -> {
                         Log.d("signOut", "탈퇴")
                         val id = auto.getString("userId","")!!
-                        supplementService.deleteUser().enqueue(object : Callback<Success>{
-                            override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                        supplementService.deleteUser().enqueue(object : Callback<Map<String,Boolean>>{
+                            override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                                 if(response.message()=="OK")
                                     logOut()
                             }
 
-                            override fun onFailure(call: Call<Success>, t: Throwable) {
+                            override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
                                 Log.d("fail","$t")
                             }
 

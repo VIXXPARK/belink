@@ -112,8 +112,8 @@ class TeamActivity : AppCompatActivity() {
                                         for (i in 0 until teamMember.size) {
                                             teamList.add(Member(id, teamMember[i]))
                                         }
-                                        supplementService.makeMember(teamList).enqueue(object : Callback<Success> { // 유저와 그룹 맵핑
-                                            override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                                        supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>> { // 유저와 그룹 맵핑
+                                            override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                                                 println("makeMember 수행중")
                                                 println(response.message())
                                                 if (response.message() == "OK") {
@@ -127,7 +127,7 @@ class TeamActivity : AppCompatActivity() {
                                                     finish()
                                                 }
                                             }
-                                            override fun onFailure(call: Call<Success>, t: Throwable) {
+                                            override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
                                                 Log.d("memberFail", "$t")
                                             }
                                         })

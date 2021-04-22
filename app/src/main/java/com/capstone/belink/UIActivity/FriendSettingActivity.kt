@@ -1,26 +1,18 @@
 package com.capstone.belink.UIActivity
 
-import android.app.Activity
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.ContactInfo
-import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Utils.getStringArrayPref
 import com.capstone.belink.Utils.setStringArrayPref
 import com.capstone.belink.databinding.ActivityFriendSettingBinding
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,7 +66,7 @@ class FriendSettingActivity : AppCompatActivity() {
      * 해당 주소록에 관한 일이 끝났으면 close()를 할 것
      * setStringArrayPref는 Utils.ConactInfo안에 있는 함수로서 주소록 정보를 json형식으로 바꾼 뒤 스트링 형식으로 저장하는 함수이다*/
     private fun getContact(){ //주소 연락처 가져오기
-        val contactList: MutableList<FriendUser> = ArrayList()
+        val contactList: MutableList<User> = ArrayList()
         val contacts = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             null,
@@ -85,7 +77,7 @@ class FriendSettingActivity : AppCompatActivity() {
         while (contacts!!.moveToNext()){
             val name = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             val number = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            val obj = FriendUser(id="",username = name, phNum = number)
+            val obj = User(id="",username = name, phNum = number)
 
             contactList.add(obj)
         }
@@ -109,7 +101,7 @@ class FriendSettingActivity : AppCompatActivity() {
         println("contactUser.keys is ${contactUser.keys}")
         val phNumList=contactUser.keys
         println("phNumList is $phNumList")
-        val userList:MutableList<FriendUser> = ArrayList()
+        val userList:MutableList<User> = ArrayList()
         supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
             override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                 val data = response.body()?.data
@@ -122,7 +114,7 @@ class FriendSettingActivity : AppCompatActivity() {
                         val username = data[i].username
                         val phNum = data[i].phNum
                         println("$id  $username   $phNum")
-                        userList.add(FriendUser(id=id,username=username,phNum = phNum))
+                        userList.add(User(id=id,username=username,phNum = phNum))
                     }
                 }
                 setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신

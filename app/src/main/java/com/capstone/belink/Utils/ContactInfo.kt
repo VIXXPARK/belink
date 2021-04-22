@@ -4,14 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Model.User
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-fun setStringArrayPref(context: Context,key:String,values:MutableList<FriendUser>){ //연락처 정보 저장
+fun setStringArrayPref(context: Context,key:String,values:MutableList<User>){ //연락처 정보 저장
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val edit: SharedPreferences.Editor = pref.edit()
     if(key=="contact") {
@@ -34,10 +33,10 @@ fun setStringArrayPref(context: Context,key:String,values:MutableList<FriendUser
 }
 
 
-fun getStringArraySaved(context: Context,key: String):MutableList<FriendUser>{ //연락처를 MutableList로 가져오기
+fun getStringArraySaved(context: Context,key: String):MutableList<User>{ //연락처를 MutableList로 가져오기
     val pref : SharedPreferences = context.getSharedPreferences(key,AppCompatActivity.MODE_PRIVATE)
     val json = pref.getString(key,null)
-    val list: MutableList<FriendUser> = ArrayList()
+    val list: MutableList<User> = ArrayList()
     if(json!=null){
         try{
             val temp = JSONArray(json)
@@ -46,7 +45,7 @@ fun getStringArraySaved(context: Context,key: String):MutableList<FriendUser>{ /
                 val id = iObject.getString("id")
                 val username = iObject.getString("username")
                 val phNum = iObject.getString("phNum")
-                val obj = FriendUser(id=id, phNum=phNum, username=username)
+                val obj = User(id=id, phNum=phNum, username=username)
                 list.add(obj)
             }
         }catch (e:JSONException){
