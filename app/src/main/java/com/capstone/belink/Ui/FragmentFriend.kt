@@ -4,27 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.FriendAdapter
-import com.capstone.belink.Model.FriendList
 import com.capstone.belink.Model.FriendUser
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
-import com.capstone.belink.R
 import com.capstone.belink.UIActivity.TeamActivity
-import com.capstone.belink.Utils.getStringArrayPref
 import com.capstone.belink.Utils.getStringArraySaved
 import com.capstone.belink.databinding.FragmentFriendBinding
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 
 class FragmentFriend:Fragment() {

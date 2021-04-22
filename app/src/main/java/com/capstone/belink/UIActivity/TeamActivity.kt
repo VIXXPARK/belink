@@ -103,7 +103,8 @@ class TeamActivity : AppCompatActivity() {
                         teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
                         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
                             override fun onResponse(call: Call<Team>, response: Response<Team>) {
-                                if (response.message() == "OK") {
+                                println(response.message())
+                                if (response.message() == "Created") {
                                     val id = response.body()?.id
 
                                     if (id!!.isNotEmpty()) {
@@ -113,12 +114,13 @@ class TeamActivity : AppCompatActivity() {
                                         }
                                         supplementService.makeMember(teamList).enqueue(object : Callback<Success> { // 유저와 그룹 맵핑
                                             override fun onResponse(call: Call<Success>, response: Response<Success>) {
+                                                println("makeMember 수행중")
+                                                println(response.message())
                                                 if (response.message() == "OK") {
                                                     val teamList= getGroupPref(this@TeamActivity,"groupContext")
                                                     val obj = TeamRoom(id=id!!,teamName = teamName, data=teamMember)
                                                     teamList.add(obj)
                                                     setGroupPref(this@TeamActivity,"groupContext",teamList)
-
                                                     getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()
 
                                                     setResult(Activity.RESULT_OK)

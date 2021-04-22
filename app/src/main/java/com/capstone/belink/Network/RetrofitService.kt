@@ -18,9 +18,6 @@ interface RetrofitService {
     @GET("api/user/edit-info")
     fun deleteUser():Call<Success>
 
-    @GET("api/user/get-my-friend")
-    fun getMyFriend():Call<FriendList>
-
     @FormUrlEncoded
     @POST("api/user/edit-team")
     fun makeTeam(@Field("teamName")teamName:String):Call<Team>
