@@ -136,6 +136,9 @@ fun setGroupPref(context: Context,key:String,values:MutableList<TeamRoom>){
        tempJSONObject.put("data",jsonArr1.toString())
         dataList.put(tempJSONObject)
     }
+    println("setGroupPref--------")
+    println(dataList.toString())
+    println("--------------------")
     if(values.isNotEmpty()) {
         edit.putString(key, dataList.toString())
     }else{
@@ -148,7 +151,9 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val json = pref.getString(key,null)
     val list: MutableList<TeamRoom> = ArrayList()
-
+    println("json은 가져옴?")
+    println(json)
+    println("json은 가져올 것 같다.")
     if(json!=null){
         try{
             val temp = JSONArray(json)
@@ -156,19 +161,27 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
                 val iObject = temp.getJSONObject(i)
                 val id = iObject.getString("id")
                 val teamName = iObject.getString("teamName")
-                val jsonArr2 = iObject.getJSONArray("data")
+                val data = iObject.getString("data")
+                val jsonArr2 = JSONArray(data)
                 val friend:MutableList<String> = ArrayList()
+                println("teamId는 $id")
+                println("teamName은 $teamName")
+                println("jsonArr2는 ${jsonArr2.toString()}")
                 for(j in 0 until jsonArr2.length()){
                     val subObject = jsonArr2.getJSONObject(j)
                     val id = subObject.getString("id")
+                    println("$j 번째 id: $id")
                     friend.add(id)
                 }
-                val obj = TeamRoom(id=id, teamName=teamName, data=friend)
+                val obj = TeamRoom(id =id, teamName =teamName, data =friend)
                 list.add(obj)
             }
         }catch (e:JSONException){
             e.printStackTrace()
         }
+        println("getGroupPref-----------------")
+        println(list.toString())
+        println("-----------------------------")
     }
     return list
 }

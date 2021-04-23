@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.R
 
 class ProfileData(val profile:Int,val name:String)
@@ -17,15 +18,15 @@ class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
 }
 
 class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
-    var DataList= ArrayList<ProfileData>()
+    var DataList:MutableList<TeamRoom> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_grouplist,parent,false)
         return CustomViewHolder(cellForRow)
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        holder.iv_profile.setImageResource(DataList[position].profile)
-        holder.tv_group_name.text = DataList[position].name
+        holder.iv_profile.setImageResource(R.drawable.picachu)
+        holder.tv_group_name.text = DataList[position].teamName
     }
 
     override fun getItemCount(): Int {

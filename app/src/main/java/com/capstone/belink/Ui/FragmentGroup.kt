@@ -87,7 +87,7 @@ class FragmentGroup : Fragment() {
 
 
         val teamList= getGroupPref(xContext, "groupContext")
-
+        println(teamList.toString())
         setHasOptionsMenu(true)//세팅 아이콘 추가로 할 때 쓰이는 메소드(액티비티의 옵션보다 우선순위를 높이기 위한 메소드)
 
         adapter = RecyclerAdapter(xContext)
@@ -95,7 +95,7 @@ class FragmentGroup : Fragment() {
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(binding.viewRecycler)
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
-        adapter.DataList=DataList
+        adapter.DataList=teamList
         binding.viewRecycler.adapter=adapter
         return binding.root
     }
