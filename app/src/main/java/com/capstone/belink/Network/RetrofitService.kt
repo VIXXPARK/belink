@@ -41,6 +41,8 @@ interface RetrofitService {
     @GET("api/user/check")
     fun check():Call<Map<String,Boolean>>
 
+    @POST("api/user/edit-friend")
+    fun makeFriend(@Body friendList:MutableList<Friend>):Call<Map<String,Boolean>>
 
 
 }

@@ -1,5 +1,7 @@
 package com.capstone.belink.UIActivity
 
+import android.app.Activity
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -7,10 +9,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.ContactInfo
+import com.capstone.belink.Model.Friend
 import com.capstone.belink.Model.User
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Utils.getStringArrayPref
+import com.capstone.belink.Utils.getStringArraySaved
 import com.capstone.belink.Utils.setStringArrayPref
 import com.capstone.belink.databinding.ActivityFriendSettingBinding
 import retrofit2.Call
@@ -29,14 +33,14 @@ class FriendSettingActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var supplementService: RetrofitService
 
-
+    private lateinit var auto: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding= ActivityFriendSettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRetrofit()
-
+        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         binding.tvFriendReadContact.setOnClickListener {
             getContact()
             syncContact()
@@ -97,6 +101,7 @@ class FriendSettingActivity : AppCompatActivity() {
 
     private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
         val contactUser=getStringArrayPref(this,"contact")
+
         println("contactUser.isEmpty() is ${contactUser.isEmpty()}")
         println("contactUser.keys is ${contactUser.keys}")
         val phNumList=contactUser.keys
@@ -119,6 +124,32 @@ class FriendSettingActivity : AppCompatActivity() {
                 }
                 setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신
 
+                val friendList = getStringArraySaved((this@FriendSettingActivity),"contact")
+                var friendIdList:MutableList<Friend> = ArrayList()
+                val id = auto.getString("userId","")
+                for(i in 0 until friendList.size){
+                    friendIdList[i].device = id!!
+                    friendIdList[i].myFriend = friendList[i].id
+                }
+                println("************************")
+                println(getStringArrayPref(this@FriendSettingActivity,"contact").toString())
+                println("************************")
+                println(friendList.toString())
+                println("************************")
+                println(friendIdList.toString())
+                supplementService.makeFriend(friendIdList).enqueue(object :Callback<Map<String,Boolean>>{
+                    override fun onResponse(
+                        call: Call<Map<String, Boolean>>,
+                        response: Response<Map<String, Boolean>>
+                    ) {
+                        println("--------pass--------")
+                    }
+
+                    override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                       println("--------fail--------")
+                    }
+
+                })
             }
 
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
