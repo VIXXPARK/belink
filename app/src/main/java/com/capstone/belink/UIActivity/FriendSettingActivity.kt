@@ -123,18 +123,19 @@ class FriendSettingActivity : AppCompatActivity() {
                     }
                 }
                 setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신
-
-                val friendList = getStringArraySaved((this@FriendSettingActivity),"contact")
+                println("여기 통과하니?")
                 var friendIdList:MutableList<Friend> = ArrayList()
                 val id = auto.getString("userId","")
-                for(i in 0 until friendList.size){
-                    friendIdList[i].device = id!!
-                    friendIdList[i].myFriend = friendList[i].id
+                println("id : $id")
+                for(i in 0 until userList.size){
+                    friendIdList.add(Friend(device = id!!,myFriend = userList[i].id))
                 }
                 println("************************")
+                println("getStringArrayPref을 통과중")
                 println(getStringArrayPref(this@FriendSettingActivity,"contact").toString())
                 println("************************")
-                println(friendList.toString())
+                println("friendList통과중")
+                println(userList.toString())
                 println("************************")
                 println(friendIdList.toString())
                 supplementService.makeFriend(friendIdList).enqueue(object :Callback<Map<String,Boolean>>{
