@@ -13,9 +13,7 @@ object RetrofitClient {
     private var instance: Retrofit?=null
     private val gson = GsonBuilder().setLenient().create()
 
-//    private const val BASE_URL = "http://ec2-54-180-79-158.ap-northeast-2.compute.amazonaws.com:3000" //만약 기계와 연동하고 싶으면 ipv4 자신의 주소를 넣어주면 된다.
-//    private const val BASE_URL = "http://10.0.2.2:3000"
-    private const val BASE_URL = "http://192.168.123.109:3000"
+    private const val BASE_URL = "http://10.0.2.2:3000"
 
     //SingleTon
     fun getInstance(context: Context): Retrofit{
