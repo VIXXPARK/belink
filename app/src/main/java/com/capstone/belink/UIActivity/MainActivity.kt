@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.nfc.tech.Ndef
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,10 +25,11 @@ import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
 import com.capstone.belink.Utils.CardService
+import com.capstone.belink.Utils.HexUtils
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , NfcAdapter.ReaderCallback{
     private var mBinding:ActivityMainBinding?=null
     val binding get() = mBinding!!
 
@@ -37,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-    private lateinit var _cardService:Intent
+    private lateinit var nfcAdapter: NfcAdapter
 
 
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
@@ -45,20 +48,25 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        nfcAdapter.enableReaderMode(
+                this,
+                this,
+                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+                null
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
 
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         prefEdit=pref.edit()
 
         invalidateOptionsMenu()
-
-        _cardService = Intent(this,CardService::class.java)
-        startService(_cardService)
 
 
         initRetrofit()
@@ -210,7 +218,25 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()
-        stopService(_cardService)
     }
+
+    override fun onPause() {
+        super.onPause()
+        nfcAdapter.disableReaderMode(this)
+
+    }
+
+    override fun onTagDiscovered(tag: Tag?) {
+        val isoDep = IsoDep.get(tag)
+        isoDep.connect()
+        val response = isoDep.transceive(
+                HexUtils.hexToByte("00A4040007A0000002471001")
+        )
+        runOnUiThread {
+            println("\n# Card:\ntag=${tag} isoDep=${isoDep}\n transceive=${HexUtils.byteToHex(response)}")
+        }
+        isoDep.close()
+    }
+
 }
 

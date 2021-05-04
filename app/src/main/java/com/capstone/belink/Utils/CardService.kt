@@ -8,51 +8,46 @@ import java.util.*
 
 public class CardService : HostApduService() {
 
-    private final val TAG = "CardService"
-    private final val SAMPLE_LOYALTY_CARD_AID = "F222222222"
-    private final val SELECT_APDU_HEADER = "00A40400"
+    companion object {
 
-    private final val SELECT_OK_SW = HexStringToByteArray("9000")
+        const val STATUS_SUCCESS = "9000"
+        const val STATUS_FAILED = "6F00"
 
-    private final val UNKNOWN_CMD_SW = HexStringToByteArray("0000")
-    private final val SELECT_APDU = BuildSelectApdu(SAMPLE_LOYALTY_CARD_AID)
+        const val MIN_APDU_LENGTH = 12
+        const val AID = "A0000002471001"
 
-    @Throws(IllegalArgumentException::class)
-    fun HexStringToByteArray(s: String): ByteArray? {
-        val len = s.length
-        require(len % 2 != 1) { "Hex string must have even number of characters" }
-        val data = ByteArray(len / 2) // Allocate 1 byte per 2 hex characters
-        var i = 0
-        while (i < len) {
-            // Convert each character into a integer (base-16), then bit-shift into place
-            data[i / 2] = ((Character.digit(s[i], 16) shl 4) + Character.digit(s[i + 1], 16)).toByte()
-            i += 2
-        }
-        return data
-    }
-
-    private fun BuildSelectApdu(aid: String): ByteArray? {
-        // Format: [CLASS | INSTRUCTION | PARAMETER 1 | PARAMETER 2 | LENGTH | DATA]
-        return HexStringToByteArray(SELECT_APDU_HEADER + String.format("%02X", aid.length / 2) + aid)
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        return super.onStartCommand(intent, flags, startId)
-        val extras = intent!!.extras
-        return START_STICKY
-
-    }
-
-    override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray? {
-        if(Arrays.equals(SELECT_APDU,commandApdu)){
-            Log.i(TAG,"Application selected")
-            return SELECT_OK_SW
-        }else{
-            return UNKNOWN_CMD_SW
-        }
+        const val DEFAULT_CLA = "00"
+        const val CLA_NOT_SUPPORTED = "6E00"
+        const val SELECT_INS = "A4"
+        const val INS_NOT_SUPPORTED = "6D00"
     }
 
     override fun onDeactivated(reason: Int) {
-        Log.i(TAG, "Deactivated$reason")
+        Log.d("####", "onDeactivated: $reason")
+    }
+
+    override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray {
+        if (commandApdu == null) {
+            return HexUtils.hexToByte(STATUS_FAILED)
+        }
+
+        val hexCommandApdu = HexUtils.byteToHex(commandApdu)
+        if (hexCommandApdu.length < MIN_APDU_LENGTH) {
+            return HexUtils.hexToByte(STATUS_FAILED)
+        }
+
+        if (hexCommandApdu.substring(0, 2) != DEFAULT_CLA) {
+            return HexUtils.hexToByte(CLA_NOT_SUPPORTED)
+        }
+
+        if (hexCommandApdu.substring(2, 4) != SELECT_INS) {
+            return HexUtils.hexToByte(INS_NOT_SUPPORTED)
+        }
+
+        if (hexCommandApdu.substring(10, 24) == AID) {
+            return HexUtils.hexToByte(STATUS_SUCCESS)
+        }
+
+        return HexUtils.hexToByte(STATUS_FAILED)
     }
 }

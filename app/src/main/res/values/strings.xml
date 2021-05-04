@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">belink</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="apdu_service_desc">Host Card Emulator Service</string>
+    <string name="aid_group_desc">Sample AID for testing</string>
 
 </resources>
