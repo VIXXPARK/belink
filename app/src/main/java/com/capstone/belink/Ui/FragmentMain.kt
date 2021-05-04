@@ -2,15 +2,11 @@
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.UIActivity.MainActivity
-import com.capstone.belink.R
-import com.capstone.belink.UIActivity.PersonalNFCActivity
 import com.capstone.belink.databinding.FragmentMainBinding
 
 
@@ -29,10 +25,7 @@ import com.capstone.belink.databinding.FragmentMainBinding
         val view = binding.root
         (activity as AppCompatActivity).supportActionBar?.title="개인"
 
-        binding.imageView.setOnClickListener{
-            val intent = Intent((activity as MainActivity),PersonalNFCActivity::class.java)
-            (activity as MainActivity).startActivity(intent)
-        }
+
 
 
         return view

@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 
 import android.content.SharedPreferences
+import android.nfc.NdefMessage
+import android.nfc.NfcAdapter
+import android.nfc.tech.Ndef
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +22,7 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
+import com.capstone.belink.Utils.CardService
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
 
@@ -33,7 +37,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-    var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
+    private lateinit var _cardService:Intent
+
+
+    private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
+
+
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -44,12 +57,23 @@ class MainActivity : AppCompatActivity() {
 
         invalidateOptionsMenu()
 
+        _cardService = Intent(this,CardService::class.java)
+        startService(_cardService)
+
+
         initRetrofit()
         init()
     }
 
-
-
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+//        if(NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action){
+//
+//            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages->
+//                val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
+//            }
+//        }
+    }
 
     /**
      * onActivityResult 상속 함수는 startActivityForResult 인텐트된 액티비티에서 활동을 끝나고 값을 전달했을떼
@@ -186,6 +210,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         mBinding=null
         super.onDestroy()
+        stopService(_cardService)
     }
 }
 
