@@ -5,11 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.NFC" />
+<!--    <uses-permission android:name="android.permission.NFC" />-->
 
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true" />
+<!--    <uses-feature-->
+<!--        android:name="android.hardware.nfc"-->
+<!--        android:required="true" />-->
 
     <application
         android:allowBackup="true"
@@ -32,24 +32,24 @@
         <activity android:name=".UIActivity.TeamActivity" />
         <activity android:name=".UIActivity.LoginActivity"></activity>
         <activity android:name=".UIActivity.MainActivity" >
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>-->
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--                <data android:mimeType="text/plain"/>-->
+<!--            </intent-filter>-->
         </activity>
 
-        <service android:name=".Utils.CardService"
-            android:exported="true"
-            android:permission="android.permission.BIND_NFC_SERVICE">
-            <intent-filter>
-                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+<!--        <service android:name=".Utils.CardService"-->
+<!--            android:exported="true"-->
+<!--            android:permission="android.permission.BIND_NFC_SERVICE">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>-->
+<!--                <category android:name="android.intent.category.DEFAULT"/>-->
+<!--            </intent-filter>-->
 
-            <meta-data android:name="android.nfc.cardemulation.HostApduService"
-                android:resource="@xml/aid_list"/>
-        </service>
+<!--            <meta-data android:name="android.nfc.cardemulation.HostApduService"-->
+<!--                android:resource="@xml/aid_list"/>-->
+<!--        </service>-->
     </application>
 
 </manifest>

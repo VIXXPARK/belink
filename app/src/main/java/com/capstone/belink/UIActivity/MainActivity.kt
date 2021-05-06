@@ -29,7 +29,7 @@ import com.capstone.belink.Utils.HexUtils
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
 
-class MainActivity : AppCompatActivity() , NfcAdapter.ReaderCallback{
+class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
     private var mBinding:ActivityMainBinding?=null
     val binding get() = mBinding!!
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() , NfcAdapter.ReaderCallback{
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-    private lateinit var nfcAdapter: NfcAdapter
+//    private lateinit var nfcAdapter: NfcAdapter
 
 
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
@@ -48,19 +48,19 @@ class MainActivity : AppCompatActivity() , NfcAdapter.ReaderCallback{
 
     override fun onResume() {
         super.onResume()
-        nfcAdapter.enableReaderMode(
-                this,
-                this,
-                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
-                null
-        )
+//        nfcAdapter.enableReaderMode(
+//                this,
+//                this,
+//                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+//                null
+//        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+//        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
 
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
@@ -222,21 +222,21 @@ class MainActivity : AppCompatActivity() , NfcAdapter.ReaderCallback{
 
     override fun onPause() {
         super.onPause()
-        nfcAdapter.disableReaderMode(this)
+//        nfcAdapter.disableReaderMode(this)
 
     }
 
-    override fun onTagDiscovered(tag: Tag?) {
-        val isoDep = IsoDep.get(tag)
-        isoDep.connect()
-        val response = isoDep.transceive(
-                HexUtils.hexToByte("00A4040007A0000002471001")
-        )
-        runOnUiThread {
-            println("\n# Card:\ntag=${tag} isoDep=${isoDep}\n transceive=${HexUtils.byteToHex(response)}")
-        }
-        isoDep.close()
-    }
-
+//    override fun onTagDiscovered(tag: Tag?) {
+//        val isoDep = IsoDep.get(tag)
+//        isoDep.connect()
+//        val response = isoDep.transceive(
+//                HexUtils.hexToByte("00A4040007A0000002471001")
+//        )
+//        runOnUiThread {
+//            println("\n# Card:\ntag=${tag} isoDep=${isoDep}\n transceive=${HexUtils.byteToHex(response)}")
+//        }
+//        isoDep.close()
+//    }
+//
 }
 
