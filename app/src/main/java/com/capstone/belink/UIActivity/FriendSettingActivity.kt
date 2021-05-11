@@ -101,56 +101,43 @@ class FriendSettingActivity : AppCompatActivity() {
 
     private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
         val contactUser=getStringArrayPref(this,"contact")
-
-        println("contactUser.isEmpty() is ${contactUser.isEmpty()}")
-        println("contactUser.keys is ${contactUser.keys}")
         val phNumList=contactUser.keys
-        println("phNumList is $phNumList")
         val userList:MutableList<User> = ArrayList()
         supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
             override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                 val data = response.body()?.data
-                println("pass the response")
-                println("${response.body()?.data}")
                 if(data!=null){
                     for(i in data.indices){
-                        println("pass the for loop")
                         val id = data[i].id
                         val username = data[i].username
                         val phNum = data[i].phNum
-                        println("$id  $username   $phNum")
                         userList.add(User(id=id,username=username,phNum = phNum))
                     }
                 }
                 setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신
-                println("여기 통과하니?")
                 var friendIdList:MutableList<Friend> = ArrayList()
                 val id = auto.getString("userId","")
                 println("id : $id")
                 for(i in 0 until userList.size){
                     friendIdList.add(Friend(device = id!!,myFriend = userList[i].id))
                 }
-                println("************************")
-                println("getStringArrayPref을 통과중")
                 println(getStringArrayPref(this@FriendSettingActivity,"contact").toString())
-                println("************************")
-                println("friendList통과중")
-                println(userList.toString())
-                println("************************")
                 println(friendIdList.toString())
-                supplementService.makeFriend(friendIdList).enqueue(object :Callback<Map<String,Boolean>>{
-                    override fun onResponse(
-                        call: Call<Map<String, Boolean>>,
-                        response: Response<Map<String, Boolean>>
-                    ) {
-                        println("--------pass--------")
-                    }
+                if(friendIdList.size !=0){
+                    supplementService.makeFriend(friendIdList).enqueue(object :Callback<Map<String,Boolean>>{
+                        override fun onResponse(
+                                call: Call<Map<String, Boolean>>,
+                                response: Response<Map<String, Boolean>>
+                        ) {
+                            println("--------pass--------")
+                        }
 
-                    override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-                       println("--------fail--------")
-                    }
+                        override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                            println("--------fail--------")
+                        }
 
-                })
+                    })
+                }
             }
 
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
