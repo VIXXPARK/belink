@@ -8,28 +8,28 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
-import android.nfc.tech.Ndef
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
-import androidx.core.view.isVisible
 
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
+import com.capstone.belink.Adapter.IsoDepAdapter
+import com.capstone.belink.Adapter.IsoDepTransceiver
+import com.capstone.belink.Adapter.LoyaltyCardReader
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
-import com.capstone.belink.Utils.CardService
 import com.capstone.belink.Utils.HexUtils
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Retrofit
+import java.lang.Exception
 
-class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
+class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {//
     private var mBinding:ActivityMainBinding?=null
     val binding get() = mBinding!!
 
@@ -40,7 +40,9 @@ class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
     private lateinit var pref: SharedPreferences
     private lateinit var prefEdit: SharedPreferences.Editor
 
-//    private lateinit var nfcAdapter: NfcAdapter
+    private lateinit var nfcAdapter: NfcAdapter
+    private lateinit var isoDepAdapter:IsoDepAdapter
+    private lateinit var mLoyaltyCardReader: LoyaltyCardReader
 
 
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
@@ -48,20 +50,22 @@ class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
 
     override fun onResume() {
         super.onResume()
-//        nfcAdapter.enableReaderMode(
-//                this,
-//                this,
-//                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
-//                null
-//        )
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        nfcAdapter.enableReaderMode(
+                this,
+                mLoyaltyCardReader,
+                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+                null
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        isoDepAdapter = IsoDepAdapter(layoutInflater)
+        mLoyaltyCardReader = LoyaltyCardReader(this)
 
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         prefEdit=pref.edit()
@@ -75,12 +79,18 @@ class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-//        if(NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action){
-//
-//            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages->
-//                val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
-//            }
-//        }
+        if(NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action){
+
+            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages->
+                val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
+
+                for(message in messages){
+                    for(record in message.records){
+                        println(record.toString())
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -222,21 +232,21 @@ class MainActivity : AppCompatActivity() {//, NfcAdapter.ReaderCallback
 
     override fun onPause() {
         super.onPause()
-//        nfcAdapter.disableReaderMode(this)
+        nfcAdapter.disableReaderMode(this)
 
     }
 
-//    override fun onTagDiscovered(tag: Tag?) {
-//        val isoDep = IsoDep.get(tag)
-//        isoDep.connect()
-//        val response = isoDep.transceive(
-//                HexUtils.hexToByte("00A4040007A0000002471001")
-//        )
-//        runOnUiThread {
-//            println("\n# Card:\ntag=${tag} isoDep=${isoDep}\n transceive=${HexUtils.byteToHex(response)}")
-//        }
-//        isoDep.close()
-//    }
-//
+
+    override fun onMessage(message: ByteArray?) {
+
+    }
+
+    override fun onError(exception: Exception?) {
+
+    }
+
+    override fun onAccountReceived(account: String?) {
+
+    }
 }
 
