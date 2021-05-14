@@ -2,19 +2,15 @@ package com.capstone.belink.UIActivity
 
 import android.app.Activity
 import android.content.Intent
-
 import android.content.SharedPreferences
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
-import android.nfc.Tag
-import android.nfc.tech.IsoDep
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Adapter.IsoDepAdapter
@@ -24,10 +20,10 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
-import com.capstone.belink.Utils.HexUtils
 import com.capstone.belink.databinding.ActivityMainBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Retrofit
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {//
     private var mBinding:ActivityMainBinding?=null
@@ -51,12 +47,14 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     override fun onResume() {
         super.onResume()
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        println("onResume 안에 들어옴")
         nfcAdapter.enableReaderMode(
                 this,
                 mLoyaltyCardReader,
                 NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
                 null
         )
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +71,10 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         invalidateOptionsMenu()
 
 
+
+
+
+
         initRetrofit()
         init()
     }
@@ -83,7 +85,6 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
             intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages->
                 val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
-
                 for(message in messages){
                     for(record in message.records){
                         println(record.toString())
@@ -246,7 +247,14 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     }
 
     override fun onAccountReceived(account: String?) {
-
+        runOnUiThread {
+            println("TEST:${mLoyaltyCardReader.gotData}")
+            isoDepAdapter.addMessage(account)
+            val intent = Intent(this,SendGroupActivity::class.java)
+            intent.putExtra("storeId",mLoyaltyCardReader.gotData)
+            startActivity(intent)
+        }
     }
+
 }
 

@@ -5,18 +5,23 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.capstone.belink.Model.LoginResponse
-import com.capstone.belink.Model.Sign
+import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Network.SessionManager
+import com.capstone.belink.Utils.getGroupPref
+import com.capstone.belink.Utils.setGroupPref
 import com.capstone.belink.databinding.ActivityLoginBinding
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * LoginActivity는 로그인 또는 회원가입에 관한 액티비티
@@ -43,6 +48,10 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
 
+    private var clickSignup=false;
+
+    private var TOKEN=""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
@@ -51,6 +60,22 @@ class LoginActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
 
         initRetrofit()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("태그", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            TOKEN = token.toString();
+
+        })
+
+
 
         auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
@@ -94,11 +119,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signup(Phone: String, name: String) {
 
-        supplementService.registerUser(Phone, name).enqueue(object : Callback<Sign> {
+        supplementService.registerUser(Phone, name,TOKEN).enqueue(object : Callback<Sign> {
             override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
                 Log.d("Phone", Phone)
                 Log.d("Name", name)
                 Log.d("success", response.message())
+                clickSignup=true
             }
 
             override fun onFailure(call: Call<Sign>, t: Throwable) {
@@ -119,13 +145,57 @@ class LoginActivity : AppCompatActivity() {
                     autoLogin.putString("userToken", response.body()?.accessToken)
                     autoLogin.putString("inputName",name)
                     autoLogin.putString("inputPhone", phoneNum)
+                    val userId = response.body()!!.id
                     autoLogin.putString("userId",response.body()!!.id)
                     autoLogin.apply()
-                    startActivity(intent)
-                    this@LoginActivity.finish()
+                    var teamList: MutableList<Member> = ArrayList()
+                    supplementService.makeTeam("나").enqueue(object : Callback<Team>{
+                        override fun onResponse(call: Call<Team>, response: Response<Team>) {
+                            if (response.message() == "Created") {
+                                if(clickSignup){
+                                    val id = response.body()?.id
+                                    if(id!!.isNotEmpty()){
+                                        teamList.add(Member(id,userId))
+                                    }
+                                    supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>>{
+                                        override fun onResponse(
+                                            call: Call<Map<String, Boolean>>,
+                                            response: Response<Map<String, Boolean>>
+                                        ) {
+                                            if (response.message() == "OK"){
+                                                val teamList= getGroupPref(this@LoginActivity,"groupContext")
+                                                val userList : MutableList<String> = ArrayList()
+                                                userList.add(userId)
+                                                val obj = TeamRoom(id =id!!, teamName = "나", data = userList)
+                                                teamList.add(obj)
+                                                setGroupPref(this@LoginActivity,"groupContext",teamList)
+                                                startActivity(intent)
+                                                this@LoginActivity.finish()
+                                            }
+                                        }
+                                        override fun onFailure(
+                                            call: Call<Map<String, Boolean>>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+                                    })
+                                }else{
+                                    startActivity(intent)
+                                    this@LoginActivity.finish()
+                                }
+
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Team>, t: Throwable) {
+                            Log.d("실패","$t")
+                        }
+
+                    })
+
                 }
             }
-
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
 
             }

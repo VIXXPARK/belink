@@ -21,7 +21,8 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
     // "OK" status word sent in response to SELECT AID command (0x9000)
     private static final byte[] SELECT_OK_SW = {(byte) 0x90, (byte) 0x00};
 
-    String gotData = "", finalGotData = "";
+
+    public String gotData = "", finalGotData = "";
 
     long timeTaken = 0;
 
@@ -105,17 +106,7 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
                         mAccountCallback.get().onAccountReceived(gotData);
 
                     }
-                    //mAccountCallback.get().onAccountReceived(accountNumber);
 
-                    /*String seedVal = "PRESHAREDKEY";
-                    String decodedString = null;
-                    try {
-                        decodedString = AESHelper.decrypt(seedVal, accountNumber);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("ARNAV", "failed to decrypt");
-                        decodedString = accountNumber;
-                    }*/
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Error communicating with card: " + e.toString());

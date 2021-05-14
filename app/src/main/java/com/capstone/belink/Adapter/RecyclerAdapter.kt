@@ -1,6 +1,7 @@
 package com.capstone.belink.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolde
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.iv_profile.setImageResource(R.drawable.picachu)
         holder.tv_group_name.text = DataList[position].teamName
+
     }
 
     override fun getItemCount(): Int {
