@@ -11,9 +11,6 @@
         android:name="android.hardware.nfc"
         android:required="true" />
 
-
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
+        <activity android:name=".UIActivity.SendGroupActivity"></activity>
         <activity android:name=".UIActivity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,15 +32,15 @@
         <activity android:name=".UIActivity.AlarmActivity" />
         <activity android:name=".UIActivity.TeamActivity" />
         <activity android:name=".UIActivity.LoginActivity" />
-        <activity android:name=".UIActivity.MainActivity" >
+        <activity android:name=".UIActivity.MainActivity">
             <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
-
     </application>
 
 </manifest>

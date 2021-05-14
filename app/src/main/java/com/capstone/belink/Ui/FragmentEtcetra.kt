@@ -108,6 +108,7 @@ class FragmentEtcetra:Fragment() {
         }
 
         binding.tvEtcetraLogOut.setOnClickListener {
+            autoLogin.remove("auto").commit()
             logOut()
             Toast.makeText(xContext,"Logout",Toast.LENGTH_SHORT).show()
 

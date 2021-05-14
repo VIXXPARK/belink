@@ -151,9 +151,7 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
     val pref: SharedPreferences =context.getSharedPreferences(key, AppCompatActivity.MODE_PRIVATE)
     val json = pref.getString(key,null)
     val list: MutableList<TeamRoom> = ArrayList()
-    println("json은 가져옴?")
-    println(json)
-    println("json은 가져올 것 같다.")
+
     if(json!=null){
         try{
             val temp = JSONArray(json)
@@ -164,9 +162,6 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
                 val data = iObject.getString("data")
                 val jsonArr2 = JSONArray(data)
                 val friend:MutableList<String> = ArrayList()
-                println("teamId는 $id")
-                println("teamName은 $teamName")
-                println("jsonArr2는 ${jsonArr2.toString()}")
                 for(j in 0 until jsonArr2.length()){
                     val subObject = jsonArr2.getJSONObject(j)
                     val id = subObject.getString("id")
@@ -179,9 +174,7 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
         }catch (e:JSONException){
             e.printStackTrace()
         }
-        println("getGroupPref-----------------")
-        println(list.toString())
-        println("-----------------------------")
+
     }
     return list
 }

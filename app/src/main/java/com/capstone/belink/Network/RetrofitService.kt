@@ -9,7 +9,8 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("/api/user/signup")
     fun registerUser(
-        @Field("phNum")phNum:String,@Field("username")username:String
+        @Field("phNum")phNum:String,@Field("username")username:String,
+        @Field("token")token:String
     ): Call<Sign>
 
     @PUT("api/user/edit-info")
@@ -43,6 +44,10 @@ interface RetrofitService {
 
     @POST("api/user/edit-friend")
     fun makeFriend(@Body friendList:MutableList<Friend>):Call<Map<String,Boolean>>
+
+    @FormUrlEncoded
+    @POST("api/push/nfcPushMsg")
+    fun nfcPushMsg(@Field("team_room")team_room:String,@Field("userId")userId:String,@Field("storeId")storeId:String):Call<Map<String,Boolean>>
 
 
 }
