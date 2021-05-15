@@ -1,20 +1,17 @@
 package com.capstone.belink.Ui
 
 import android.content.Context
-import android.graphics.*
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.R
 import com.capstone.belink.Utils.ItemMoveCallbackListener
 import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.FragmentGroupBinding
-import com.google.android.material.snackbar.Snackbar
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -95,7 +92,7 @@ class FragmentGroup : Fragment() {
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(binding.viewRecycler)
         binding.viewRecycler.layoutManager= LinearLayoutManager(xContext)
-        adapter.DataList=teamList
+        adapter.dataList=teamList
         binding.viewRecycler.adapter=adapter
         return binding.root
     }

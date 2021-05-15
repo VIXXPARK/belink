@@ -25,9 +25,8 @@ import retrofit2.Retrofit
 
 class FriendSettingActivity : AppCompatActivity() {
 
-    private var mBinding:ActivityFriendSettingBinding?=null
+    private var mBinding: ActivityFriendSettingBinding? = null
     private val binding get() = mBinding!!
-
 
 
     private lateinit var retrofit: Retrofit
@@ -37,10 +36,10 @@ class FriendSettingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding= ActivityFriendSettingBinding.inflate(layoutInflater)
+        mBinding = ActivityFriendSettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRetrofit()
-        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
+        auto = getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         binding.tvFriendReadContact.setOnClickListener {
             getContact()
             syncContact()
@@ -50,13 +49,12 @@ class FriendSettingActivity : AppCompatActivity() {
     }
 
 
-
     private fun initRetrofit() {
         retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
     }
 
-    fun readContacts(view: View){
+    fun readContacts(view: View) {
         getContact()
         syncContact()
     }
@@ -69,7 +67,7 @@ class FriendSettingActivity : AppCompatActivity() {
      * 그리고 주소록에 있는 정보 중에 필요한 정보인 이름과 전화번호를 추출하고 데이터클래스에 맵핑하여 저장한다.
      * 해당 주소록에 관한 일이 끝났으면 close()를 할 것
      * setStringArrayPref는 Utils.ConactInfo안에 있는 함수로서 주소록 정보를 json형식으로 바꾼 뒤 스트링 형식으로 저장하는 함수이다*/
-    private fun getContact(){ //주소 연락처 가져오기
+    private fun getContact() { //주소 연락처 가져오기
         val contactList: MutableList<User> = ArrayList()
         val contacts = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -78,16 +76,28 @@ class FriendSettingActivity : AppCompatActivity() {
             null,
             null
         )
-        while (contacts!!.moveToNext()){
-            val name = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-            val number = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            val obj = User(id="",username = name, phNum = number)
+        while (contacts!!.moveToNext()) {
+            val name =
+                contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+            var number =
+                contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            val reg = Regex("^\\d{3}-\\d{3,4}-\\d{4}\$")
+            println("reg:${reg.matches(number)}")
+            if (reg.matches(number)) {
+                if (number.length == 11) {
+                    val first = number.slice(IntRange(0, 2))
+                    val second = number.slice(IntRange(3, 6))
+                    val last = number.slice(IntRange(7, 10))
+                    number = "$first-$second-$last"
+                }
+                val obj = User(id = "", username = name, phNum = number)
+                contactList.add(obj)
+            }
 
-            contactList.add(obj)
         }
         contacts.close()
 
-        setStringArrayPref(this,"contact",contactList)//연락처를 preferences에 저장
+        setStringArrayPref(this, "contact", contactList)//연락처를 preferences에 저장
 
         Toast.makeText(this, "연락처 정보를 가져왔습니다.", Toast.LENGTH_SHORT).show()
     }
@@ -99,49 +109,50 @@ class FriendSettingActivity : AppCompatActivity() {
      * 여기서 필요한 것은 전화번호이므로 .keys를 통해 해당 전화번호만을 추출한다. 그리고 contactUser 서비스를 통해
      * 디비 안에 저장되어 있는 유저 정보를 가져오고 이를 다시 디바이스에 저장한다.*/
 
-    private fun syncContact(){ //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
-        val contactUser=getStringArrayPref(this,"contact")
-        val phNumList=contactUser.keys
-        val userList:MutableList<User> = ArrayList()
-        supplementService.contactUser(phNumList.toList()).enqueue(object :Callback<ContactInfo>{
+    private fun syncContact() { //주소 연락처에 있는 전화번호 중에 가입된 유저만 주소록 가져오기
+        val contactUser = getStringArrayPref(this, "contact")
+        val phNumList = contactUser.keys
+        val userList: MutableList<User> = ArrayList()
+        supplementService.contactUser(phNumList.toList()).enqueue(object : Callback<ContactInfo> {
             override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
                 val data = response.body()?.data
-                if(data!=null){
-                    for(i in data.indices){
+                if (data != null) {
+                    for (i in data.indices) {
                         val id = data[i].id
                         val username = data[i].username
                         val phNum = data[i].phNum
-                        userList.add(User(id=id,username=username,phNum = phNum))
+                        userList.add(User(id = id, username = username, phNum = phNum))
                     }
                 }
-                setStringArrayPref((this@FriendSettingActivity),"contact",userList) //연락처를 갱신
-                var friendIdList:MutableList<Friend> = ArrayList()
-                val id = auto.getString("userId","")
+                setStringArrayPref((this@FriendSettingActivity), "contact", userList) //연락처를 갱신
+                var friendIdList: MutableList<Friend> = ArrayList()
+                val id = auto.getString("userId", "")
                 println("id : $id")
-                for(i in 0 until userList.size){
-                    friendIdList.add(Friend(device = id!!,myFriend = userList[i].id))
+                for (i in 0 until userList.size) {
+                    friendIdList.add(Friend(device = id!!, myFriend = userList[i].id))
                 }
-                println(getStringArrayPref(this@FriendSettingActivity,"contact").toString())
+                println(getStringArrayPref(this@FriendSettingActivity, "contact").toString())
                 println(friendIdList.toString())
-                if(friendIdList.size !=0){
-                    supplementService.makeFriend(friendIdList).enqueue(object :Callback<Map<String,Boolean>>{
-                        override fun onResponse(
+                if (friendIdList.size != 0) {
+                    supplementService.makeFriend(friendIdList)
+                        .enqueue(object : Callback<Map<String, Boolean>> {
+                            override fun onResponse(
                                 call: Call<Map<String, Boolean>>,
                                 response: Response<Map<String, Boolean>>
-                        ) {
-                            println("--------pass--------")
-                        }
+                            ) {
+                                println("--------pass--------")
+                            }
 
-                        override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-                            println("--------fail--------")
-                        }
+                            override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                                println("--------fail--------")
+                            }
 
-                    })
+                        })
                 }
             }
 
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
-                Log.d("fail","$t")
+                Log.d("fail", "$t")
             }
 
         })
@@ -149,11 +160,9 @@ class FriendSettingActivity : AppCompatActivity() {
 
 
     override fun onDestroy() {
-        mBinding=null
+        mBinding = null
         super.onDestroy()
     }
-
-
 
 
 }

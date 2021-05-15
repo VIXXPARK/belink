@@ -1,7 +1,6 @@
 package com.capstone.belink.Adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ class CustomViewHolder(v:View) : RecyclerView.ViewHolder(v){
 }
 
 class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolder>(){
-    var DataList:MutableList<TeamRoom> = ArrayList()
+    var dataList:MutableList<TeamRoom> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
         val cellForRow = LayoutInflater.from(context).inflate(R.layout.custom_grouplist,parent,false)
         return CustomViewHolder(cellForRow)
@@ -27,12 +26,12 @@ class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolde
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.iv_profile.setImageResource(R.drawable.picachu)
-        holder.tv_group_name.text = DataList[position].teamName
+        holder.tv_group_name.text = dataList[position].teamName
 
     }
 
     override fun getItemCount(): Int {
-        return DataList.size
+        return dataList.size
     }
 
 }

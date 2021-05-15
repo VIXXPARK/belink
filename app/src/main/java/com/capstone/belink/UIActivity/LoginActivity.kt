@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
@@ -48,7 +47,6 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
 
-    private var clickSignup=false;
 
     private var TOKEN=""
 
@@ -121,10 +119,62 @@ class LoginActivity : AppCompatActivity() {
 
         supplementService.registerUser(Phone, name,TOKEN).enqueue(object : Callback<Sign> {
             override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
-                Log.d("Phone", Phone)
-                Log.d("Name", name)
-                Log.d("success", response.message())
-                clickSignup=true
+                if(response.message()=="Created"){
+                    val userId = response.body()!!.data.id
+                    var teamList: MutableList<Member> = ArrayList()
+                    supplementService.makeTeam("나").enqueue(object : Callback<Team> {
+                        override fun onResponse(call: Call<Team>, response: Response<Team>) {
+                            if (response.message() == "Created") {
+
+                                val id = response.body()?.id
+                                if (id!!.isNotEmpty()) {
+                                    teamList.add(Member(id, userId))
+                                }
+                                supplementService.makeMember(teamList)
+                                    .enqueue(object : Callback<Map<String, Boolean>> {
+                                        override fun onResponse(
+                                            call: Call<Map<String, Boolean>>,
+                                            response: Response<Map<String, Boolean>>
+                                        ) {
+                                            if (response.message() == "OK") {
+                                                val teamList =
+                                                    getGroupPref(this@LoginActivity, "groupContext")
+                                                val userList: MutableList<String> = ArrayList()
+                                                userList.add(userId)
+                                                val obj = TeamRoom(
+                                                    id = id!!,
+                                                    teamName = "나",
+                                                    data = userList
+                                                )
+                                                teamList.add(obj)
+                                                setGroupPref(
+                                                    this@LoginActivity,
+                                                    "groupContext",
+                                                    teamList
+                                                )
+
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<Map<String, Boolean>>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+                                    })
+                            }
+
+
+                        }
+
+                        override fun onFailure(call: Call<Team>, t: Throwable) {
+                            Log.d("실패","$t")
+                        }
+
+                    })
+                }
+
             }
 
             override fun onFailure(call: Call<Sign>, t: Throwable) {
@@ -139,60 +189,50 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val loginResponse = response.body()
 
-                if(response.message()=="OK" && loginResponse?.accessToken!=null){
+                if (response.message() == "OK" && loginResponse?.accessToken != null) {
                     sessionManager.saveAuthToken(loginResponse!!.accessToken)
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     autoLogin.putString("userToken", response.body()?.accessToken)
-                    autoLogin.putString("inputName",name)
+                    autoLogin.putString("inputName", name)
                     autoLogin.putString("inputPhone", phoneNum)
-                    val userId = response.body()!!.id
-                    autoLogin.putString("userId",response.body()!!.id)
+
+                    autoLogin.putString("userId", response.body()!!.id)
                     autoLogin.apply()
-                    var teamList: MutableList<Member> = ArrayList()
-                    supplementService.makeTeam("나").enqueue(object : Callback<Team>{
-                        override fun onResponse(call: Call<Team>, response: Response<Team>) {
-                            if (response.message() == "Created") {
-                                if(clickSignup){
-                                    val id = response.body()?.id
-                                    if(id!!.isNotEmpty()){
-                                        teamList.add(Member(id,userId))
-                                    }
-                                    supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>>{
-                                        override fun onResponse(
-                                            call: Call<Map<String, Boolean>>,
-                                            response: Response<Map<String, Boolean>>
-                                        ) {
-                                            if (response.message() == "OK"){
-                                                val teamList= getGroupPref(this@LoginActivity,"groupContext")
-                                                val userList : MutableList<String> = ArrayList()
-                                                userList.add(userId)
-                                                val obj = TeamRoom(id =id!!, teamName = "나", data = userList)
-                                                teamList.add(obj)
-                                                setGroupPref(this@LoginActivity,"groupContext",teamList)
-                                                startActivity(intent)
-                                                this@LoginActivity.finish()
-                                            }
-                                        }
-                                        override fun onFailure(
-                                            call: Call<Map<String, Boolean>>,
-                                            t: Throwable
-                                        ) {
-
-                                        }
-                                    })
-                                }else{
-                                    startActivity(intent)
-                                    this@LoginActivity.finish()
+                    val groupEdit = getSharedPreferences("groupContext",Activity.MODE_PRIVATE)!!.edit()
+                    groupEdit.clear()
+                    groupEdit.apply()
+                    finish()
+                    println("유저아이디는 ${response.body()!!.id}")
+                    val teamMember = response.body()!!.id
+                    supplementService.getMyTeam(teamMember).enqueue(object : Callback<GetMyTeam> {
+                        override fun onResponse(
+                            call: Call<GetMyTeam>,
+                            response: Response<GetMyTeam>
+                        ) {
+                            println("팀 찾기 시작 ")
+                            println(response.message())
+                            if(response.message()=="OK"){
+                                val teamList:ArrayList<TeamRoom> = ArrayList()
+                                println("OK 사인을 받으면")
+                                response.body()!!.result.forEach{
+                                    val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
+                                    println(element.toString())
+                                    teamList.add(element)
                                 }
-
+                                println("그룹 정보 저장")
+                                setGroupPref(this@LoginActivity,"groupContext",teamList)
+                                startActivity(intent)
+                                this@LoginActivity.finish()
                             }
+
                         }
 
-                        override fun onFailure(call: Call<Team>, t: Throwable) {
-                            Log.d("실패","$t")
+                        override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
+                            Log.d("태그","$t")
                         }
 
                     })
+
 
                 }
             }
@@ -201,6 +241,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
         })
+
 
     }
     override fun onDestroy() {
