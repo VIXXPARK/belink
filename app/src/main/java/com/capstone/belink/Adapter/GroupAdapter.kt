@@ -1,22 +1,13 @@
 package com.capstone.belink.Adapter
 
 import android.content.Context
-import android.content.DialogInterface
-import android.telecom.Call
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.capstone.belink.Model.TeamRoom
-import com.capstone.belink.Model.User
-import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
-import com.capstone.belink.Utils.getMemberPref
-import com.capstone.belink.Utils.setMemberPref
-import javax.security.auth.callback.Callback
 
 
 class GroupViewHolder(v:View) : RecyclerView.ViewHolder(v){

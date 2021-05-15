@@ -12,7 +12,6 @@ import com.capstone.belink.Adapter.GroupAdapter
 import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
-import com.capstone.belink.R
 import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.ActivitySendGroupBinding
 import retrofit2.Call

@@ -1,15 +1,12 @@
 package com.capstone.belink.UIActivity
 
 import android.app.Activity
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.capstone.belink.Adapter.FriendAdapter
 import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -76,7 +73,7 @@ class TeamActivity : AppCompatActivity() {
                         teamMember.add(k)
                     }
                 }
-                var teamName: String = ""
+                var teamName: String = getSharedPreferences("auto", MODE_PRIVATE).getString("username","")!!
                 println(teamMember.toString())
 
                 /**

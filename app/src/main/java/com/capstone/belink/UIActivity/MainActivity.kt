@@ -16,13 +16,20 @@ import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Adapter.IsoDepAdapter
 import com.capstone.belink.Adapter.IsoDepTransceiver
 import com.capstone.belink.Adapter.LoyaltyCardReader
+import com.capstone.belink.Model.GetMyTeam
+import com.capstone.belink.Model.ResultResponse
+import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
+import com.capstone.belink.Utils.setGroupPref
 import com.capstone.belink.databinding.ActivityMainBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 
 class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {//
@@ -137,6 +144,35 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             R.id.action_alert ->{
                 val intent = Intent(this, AlarmActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.action_exchange -> {
+                supplementService.getMyTeam(pref.getString("userId","")!!).enqueue(object : Callback<GetMyTeam> {
+                    override fun onResponse(
+                        call: Call<GetMyTeam>,
+                        response: Response<GetMyTeam>
+                    ) {
+                        println("팀 찾기 시작 ")
+                        println(response.message())
+                        if(response.message()=="OK"){
+                            val teamList:ArrayList<TeamRoom> = ArrayList()
+                            println("OK 사인을 받으면")
+                            response.body()!!.result.forEach{
+                                val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
+                                println(element.toString())
+                                teamList.add(element)
+                            }
+                            println("그룹 정보 저장")
+                            setGroupPref(this@MainActivity,"groupContext",teamList)
+                        }
+
+                    }
+
+                    override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
+                        Log.d("태그","$t")
+                    }
+
+                })
                 true
             }
             else -> super.onOptionsItemSelected(item)
