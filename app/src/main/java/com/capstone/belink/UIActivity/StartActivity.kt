@@ -1,13 +1,20 @@
 package com.capstone.belink.UIActivity
 
-import android.app.ActionBar
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
 import com.capstone.belink.Model.LoginResponse
-import com.capstone.belink.Model.Sign
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.Network.SessionManager
@@ -16,6 +23,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+
+
 /**
  * StartActivity는 처음 화면이 나오는 액티비티로서
  * 로그인 유무를 판단하고 로그인이 되었을 때에는 바로 메인액티비티로 전환
@@ -29,6 +38,7 @@ class StartActivity : AppCompatActivity() {
     private lateinit var autoLogin: SharedPreferences.Editor
 
     private lateinit var sessionManager:SessionManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +67,6 @@ class StartActivity : AppCompatActivity() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-    }
-
     private fun initRetrofit() {
         retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
@@ -86,13 +91,9 @@ class StartActivity : AppCompatActivity() {
                     this@StartActivity.finish()
                 }
             }
-
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-
             }
-
         })
-
-
     }
+
 }

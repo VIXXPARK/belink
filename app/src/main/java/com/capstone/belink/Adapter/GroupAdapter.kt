@@ -13,10 +13,6 @@ import com.capstone.belink.R
 class GroupViewHolder(v:View) : RecyclerView.ViewHolder(v){
 
     val group_name = v.findViewById<TextView>(R.id.tv_final_group_name)
-
-
-
-
 }
 
 class GroupAdapter(val context: Context, private val dataList:MutableList<TeamRoom>):RecyclerView.Adapter<GroupViewHolder>(){
