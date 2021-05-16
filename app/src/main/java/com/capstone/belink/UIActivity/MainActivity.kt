@@ -122,6 +122,12 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
                         Toast.makeText(this, "회원 정보 수정이 완료 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
+                2 ->{
+                    if(resultCode==Activity.RESULT_OK ) {
+                        Log.d("2번", "sendGroupActivity 아웃")
+                        Toast.makeText(this, "인증 되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
     }
@@ -288,7 +294,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             isoDepAdapter.addMessage(account)
             val intent = Intent(this,SendGroupActivity::class.java)
             intent.putExtra("storeId",mLoyaltyCardReader.gotData)
-            startActivity(intent)
+            startActivityForResult(intent,2)
         }
     }
 
