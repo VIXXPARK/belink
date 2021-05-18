@@ -291,6 +291,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     override fun onAccountReceived(account: String?) {
         runOnUiThread {
             println("TEST:${mLoyaltyCardReader.gotData}")
+            mLoyaltyCardReader.gotData=mLoyaltyCardReader.gotData
             isoDepAdapter.addMessage(account)
             val intent = Intent(this,SendGroupActivity::class.java)
             intent.putExtra("storeId",mLoyaltyCardReader.gotData)

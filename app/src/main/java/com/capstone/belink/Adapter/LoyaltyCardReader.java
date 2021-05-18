@@ -22,9 +22,18 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
     private static final byte[] SELECT_OK_SW = {(byte) 0x90, (byte) 0x00};
 
 
-    public String gotData = "", finalGotData = "";
+    private String gotData = "", finalGotData = "";
 
     long timeTaken = 0;
+
+    public String getGotData(){
+        return gotData;
+    }
+
+    public void setGotData(String gotData){
+        this.gotData=gotData;
+    }
+
 
     // Weak reference to prevent retain loop. mAccountCallback is responsible for exiting
     // foreground mode before it becomes invalid (e.g. during onPause() or onStop()).
