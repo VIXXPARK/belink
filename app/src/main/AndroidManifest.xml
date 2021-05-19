@@ -19,6 +19,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
+
+        <service
+            android:name=".Utils.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+
         <activity android:name=".UIActivity.SendGroupActivity" android:screenOrientation="portrait"/>
         <activity android:name=".UIActivity.StartActivity" android:screenOrientation="portrait">
             <intent-filter>
