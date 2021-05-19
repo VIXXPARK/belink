@@ -1,16 +1,23 @@
 package com.capstone.belink.UIActivity
 
+import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Adapter.IsoDepAdapter
@@ -47,6 +54,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     private lateinit var isoDepAdapter:IsoDepAdapter
     private lateinit var mLoyaltyCardReader: LoyaltyCardReader
 
+    private val PERMISSIONS_REQUEST_READ_CONTACTS = 1
 
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
 
@@ -77,7 +85,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
         invalidateOptionsMenu()
 
-
+        requestContactPermission()
 
 
 
@@ -295,6 +303,74 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             val intent = Intent(this,SendGroupActivity::class.java)
             intent.putExtra("storeId",mLoyaltyCardReader.gotData)
             startActivityForResult(intent,2)
+        }
+    }
+
+
+    /**연락처 동의*/
+
+    private fun getContacts() {
+        Toast.makeText(this, "Get contacts ....", Toast.LENGTH_LONG).show()
+    }
+
+    fun requestContactPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.READ_CONTACTS
+                    )
+                ) {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                    builder.setTitle("Read Contacts permission")
+                    builder.setPositiveButton(android.R.string.ok, null)
+                    builder.setMessage("Please enable access to contacts.")
+                    builder.setOnDismissListener(DialogInterface.OnDismissListener {
+                        requestPermissions(
+                            arrayOf(
+                                Manifest.permission.READ_CONTACTS
+                            ), PERMISSIONS_REQUEST_READ_CONTACTS
+                        )
+                    })
+                    builder.show()
+                } else {
+                    ActivityCompat.requestPermissions(
+                        this, arrayOf(Manifest.permission.READ_CONTACTS),
+                        PERMISSIONS_REQUEST_READ_CONTACTS
+                    )
+                }
+            } else {
+                getContacts()
+            }
+        } else {
+            getContacts()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PERMISSIONS_REQUEST_READ_CONTACTS -> {
+                if (grantResults.isNotEmpty()
+                    && grantResults[0] === PackageManager.PERMISSION_GRANTED
+                ) {
+                    getContacts()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "You have disabled a contacts permission",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                return
+            }
         }
     }
 

@@ -38,7 +38,7 @@ class SendGroupActivity : AppCompatActivity() {
         mBinding = ActivitySendGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRetrofit()
-        storeId = intent.getStringExtra("storeId")!!.slice(IntRange(42,49))
+        storeId = intent.getStringExtra("storeId")!!
 
         Toast.makeText(this,storeId,Toast.LENGTH_SHORT).show()
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
