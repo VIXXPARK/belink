@@ -21,7 +21,6 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
     // "OK" status word sent in response to SELECT AID command (0x9000)
     private static final byte[] SELECT_OK_SW = {(byte) 0x90, (byte) 0x00};
 
-
     public String gotData = "", finalGotData = "";
 
     long timeTaken = 0;
@@ -47,6 +46,8 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
      */
     @Override
     public void onTagDiscovered(Tag tag) {
+        gotData = "";
+        finalGotData = "";
         Log.i(TAG, "New tag discovered");
         // Android's Host-based Card Emulation (HCE) feature implements the ISO-DEP (ISO 14443-4)
         // protocol.
@@ -70,6 +71,7 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
                 // Send command to remote device
                 Log.i(TAG, "Sending: " + ByteArrayToHexString(selCommand));
                 byte[] result = isoDep.transceive(selCommand);
+
                 // If AID is successfully selected, 0x9000 is returned as the status word (last 2
                 // bytes of the result) by convention. Everything before the status word is
                 // optional payload, which is used here to hold the account number.
@@ -80,7 +82,10 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
                 if (Arrays.equals(SELECT_OK_SW, statusWord)) {
                     // The remote NFC device will immediately respond with its stored account number
                     String data = new String(payload, "UTF-8");
+                    gotData = data;
                     Log.i(TAG, "Received: " + data);
+                    mAccountCallback.get().onAccountReceived(gotData);
+                    /*
                     // Inform CardReaderFragment of received account number
                     if (true) {
                         timeTaken = System.currentTimeMillis();
@@ -103,10 +108,10 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
 
                             }
                         }
+
                         mAccountCallback.get().onAccountReceived(gotData);
 
-                    }
-
+                    }*/
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Error communicating with card: " + e.toString());
