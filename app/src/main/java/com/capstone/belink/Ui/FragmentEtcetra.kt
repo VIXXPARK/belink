@@ -45,7 +45,7 @@ class FragmentEtcetra:Fragment() {
 
     private lateinit var sessionManager: SessionManager
 
-    private val PERMISSIONS_REQUEST_READ_CONTACTS = 1
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,7 +70,7 @@ class FragmentEtcetra:Fragment() {
 
         binding.tvEtcetraManageFriend.setOnClickListener {
             val intent = Intent(xContext,FriendSettingActivity::class.java)
-            requestContactPermission()
+
             startActivity(intent)
 
         }
@@ -148,69 +148,8 @@ class FragmentEtcetra:Fragment() {
         super.onDestroy()
     }
 
-    private fun getContacts() {
-        Toast.makeText((activity as MainActivity), "Get contacts ....", Toast.LENGTH_LONG).show()
-    }
-    fun requestContactPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    (activity as MainActivity),
-                    Manifest.permission.READ_CONTACTS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        (activity as MainActivity),
-                        Manifest.permission.READ_CONTACTS
-                    )
-                ) {
-                    val builder: AlertDialog.Builder = AlertDialog.Builder((activity as MainActivity))
-                    builder.setTitle("Read Contacts permission")
-                    builder.setPositiveButton(android.R.string.ok, null)
-                    builder.setMessage("Please enable access to contacts.")
-                    builder.setOnDismissListener(DialogInterface.OnDismissListener {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.READ_CONTACTS
-                            ), PERMISSIONS_REQUEST_READ_CONTACTS
-                        )
-                    })
-                    builder.show()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        (activity as MainActivity), arrayOf(Manifest.permission.READ_CONTACTS),
-                        PERMISSIONS_REQUEST_READ_CONTACTS
-                    )
-                }
-            } else {
-                getContacts()
-            }
-        } else {
-            getContacts()
-        }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_READ_CONTACTS -> {
-                if (grantResults.isNotEmpty()
-                    && grantResults[0] === PackageManager.PERMISSION_GRANTED
-                ) {
-                    getContacts()
-                } else {
-                    Toast.makeText(
-                        (activity as MainActivity),
-                        "You have disabled a contacts permission",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                return
-            }
-        }
-    }
+
 }
 
 
