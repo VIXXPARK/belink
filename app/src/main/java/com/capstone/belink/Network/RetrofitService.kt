@@ -50,7 +50,15 @@ interface RetrofitService {
     fun nfcPushMsg(@Field("team_room")team_room:String,@Field("userId")userId:String,@Field("storeId")storeId:String):Call<Map<String,Boolean>>
 
     @FormUrlEncoded
+    @POST("api/push/accepted")
+    fun nfcAccepted(@Field("team_room")team_room: String,@Field("storeId")storeId: String):Call<Map<String,Boolean>>
+
+    @FormUrlEncoded
     @POST("api/user/get-my-team")
     fun getMyTeam(@Field("team_member")team_member:String): Call<GetMyTeam>
+
+    @FormUrlEncoded
+    @POST("api/push/infectionPush")
+    fun infectionPush(@Field("userId")userId: String,@Field("name")name:String ):Call<Map<String,Boolean>>
 
 }

@@ -1,16 +1,18 @@
 package com.capstone.belink.UIActivity
 
 import android.Manifest
-import android.app.Activity
-import android.app.AlertDialog
+import android.app.*
+import androidx.core.app.NotificationCompat
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
+import android.service.notification.NotificationListenerService
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -24,7 +26,6 @@ import com.capstone.belink.Adapter.IsoDepAdapter
 import com.capstone.belink.Adapter.IsoDepTransceiver
 import com.capstone.belink.Adapter.LoyaltyCardReader
 import com.capstone.belink.Model.GetMyTeam
-import com.capstone.belink.Model.ResultResponse
 import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -32,12 +33,12 @@ import com.capstone.belink.R
 import com.capstone.belink.Ui.*
 import com.capstone.belink.Utils.setGroupPref
 import com.capstone.belink.databinding.ActivityMainBinding
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerScheduler
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+
 
 class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {//
     private var mBinding:ActivityMainBinding?=null
@@ -86,9 +87,6 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         invalidateOptionsMenu()
 
         requestContactPermission()
-
-
-
 
         initRetrofit()
         init()
@@ -310,7 +308,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     /**연락처 동의*/
 
     private fun getContacts() {
-        Toast.makeText(this, "Get contacts ....", Toast.LENGTH_LONG).show()
+        Log.d("연락처","가져옴")
     }
 
     fun requestContactPermission() {
