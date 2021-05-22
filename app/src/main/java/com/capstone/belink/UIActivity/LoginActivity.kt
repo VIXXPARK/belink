@@ -54,11 +54,42 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        sessionManager = SessionManager(this)
-
         initRetrofit()
+        setFireMessageToken()
+        setPhoneNumAndUsername()
+        btnListener()
 
+    }
+
+    private fun btnListener() {
+        if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
+            Log.d("status", "first_if")
+            login(phoneNum!!)
+        }
+        binding.btnLoginSignup.setOnClickListener {
+            getEditString()
+            autoLogin.putString("token",TOKEN)
+            autoLogin.apply()
+            val intent = Intent(this,CertificationActivity::class.java)
+            startActivity(intent)
+//            signup(phoneNum!!, name!!)
+        }
+        binding.btnLoginLogin.setOnClickListener {
+            getEditString()
+            login(phoneNum!!)
+        }
+    }
+
+    private fun setPhoneNumAndUsername() {
+        sessionManager = SessionManager(this)
+        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
+        autoLogin=auto.edit()
+
+        phoneNum=auto.getString("inputPhone", null)
+        name=auto.getString("inputName", null)
+    }
+
+    private fun setFireMessageToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w("태그", "Fetching FCM registration token failed", task.exception)
@@ -72,30 +103,6 @@ class LoginActivity : AppCompatActivity() {
             TOKEN = token.toString();
 
         })
-
-
-
-        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
-        autoLogin=auto.edit()
-
-        phoneNum=auto.getString("inputPhone", null)
-        name=auto.getString("inputName", null)
-
-        if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
-            Log.d("status", "first_if")
-            login(phoneNum!!)
-        }
-
-        binding.btnLoginSignup.setOnClickListener {
-            getEditString()
-            autoLogin.apply()
-            signup(phoneNum!!, name!!)
-        }
-        binding.btnLoginLogin.setOnClickListener {
-            getEditString()
-            login(phoneNum!!)
-        }
-
     }
 
     fun getEditString(){

@@ -61,4 +61,12 @@ interface RetrofitService {
     @POST("api/push/infectionPush")
     fun infectionPush(@Field("userId")userId: String,@Field("name")name:String ):Call<Map<String,Boolean>>
 
+    @FormUrlEncoded
+    @POST("api/sms/send-msg")
+    fun sendMsg(@Field("to")to: String):Call<Map<String,Boolean>>
+
+    @FormUrlEncoded
+    @POST("api/sms/send-code")
+    fun sendCode(@Field("phNum")phNum: String,@Field("certNum")certNum:String):Call<Map<String,Boolean>>
+
 }
