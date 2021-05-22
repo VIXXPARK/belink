@@ -65,9 +65,21 @@ class SendGroupActivity : AppCompatActivity() {
                             response: Response<Map<String, Boolean>>
                         ) {
                             Log.d("성공",response.body().toString())
-                            adapter.notifyDataSetChanged()
-                            setResult(Activity.RESULT_OK)
-                            finish()
+                            supplementService.nfcAccepted(team_room = item.id,storeId=storeId).enqueue(object : Callback<Map<String,Boolean>>{
+                                override fun onResponse(
+                                    call: Call<Map<String, Boolean>>,
+                                    response: Response<Map<String, Boolean>>
+                                ) {
+                                    adapter.notifyDataSetChanged()
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                }
+
+                                override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                                }
+
+                            })
+
                         }
 
                         override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
@@ -76,6 +88,7 @@ class SendGroupActivity : AppCompatActivity() {
 
                     })
                 adapter.notifyDataSetChanged()
+
             }
 
         })

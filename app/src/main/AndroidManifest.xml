@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
+        <activity android:name=".UIActivity.PopupActivity"></activity>
 
         <service
             android:name=".Utils.MyFirebaseMessagingService"
@@ -28,22 +29,36 @@
             </intent-filter>
         </service>
 
-
-
-        <activity android:name=".UIActivity.SendGroupActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.StartActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".UIActivity.SendGroupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.StartActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UIActivity.EditInfoActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.FriendSettingActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.AlarmActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.TeamActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.LoginActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".UIActivity.MainActivity" android:screenOrientation="portrait">
+        <activity
+            android:name=".UIActivity.EditInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.FriendSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.AlarmActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.TeamActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".UIActivity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 

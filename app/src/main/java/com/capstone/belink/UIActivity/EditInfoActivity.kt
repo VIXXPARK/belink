@@ -33,34 +33,57 @@ class EditInfoActivity : AppCompatActivity() {
         mBinding= ActivityEditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setPrefSharedPreferences()
+        getEditContent()
+        initRetrofit()
+        setInfectionToggle()
+
+    }
+
+    private fun setInfectionToggle() {
+        binding.swInfection.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                val id = pref.getString("userId","")!!
+                val name = pref.getString("inputName","")!!
+                supplementService.infectionPush(userId=id,name=name).enqueue(object : Callback<Map<String,Boolean>>{
+                    override fun onResponse(
+                        call: Call<Map<String, Boolean>>,
+                        response: Response<Map<String, Boolean>>
+                    ) {
+                        if(response.message()=="OK"){
+                            Toast.makeText(this@EditInfoActivity,"전송완료되었습니다.",Toast.LENGTH_SHORT).show()
+
+                        }else{
+                            Toast.makeText(this@EditInfoActivity,"실패했습니다.",Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+
+                    }
+
+                })
+            }
+        }
+    }
+
+    private fun setPrefSharedPreferences() {
         pref = getSharedPreferences("auto",Activity.MODE_PRIVATE)
         edit= pref.edit()
         sessionManager = SessionManager(this)
-        initRetrofit()
+    }
 
+    private fun getEditContent() {
         binding.etEditName.setText(pref.getString("inputName","홍길동"))
-        binding.etEditPhone.setText(pref.getString("inputPhone","01012345678"))
 
         binding.btnEditSend.setOnClickListener {
-            val phoneNumber = binding.etEditPhone.text.toString()
+            val phoneNumber = pref.getString("inputPhone","01012345678")!!
             val name = binding.etEditName.text.toString()
             val id = pref.getString("userId","")!!
             connectUpdateInfo(phoneNumber,name,id)
         }
-
-        binding.btnCheck.setOnClickListener{
-            supplementService.check()
-                    .enqueue(object : Callback<Map<String,Boolean>>{
-                        override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
-                            Toast.makeText(this@EditInfoActivity,"${response.body()}",Toast.LENGTH_SHORT).show()
-                        }
-
-                        override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
-                        }
-
-                    })
-        }
     }
+
     private fun initRetrofit() {
         retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
@@ -72,9 +95,7 @@ class EditInfoActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                 Log.d("success",response.body().toString())
                 println("inputName${binding.etEditName.text}")
-                println("inputName${binding.etEditPhone.text}")
                 edit.putString("inputName",binding.etEditName.text.toString())
-                edit.putString("inputPhone",binding.etEditPhone.text.toString())
                 edit.apply()
                 setResult(Activity.RESULT_OK)
                 finish()
