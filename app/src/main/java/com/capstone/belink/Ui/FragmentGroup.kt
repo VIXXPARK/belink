@@ -13,18 +13,10 @@ import com.capstone.belink.Utils.ItemMoveCallbackListener
 import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.FragmentGroupBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FragmentGroup.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FragmentGroup : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
@@ -45,13 +37,7 @@ class FragmentGroup : Fragment() {
         super.onAttach(context)
     }
 
-    val DataList = arrayListOf(
-        ProfileData(R.drawable.picachu, "팀플용"),
-        ProfileData(R.drawable.picachu, "팀플용"),
-        ProfileData(R.drawable.picachu, "팀플용"),
-        ProfileData(R.drawable.picachu, "팀플용"),
-        ProfileData(R.drawable.picachu, "팀플용")
-    )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,16 +61,9 @@ class FragmentGroup : Fragment() {
         activity!!.invalidateOptionsMenu() // 메뉴를 다시 그리게 할 때 쓰이는 메소드
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mBinding = FragmentGroupBinding.inflate(inflater, container, false)
-
-
         val teamList= getGroupPref(xContext, "groupContext")
-        println(teamList.toString())
         setHasOptionsMenu(true)//세팅 아이콘 추가로 할 때 쓰이는 메소드(액티비티의 옵션보다 우선순위를 높이기 위한 메소드)
 
         adapter = RecyclerAdapter(xContext)
@@ -100,15 +79,6 @@ class FragmentGroup : Fragment() {
 
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentGroup.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
                 FragmentGroup().apply {
@@ -118,7 +88,6 @@ class FragmentGroup : Fragment() {
                     }
                 }
     }
-
 
     override fun onDestroy() {
         mBinding=null

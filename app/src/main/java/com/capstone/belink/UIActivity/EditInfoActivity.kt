@@ -32,7 +32,6 @@ class EditInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding= ActivityEditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setPrefSharedPreferences()
         getEditContent()
         initRetrofit()
@@ -57,11 +56,8 @@ class EditInfoActivity : AppCompatActivity() {
                             Toast.makeText(this@EditInfoActivity,"실패했습니다.",Toast.LENGTH_SHORT).show()
                         }
                     }
-
                     override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-
                     }
-
                 })
             }
         }
@@ -75,7 +71,6 @@ class EditInfoActivity : AppCompatActivity() {
 
     private fun getEditContent() {
         binding.etEditName.setText(pref.getString("inputName","홍길동"))
-
         binding.btnEditSend.setOnClickListener {
             val phoneNumber = pref.getString("inputPhone","01012345678")!!
             val name = binding.etEditName.text.toString()
@@ -100,13 +95,10 @@ class EditInfoActivity : AppCompatActivity() {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-
             override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
                 Log.d("fail","$t")
             }
-
         })
-
     }
 
     override fun onDestroy() {

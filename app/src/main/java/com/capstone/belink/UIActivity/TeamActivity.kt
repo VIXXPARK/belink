@@ -28,6 +28,7 @@ class TeamActivity : AppCompatActivity() {
     private lateinit var retrofit:Retrofit
     private lateinit var supplementService:RetrofitService
 
+    private var teamName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,79 +67,14 @@ class TeamActivity : AppCompatActivity() {
              * 클릭된 유저중에 true 값을 가진 유저만을 따로 저장한다.*/
             R.id.action_check -> { //확인 클릭시 그룹방 만들기
                 val member = getMemberPref(this, "team") // 그룹에 관한 멤버 가져오기, 이에 관한 값들은 adapter에서 사용중
-                var teamMember: MutableList<String> = ArrayList()
+                val teamMember: MutableList<String> = ArrayList()
                 for ((k, v) in member) {
-                    println("$k  $v")
                     if (v) {// 아이디 중 체크박스 중 체크된 것들만 가져오기
                         teamMember.add(k)
                     }
                 }
-                var teamName: String = getSharedPreferences("auto", MODE_PRIVATE).getString("username","")!!
-                println(teamMember.toString())
-
-                /**
-                 * 팀 이름을 나 자신을 제외한 유저 이름으로 하기 위해 호출된 서비스이다.*/
-                supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
-                    override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
-                        val data = response.body()?.data
-                        println("idContactUser")
-                        println(data.toString())
-                        if (data != null) {
-                            for (i in data.indices) {
-                                teamName += if(i != data.size - 1) {// 그룹 이름을 유저 이름 제외한 유저이름들로 구성
-                                    data[i].username + " , "
-                                } else {
-                                    data[i].username
-                                }
-                            }
-                        }
-
-                    /**
-                     * 데이터베이스에 저장될 때 만든 장본인도 저장되어야 하므로 sharedPreferences에 저장되어 있는 유저 아이디를 추가한다.
-                     * 그리고 위에서 만든 팀이름을 데이터베이스에 저장한 다음에 그를 통해 구한 팀 아이디와 유정 아이디들을 맵핑하여
-                     * 멤버 테이블에 저장한다. 그리고 따로 앱에서 그룹에 관련된 정보들도 또한 저장한다(setGroupPref)*/
-                        teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
-                        supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
-                            override fun onResponse(call: Call<Team>, response: Response<Team>) {
-                                println(response.message())
-                                if (response.message() == "Created") {
-                                    val id = response.body()?.id
-
-                                    if (id!!.isNotEmpty()) {
-                                        var teamList: MutableList<Member> = ArrayList()
-                                        for (i in 0 until teamMember.size) {
-                                            teamList.add(Member(id, teamMember[i]))
-                                        }
-                                        supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>> { // 유저와 그룹 맵핑
-                                            override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
-                                                if (response.message() == "OK") {
-                                                    val teamList= getGroupPref(this@TeamActivity,"groupContext")
-                                                    val obj = TeamRoom(id =id!!, teamName = teamName, data =teamMember)
-                                                    teamList.add(obj)
-                                                    setGroupPref(this@TeamActivity,"groupContext",teamList)
-                                                    getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()
-
-                                                    setResult(Activity.RESULT_OK)
-                                                    finish()
-                                                }
-                                            }
-                                            override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
-                                                Log.d("memberFail", "$t")
-                                            }
-                                        })
-                                    }
-                                }
-                            }
-                            override fun onFailure(call: Call<Team>, t: Throwable) {
-                                Log.d("makeTeamFail", "$t")
-                            }
-                        })
-                    }
-                    override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
-                        Log.d("contactUserFail", "$t")
-                    }
-
-                })
+                teamName= getSharedPreferences("auto", MODE_PRIVATE).getString("username","")!!
+                retrofitIdContactUser(teamMember,teamName)
                 true
             }
             else -> {
@@ -146,6 +82,84 @@ class TeamActivity : AppCompatActivity() {
             }
         }
     }
+
+    /**
+     * 연락처 조회를 하여 해당 전화번호가 데이터베이스에 존재하는 지 판단
+     * */
+    private fun retrofitIdContactUser(teamMember: MutableList<String>, teamName: String) {
+        teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
+        supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
+        override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
+            val data = response.body()?.data
+            setTeamName(teamName,data)
+            retrofitMakeTeam(teamName,teamMember)
+        }
+            override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
+                Log.d("contactUserFail", "$t")
+            }
+        })
+    }
+
+    private fun setTeamName(teamName: String, data: List<User>?) {
+        if (data != null) {
+            for (i in data.indices) {
+                this@TeamActivity.teamName += if(i != data.size - 1) {// 그룹 이름을 유저 이름 제외한 유저이름들로 구성
+                    data[i].username + " , "
+                } else {
+                    data[i].username
+                }
+            }
+        }
+    }
+
+    private fun retrofitMakeTeam(teamName: String, teamMember: MutableList<String>) {
+        supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
+        override fun onResponse(call: Call<Team>, response: Response<Team>) {
+            if (response.message() == "Created") {
+                val id = response.body()?.id
+                val teamList: MutableList<Member> = ArrayList()
+                if (id!!.isNotEmpty()) {
+                    retrofitMakeMember(teamList,teamMember,id)
+                }
+            }
+        }
+            override fun onFailure(call: Call<Team>, t: Throwable) {
+                Log.d("makeTeamFail", "$t")
+            }
+        })
+    }
+
+    private fun retrofitMakeMember(
+        teamList: MutableList<Member>,
+        teamMember: MutableList<String>,
+        id: String
+    ) {
+        for (i in 0 until teamMember.size) {
+            teamList.add(Member(id, teamMember[i]))
+        }
+        supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>> { // 유저와 그룹 맵핑
+            override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
+                if (response.message() == "OK") {
+                    setRetrofitMember(id,teamMember)
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                }
+            }
+            override fun onFailure(call: Call<Map<String,Boolean>>, t: Throwable) {
+                Log.d("memberFail", "$t")
+            }
+        })
+    }
+
+    private fun setRetrofitMember(id: String, teamMember: MutableList<String>) {
+        val teamList= getGroupPref(this@TeamActivity,"groupContext")
+        val obj = TeamRoom(id =id!!, teamName = teamName, data =teamMember)
+        teamList.add(obj)
+        setGroupPref(this@TeamActivity,"groupContext",teamList)
+        getSharedPreferences("team", MODE_PRIVATE).edit().clear().commit()
+    }
+
+
 
     override fun onDestroy() {
         mBinding=null

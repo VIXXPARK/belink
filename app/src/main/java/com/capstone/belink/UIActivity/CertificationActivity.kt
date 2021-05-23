@@ -50,15 +50,11 @@ class CertificationActivity : AppCompatActivity() {
         phNum=first+second+third
         binding.btnSendNumber.setOnClickListener {
             supplementService.sendMsg(to=phNum).enqueue(object : Callback<Map<String,Boolean>>{
-                override fun onResponse(
-                    call: Call<Map<String, Boolean>>,
-                    response: Response<Map<String, Boolean>>
-                ) {
+                override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
                     if(response.message()=="OK"){
                         Toast.makeText(this@CertificationActivity,"전송했습니다.",Toast.LENGTH_SHORT).show()
                     }
                 }
-
                 override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
                 }
             })
@@ -67,15 +63,11 @@ class CertificationActivity : AppCompatActivity() {
         binding.btnCertCheck.setOnClickListener {
             val content = binding.etCertification.text.toString()
             supplementService.sendCode(phNum=phNum,certNum = content).enqueue(object : Callback<Map<String,Boolean>>{
-                override fun onResponse(
-                    call: Call<Map<String, Boolean>>,
-                    response: Response<Map<String, Boolean>>
-                ) {
+                override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
                     if (response.message()=="OK"){
                         binding.btnCertification.isEnabled=true
                     }
                 }
-
                 override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
                 }
             })
@@ -97,80 +89,59 @@ class CertificationActivity : AppCompatActivity() {
         val Phone = auto.getString("inputPhone","")!!
         val name = auto.getString("inputName","")!!
         binding.btnCertification.setOnClickListener {
-
                 supplementService.registerUser(Phone, name,TOKEN).enqueue(object : Callback<Sign> {
                     override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
                         if(response.message()=="Created"){
                             val userId = response.body()!!.data.id
                             var teamList: MutableList<Member> = ArrayList()
-                            supplementService.makeTeam("나").enqueue(object : Callback<Team> {
-                                override fun onResponse(call: Call<Team>, response: Response<Team>) {
-                                    if (response.message() == "Created") {
-
-                                        val id = response.body()?.id
-                                        if (id!!.isNotEmpty()) {
-                                            teamList.add(Member(id, userId))
-                                        }
-                                        supplementService.makeMember(teamList)
-                                            .enqueue(object : Callback<Map<String, Boolean>> {
-                                                override fun onResponse(
-                                                    call: Call<Map<String, Boolean>>,
-                                                    response: Response<Map<String, Boolean>>
-                                                ) {
-                                                    if (response.message() == "OK") {
-                                                        getSharedPreferences("groupContext",Activity.MODE_PRIVATE).edit().clear().apply()
-                                                        val teamList =
-                                                            getGroupPref(this@CertificationActivity, "groupContext")
-                                                        val userList: MutableList<String> = ArrayList()
-                                                        userList.add(userId)
-                                                        val obj = TeamRoom(
-                                                            id = id!!,
-                                                            teamName = "나",
-                                                            data = userList
-                                                        )
-                                                        teamList.add(obj)
-                                                        setGroupPref(
-                                                            this@CertificationActivity,
-                                                            "groupContext",
-                                                            teamList
-                                                        )
-                                                        val intent = Intent(this@CertificationActivity,MainActivity::class.java)
-                                                        startActivity(intent)
-                                                        this@CertificationActivity.finish()
-
-                                                    }
-                                                }
-
-                                                override fun onFailure(
-                                                    call: Call<Map<String, Boolean>>,
-                                                    t: Throwable
-                                                ) {
-
-                                                }
-                                            })
-                                    }
-
-
-                                }
-
-                                override fun onFailure(call: Call<Team>, t: Throwable) {
-                                    Log.d("실패","$t")
-                                }
-
-                            })
+                            retrofitMakeTeam(response,teamList,userId)
                         }
-
                     }
-
                     override fun onFailure(call: Call<Sign>, t: Throwable) {
                         Log.d("fail", "$t")
                     }
                 })
             }
-
     }
 
+    private fun retrofitMakeTeam(response: Response<Sign>, teamList: MutableList<Member>, userId: String) {
+        supplementService.makeTeam(response.body()!!.data.username).enqueue(object : Callback<Team> {
+            override fun onResponse(call: Call<Team>, response: Response<Team>) {
+                if (response.message() == "Created") {
+                    val id = response.body()?.id
+                    if (id!!.isNotEmpty()) {
+                        teamList.add(Member(id, userId))
+                    }
+                    retrofitMakeMember(teamList,id,userId)
+                }
+            }
+            override fun onFailure(call: Call<Team>, t: Throwable) {
+                Log.d("실패","$t")
+            }
+        })
+    }
 
+    private fun retrofitMakeMember(teamList: MutableList<Member>, id: String, userId: String) {
+        supplementService.makeMember(teamList)
+            .enqueue(object : Callback<Map<String, Boolean>> {
+                override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
+                    if (response.message() == "OK") {
+                        getSharedPreferences("groupContext",Activity.MODE_PRIVATE).edit().clear().apply()
+                        val teamList = getGroupPref(this@CertificationActivity, "groupContext")
+                        val userList: MutableList<String> = ArrayList()
+                        userList.add(userId)
+                        val obj = TeamRoom(id = id!!, teamName = "나", data = userList)
+                        teamList.add(obj)
+                        setGroupPref(this@CertificationActivity, "groupContext", teamList)
+                        val intent = Intent(this@CertificationActivity,MainActivity::class.java)
+                        startActivity(intent)
+                        this@CertificationActivity.finish()
+                    }
+                }
+                override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                }
+            })
+    }
 
 
 }
