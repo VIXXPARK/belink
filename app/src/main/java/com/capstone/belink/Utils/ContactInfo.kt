@@ -68,13 +68,11 @@ fun getStringArrayPref(context: Context,key:String):HashMap<String,String>{ //�
                 val username = iObject.getString("username")
                 val phNum = iObject.getString("phNum")
                 uri[phNum]=username
-                Log.d(phNum, username)
             }
         }catch (e: JSONException){
             e.printStackTrace()
         }
     }
-    Log.d("uri 값 확인",uri.toString())
     return uri
 }
 
@@ -137,9 +135,6 @@ fun setGroupPref(context: Context,key:String,values:MutableList<TeamRoom>){
         dataList.put(tempJSONObject)
     }
 
-    println("setGroupPref--------")
-    println(dataList.toString())
-    println("--------------------")
     if(values.isNotEmpty()) {
         edit.putString(key, dataList.toString())
     }else{
@@ -166,7 +161,6 @@ fun getGroupPref(context: Context,key: String):MutableList<TeamRoom>{
                 for(j in 0 until jsonArr2.length()){
                     val subObject = jsonArr2.getJSONObject(j)
                     val id = subObject.getString("id")
-                    println("$j 번째 id: $id")
                     friend.add(id)
                 }
                 val obj = TeamRoom(id =id, teamName =teamName, data =friend)

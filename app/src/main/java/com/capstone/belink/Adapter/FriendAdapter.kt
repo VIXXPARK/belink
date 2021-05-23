@@ -38,18 +38,13 @@ class FriendAdapter(val context: Context, private val dataList:MutableList<User>
 
         holder.check_in.setOnClickListener(View.OnClickListener {
             if(holder.check_in.isChecked){
-                println("isChecked")
-                println(dataList[position])
                 val memberList=getMemberPref(context,"team")
                 memberList[dataList[position].id]=true
                 setMemberPref(context,"team",memberList)
-                println(memberList.toString())
             }else{
-                println("not checked")
                 val memberList=getMemberPref(context,"team")
                 memberList[dataList[position].id]=false
                 setMemberPref(context,"team",memberList)
-                println(memberList.toString())
             }
         })
 

@@ -15,7 +15,6 @@ import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-//        showNotification(remoteMessage.getData().get("storeId"), remoteMessage.getData().get("isOk"))
         showNotification(remoteMessage.notification?.title.toString(), remoteMessage.notification?.body.toString())
     }
     private fun showNotification(storeId: String?, isOk: String?) {

@@ -85,33 +85,6 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback{
                     gotData = data;
                     Log.i(TAG, "Received: " + data);
                     mAccountCallback.get().onAccountReceived(gotData);
-                    /*
-                    // Inform CardReaderFragment of received account number
-                    if (true) {
-                        timeTaken = System.currentTimeMillis();
-                        while (!(gotData.contains("END"))) {
-                            byte[] getCommand = BuildGetDataApdu();
-                            Log.i(TAG, "Sending: " + ByteArrayToHexString(getCommand));
-                            result = isoDep.transceive(getCommand);
-                            resultLength = result.length;
-
-                            Log.i(TAG, "Received length : " + resultLength);
-                            byte[] statusWordNew = {result[resultLength - 2], result[resultLength - 1]};
-                            payload = Arrays.copyOf(result, resultLength - 2);
-
-                            if (Arrays.equals(SELECT_OK_SW, statusWordNew)) {
-                                gotData = new String(payload, "UTF-8");
-                                Log.i(TAG, "Received: " + gotData);
-                                finalGotData = finalGotData + gotData;
-                                Log.i(TAG, "Data transferred : " + finalGotData.length());
-                                Log.i(TAG, "Time taken: " + (System.currentTimeMillis() - timeTaken));
-
-                            }
-                        }
-
-                        mAccountCallback.get().onAccountReceived(gotData);
-
-                    }*/
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Error communicating with card: " + e.toString());

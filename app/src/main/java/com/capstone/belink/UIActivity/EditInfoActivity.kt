@@ -88,8 +88,6 @@ class EditInfoActivity : AppCompatActivity() {
         val user = User(id,phoneNumber,name)
         supplementService.editUser(user).enqueue(object : Callback<Map<String,Boolean>> {
             override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
-                Log.d("success",response.body().toString())
-                println("inputName${binding.etEditName.text}")
                 edit.putString("inputName",binding.etEditName.text.toString())
                 edit.apply()
                 setResult(Activity.RESULT_OK)

@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
      * 밑에 바텀네비게이션뷰에 대한 처리는 해당 페이지가 넘어갔을 때 그에 맞는 아이콘을 표시하기 위해
      * 처리한 구문이다.*/
     private fun init() {
-        var adapter = FragmentStateAdapter(this)
+        val adapter = FragmentStateAdapter(this)
         adapter.fragmentList=fragmentLists
         binding.viewPager.adapter=adapter
         setViewPager()
