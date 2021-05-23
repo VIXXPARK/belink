@@ -2,7 +2,6 @@ package com.capstone.belink.UIActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.belink.Adapter.AlarmAdapter
 import com.capstone.belink.Adapter.Message
@@ -23,8 +22,6 @@ class AlarmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding= ActivityAlarmBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
 
         binding.viewAlarm.layoutManager=LinearLayoutManager(this)
         val adapter = AlarmAdapter(this,DataList)

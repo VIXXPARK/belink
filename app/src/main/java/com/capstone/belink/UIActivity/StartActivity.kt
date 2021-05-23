@@ -1,19 +1,10 @@
 package com.capstone.belink.UIActivity
 
-import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
 import com.capstone.belink.Model.LoginResponse
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -43,19 +34,30 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-
         initRetrofit()
+        setSharedPreferences()
+        initActionBar()
+        determineActivity()
+    }
+    private fun initRetrofit() {
+        retrofit = RetrofitClient.getInstance(this)
+        supplementService = retrofit.create(RetrofitService::class.java)
+    }
 
+    private fun setSharedPreferences() {
         auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         autoLogin=auto.edit()
         sessionManager= SessionManager(this)
+    }
 
-
+    private fun initActionBar() {
         /**
          * 액션바를 없앨 때에는 해당 액션바를 부른 supportActionbar를 호출하고 hide()메소드를 호출하면 끝!*/
         var actionBar = supportActionBar
         actionBar?.hide()
+    }
 
+    private fun determineActivity() {
         val phoneNum = auto.getString("inputPhone",null)
 
         if(phoneNum.isNullOrBlank()){
@@ -64,15 +66,9 @@ class StartActivity : AppCompatActivity() {
         }else{
             login(auto.getString("inputPhone","")!!)
         }
-
     }
 
-    private fun initRetrofit() {
-        retrofit = RetrofitClient.getInstance(this)
-        supplementService = retrofit.create(RetrofitService::class.java)
-    }
-
-    fun login(phoneNum: String) {
+    private fun login(phoneNum: String) {
         supplementService.login(phoneNum).enqueue(object : Callback<LoginResponse>{
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val loginResponse = response.body()
@@ -80,8 +76,6 @@ class StartActivity : AppCompatActivity() {
                     sessionManager.saveAuthToken(loginResponse!!.accessToken)
                     val intent = Intent(this@StartActivity, MainActivity::class.java)
                     autoLogin.putString("userToken", response.body()?.accessToken)
-                    println(response.body())
-                    println(response.body()?.accessToken)
                     autoLogin.apply()
                     startActivity(intent)
                     this@StartActivity.finish()

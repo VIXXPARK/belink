@@ -39,8 +39,6 @@ class SendGroupActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRetrofit()
         storeId = intent.getStringExtra("storeId")!!
-
-        Toast.makeText(this,storeId,Toast.LENGTH_SHORT).show()
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         init()
     }
@@ -48,7 +46,6 @@ class SendGroupActivity : AppCompatActivity() {
     private fun init() {
         val groupList = getGroupPref(this,"groupContext")
         adaptGroup(groupList)
-
     }
 
     private fun adaptGroup(groupList: MutableList<TeamRoom>) {
@@ -56,44 +53,36 @@ class SendGroupActivity : AppCompatActivity() {
         adapter = GroupAdapter(this,groupList)
         adapter.setItemClickListener(object : GroupAdapter.OnItemClickListener{
             override fun onClick(v: View, position: Int) {
-                Toast.makeText(this@SendGroupActivity,"posistion:$position",Toast.LENGTH_SHORT).show()
                 val item = groupList[position]
-                supplementService.nfcPushMsg(team_room = item.id,userId = pref.getString("userId","")!!,storeId = storeId)
-                    .enqueue(object : Callback<Map<String,Boolean>>{
-                        override fun onResponse(
-                            call: Call<Map<String, Boolean>>,
-                            response: Response<Map<String, Boolean>>
-                        ) {
-                            Log.d("성공",response.body().toString())
-                            supplementService.nfcAccepted(team_room = item.id,storeId=storeId).enqueue(object : Callback<Map<String,Boolean>>{
-                                override fun onResponse(
-                                    call: Call<Map<String, Boolean>>,
-                                    response: Response<Map<String, Boolean>>
-                                ) {
-                                    adapter.notifyDataSetChanged()
-                                    setResult(Activity.RESULT_OK)
-                                    finish()
-                                }
-
-                                override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-                                }
-
-                            })
-
-                        }
-
-                        override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-                            Log.d("실패","$t")
-                        }
-
-                    })
+                retrofitNfcPushMsg(item)
                 adapter.notifyDataSetChanged()
-
             }
-
         })
         binding.finalGroupListView.adapter=adapter
+    }
 
+    private fun retrofitNfcPushMsg(item: TeamRoom) {
+        supplementService.nfcPushMsg(team_room = item.id,userId = pref.getString("userId","")!!,storeId = storeId)
+            .enqueue(object : Callback<Map<String,Boolean>>{
+                override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
+                    retrofitNfcAccepted(item)
+                }
+                override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                    Log.d("실패","$t")
+                }
+            })
+    }
+
+    private fun retrofitNfcAccepted(item: TeamRoom) {
+        supplementService.nfcAccepted(team_room = item.id,storeId=storeId).enqueue(object : Callback<Map<String,Boolean>>{
+            override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
+                adapter.notifyDataSetChanged()
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+            override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+            }
+        })
     }
 
     private fun initRetrofit() {
