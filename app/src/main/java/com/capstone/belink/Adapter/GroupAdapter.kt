@@ -31,10 +31,6 @@ class GroupAdapter(val context: Context, private val dataList:MutableList<TeamRo
         holder.itemView.setOnClickListener {
             itemClickListener.onClick(it,position)
         }
-        holder.apply {
-
-        }
-
     }
 
     interface OnItemClickListener{

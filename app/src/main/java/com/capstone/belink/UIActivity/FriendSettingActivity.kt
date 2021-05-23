@@ -43,9 +43,7 @@ class FriendSettingActivity : AppCompatActivity() {
         binding.tvFriendReadContact.setOnClickListener {
             getContact()
             syncContact()
-
         }
-
     }
 
 
@@ -82,7 +80,6 @@ class FriendSettingActivity : AppCompatActivity() {
             var number =
                 contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             val reg = Regex("^\\d{3}-\\d{3,4}-\\d{4}\$")
-            println("reg:${reg.matches(number)}")
             if (reg.matches(number)) {
                 if (number.length == 11) {
                     val first = number.slice(IntRange(0, 2))

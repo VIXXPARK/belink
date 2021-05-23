@@ -91,7 +91,7 @@ class TeamActivity : AppCompatActivity() {
         supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
         override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
             val data = response.body()?.data
-            setTeamName(teamName,data)
+            setTeamName(data)
             retrofitMakeTeam(teamName,teamMember)
         }
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
@@ -100,7 +100,7 @@ class TeamActivity : AppCompatActivity() {
         })
     }
 
-    private fun setTeamName(teamName: String, data: List<User>?) {
+    private fun setTeamName(data: List<User>?) {
         if (data != null) {
             for (i in data.indices) {
                 this@TeamActivity.teamName += if(i != data.size - 1) {// 그룹 이름을 유저 이름 제외한 유저이름들로 구성
