@@ -2,11 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:id="@+id/fragment_friend_layout"
+    android:background="@drawable/main_rect"
     android:layout_height="match_parent">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friend_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="300dp"
+        android:layout_height="630dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp" />
 </RelativeLayout>

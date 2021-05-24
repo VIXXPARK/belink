@@ -4,19 +4,19 @@
    <item
        android:id="@+id/main"
        android:icon="@drawable/ic_baseline_person_24"
-       android:title="개인"/>
+       android:title=""/>
     <item
         android:id="@+id/friend"
-        android:icon="@drawable/ic_baseline_people_24"
-        android:title="그룹"/>
+        android:icon="@drawable/group_mark"
+        android:title=""/>
     <item
         android:id="@+id/map"
-        android:icon="@drawable/ic_baseline_map_24"
-        android:title="방문장소"/>
+        android:icon="@drawable/place"
+        android:title=""/>
     <item
         android:id="@+id/etcetra"
-        android:icon="@drawable/ic_baseline_settings_24"
-        android:title="설정"/>
+        android:icon="@drawable/setting"
+        android:title="" />
 
 
 </menu>
