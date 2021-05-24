@@ -87,12 +87,19 @@ class TeamActivity : AppCompatActivity() {
      * 연락처 조회를 하여 해당 전화번호가 데이터베이스에 존재하는 지 판단
      * */
     private fun retrofitIdContactUser(teamMember: MutableList<String>, teamName: String) {
-        teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
+
         supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
         override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
             val data = response.body()?.data
+            teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
             setTeamName(data)
-            retrofitMakeTeam(teamName,teamMember)
+            this@TeamActivity.teamName +=" , "+getSharedPreferences("auto", MODE_PRIVATE).getString("inputName","")!!
+            println("#######################################")
+            println(this@TeamActivity.teamName)
+            println(teamMember.toString())
+            println("#######################################")
+            println("팀만들기 시행 전")
+            retrofitMakeTeam(this@TeamActivity.teamName,teamMember)
         }
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
                 Log.d("contactUserFail", "$t")
@@ -113,15 +120,21 @@ class TeamActivity : AppCompatActivity() {
     }
 
     private fun retrofitMakeTeam(teamName: String, teamMember: MutableList<String>) {
+        println("팀 만들기 들어옴 ")
+        println(teamName)
         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
         override fun onResponse(call: Call<Team>, response: Response<Team>) {
-            if (response.message() == "Created") {
-                val id = response.body()?.id
-                val teamList: MutableList<Member> = ArrayList()
-                if (id!!.isNotEmpty()) {
-                    retrofitMakeMember(teamList,teamMember,id)
-                }
+
+            println("#######################################")
+            println("retrofitMakeTeam 안에 들어옴")
+            val id = response.body()?.id
+            val teamList: MutableList<Member> = ArrayList()
+            if (id!!.isNotEmpty()) {
+                println("#######################################")
+                println("retrofixtMakeMember 전")
+                retrofitMakeMember(teamList, teamMember, id)
             }
+
         }
             override fun onFailure(call: Call<Team>, t: Throwable) {
                 Log.d("makeTeamFail", "$t")
@@ -140,6 +153,8 @@ class TeamActivity : AppCompatActivity() {
         supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>> { // 유저와 그룹 맵핑
             override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                 if (response.message() == "OK") {
+                    println("#######################################")
+                    println("retrofitMakeMember 전")
                     setRetrofitMember(id,teamMember)
                     setResult(Activity.RESULT_OK)
                     finish()

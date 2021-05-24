@@ -130,7 +130,7 @@ class CertificationActivity : AppCompatActivity() {
                         val teamList = getGroupPref(this@CertificationActivity, "groupContext")
                         val userList: MutableList<String> = ArrayList()
                         userList.add(userId)
-                        val obj = TeamRoom(id = id!!, teamName = "나", data = userList)
+                        val obj = TeamRoom(id = id!!, teamName = auto.getString("inputName","")!!, data = userList)
                         teamList.add(obj)
                         setGroupPref(this@CertificationActivity, "groupContext", teamList)
                         val intent = Intent(this@CertificationActivity,MainActivity::class.java)

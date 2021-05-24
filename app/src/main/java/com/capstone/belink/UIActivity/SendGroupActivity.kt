@@ -65,7 +65,9 @@ class SendGroupActivity : AppCompatActivity() {
         supplementService.nfcPushMsg(team_room = item.id,userId = pref.getString("userId","")!!,storeId = storeId)
             .enqueue(object : Callback<Map<String,Boolean>>{
                 override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
-                    retrofitNfcAccepted(item)
+                    println("team_room = ${item.id},userId = ${pref.getString("userId","")!!},storeId = $storeId")
+                    setResult(Activity.RESULT_OK)
+                    finish()
                 }
                 override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
                     Log.d("실패","$t")
@@ -73,17 +75,7 @@ class SendGroupActivity : AppCompatActivity() {
             })
     }
 
-    private fun retrofitNfcAccepted(item: TeamRoom) {
-        supplementService.nfcAccepted(team_room = item.id,storeId=storeId).enqueue(object : Callback<Map<String,Boolean>>{
-            override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
-                adapter.notifyDataSetChanged()
-                setResult(Activity.RESULT_OK)
-                finish()
-            }
-            override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-            }
-        })
-    }
+
 
     private fun initRetrofit() {
         retrofit= RetrofitClient.getInstance(this)
