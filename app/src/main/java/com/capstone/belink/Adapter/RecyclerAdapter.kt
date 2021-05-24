@@ -25,7 +25,7 @@ class RecyclerAdapter(val context: Context):RecyclerView.Adapter<CustomViewHolde
     }
 
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        holder.iv_profile.setImageResource(R.drawable.picachu)
+        holder.iv_profile.setImageResource(R.drawable.logo)
         holder.tv_group_name.text = dataList[position].teamName
 
     }
