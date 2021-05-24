@@ -269,9 +269,8 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
                 true
             }
         R.id.action_setting_group_delete->{
-            //val intent = Intent(this, TeamDeleteActivity::class.java)
-            // startActivityForResult(intent,0)
-            //startActivity(intent)
+            val intent = Intent(this, TeamDeleteActivity::class.java)
+            startActivity(intent)
             true
         }
             else -> super.onOptionsItemSelected(item)

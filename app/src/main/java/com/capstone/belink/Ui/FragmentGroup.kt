@@ -59,6 +59,14 @@ class FragmentGroup : Fragment() {
     override fun onResume() {//생명주기 중 한 부분
         super.onResume()
         activity!!.invalidateOptionsMenu() // 메뉴를 다시 그리게 할 때 쓰이는 메소드
+        refreshAdapter()
+    }
+
+    fun refreshAdapter(){
+        val teamList= getGroupPref(xContext, "groupContext")
+        adapter = RecyclerAdapter(xContext)
+        adapter.dataList=teamList
+        binding.viewRecycler.adapter=adapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

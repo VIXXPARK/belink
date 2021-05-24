@@ -31,9 +31,8 @@ interface RetrofitService {
     @POST("api/user/id-contact-user")
     fun idContactUser(@Field("id")id:List<String>):Call<ContactInfo>
 
-    @FormUrlEncoded
-    @POST("api/user/delete-team")
-    fun deleteTeam(@Field("team_id")team_id: String):Call<Map<String,Boolean>>
+    @DELETE("api/user/delete-team")
+    fun deleteTeam(@Query("id") team_room: String):Call<Map<String,Boolean>>
 
     @POST("api/user/make-member")
     fun makeMember(@Body teamList:MutableList<Member>):Call<Map<String,Boolean>>
