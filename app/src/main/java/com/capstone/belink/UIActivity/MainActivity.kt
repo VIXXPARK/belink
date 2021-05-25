@@ -273,6 +273,11 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             startActivity(intent)
             true
         }
+        R.id.action_setting_group_update->{
+            val intent = Intent(this, TeamUpdateActivity::class.java)
+            startActivity(intent)
+            true
+        }
             else -> super.onOptionsItemSelected(item)
         }
 

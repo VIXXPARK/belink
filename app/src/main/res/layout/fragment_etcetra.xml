@@ -24,11 +24,13 @@
             android:layout_marginEnd="50dp"
             android:layout_marginRight="50dp"
             android:text="공지사항"
+            android:fontFamily="@font/wmp_regular"
             android:textColor="@color/black"
             android:textSize="22sp" />
 
         <TextView
             android:text="알림설정"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -42,6 +44,7 @@
             android:id="@+id/tv_etcetra_alarm"/>
         <TextView
             android:text="친구관리"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -55,6 +58,7 @@
             android:id="@+id/tv_etcetra_manageFriend"/>
         <TextView
             android:text="개인/보안"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -68,6 +72,7 @@
             android:id="@+id/tv_etcetra_secure"/>
         <TextView
             android:text="회원정보수정"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -81,6 +86,7 @@
             android:id="@+id/tv_etcetra_editInfo"/>
         <TextView
             android:text="회원탈퇴"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -94,6 +100,7 @@
             android:id="@+id/tv_etcetra_userOut"/>
         <TextView
             android:text="로그아웃"
+            android:fontFamily="@font/wmp_regular"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"

@@ -10,7 +10,9 @@
         android:id="@+id/tv_popup_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/wmp_bold"
         android:text="요청에 허락하시겠습니까?"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -25,6 +27,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginBottom="296dp"
         android:text="YES"
+        android:fontFamily="@font/wmp_semibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -35,6 +38,7 @@
         android:layout_marginEnd="69dp"
         android:layout_marginBottom="296dp"
         android:text="NO"
+        android:fontFamily="@font/wmp_semibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

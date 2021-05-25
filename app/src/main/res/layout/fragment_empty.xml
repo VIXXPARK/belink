@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="친구목록이 없습니다"
+        android:fontFamily="@font/wmp_semibold"
         android:gravity="center"
         android:textSize="33sp"
         android:textColor="@color/black"

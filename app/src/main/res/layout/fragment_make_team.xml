@@ -17,6 +17,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="팀이름"
+        android:fontFamily="@font/wmp_semibold"
         app:layout_constraintBottom_toTopOf="@+id/btn_team_next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -30,6 +31,7 @@
         android:layout_marginBottom="333dp"
         android:backgroundTint="@color/mainColor"
         android:text="다음"
+        android:fontFamily="@font/wmp_semibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -41,6 +43,7 @@
         android:layout_marginTop="64dp"
         android:layout_marginBottom="100dp"
         android:text="그룹만들기"
+        android:fontFamily="@font/wmp_bold"
         android:textSize="24sp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/et_team_make_name"

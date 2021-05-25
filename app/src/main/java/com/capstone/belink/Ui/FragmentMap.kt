@@ -22,6 +22,7 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.UIActivity.MainActivity
+import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.databinding.FragmentMapBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,15 +54,23 @@ class FragmentMap:Fragment() {
 
         binding.calendarView.setOnDateChangeListener { calendarView, year, month, day ->
             Toast.makeText(mContext, "$year 년 $month 월 $day 일", Toast.LENGTH_SHORT).show()
-            // adaptPlace()
+            adaptPlace()
 
         }
         initRetrofit()
         return view
     }
-    private fun adaptPlace(groupList: MutableList<Place>) { // storename 가져오기
+    private fun adaptPlace() { // storename 가져오기
+        val visitList: MutableList<Place> = arrayListOf()
+        val obj1 = Place(storeName = "스타벅스")
+        val obj2 = Place(storeName = "투썸플레이스")
+        val obj3 = Place(storeName = "서브웨이")
+        visitList.add(obj1)
+        visitList.add(obj2)
+        visitList.add(obj3)
+
         binding.placeListView.layoutManager= LinearLayoutManager(mContext)
-        adapter = PlaceAdapter(mContext!!,groupList)
+        adapter = PlaceAdapter(mContext!!,visitList)
         binding.placeListView.adapter=adapter
     }
     private fun initRetrofit() {

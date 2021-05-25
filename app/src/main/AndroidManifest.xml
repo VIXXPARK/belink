@@ -58,6 +58,9 @@
             android:name=".UIActivity.TeamDeleteActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".UIActivity.TeamUpdateActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".UIActivity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity

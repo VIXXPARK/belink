@@ -34,6 +34,9 @@ interface RetrofitService {
     @DELETE("api/user/delete-team")
     fun deleteTeam(@Query("id") team_room: String):Call<Map<String,Boolean>>
 
+    @PUT("api/user/edit-team")
+    fun editTeam(@Body teamName: String):Call<Boolean>
+
     @POST("api/user/make-member")
     fun makeMember(@Body teamList:MutableList<Member>):Call<Map<String,Boolean>>
 
