@@ -12,7 +12,7 @@ object RetrofitClient {
 
 //    private const val BASE_URL = "http://10.0.2.2:3000"
 //    private const val BASE_URL = "http://172.16.57.86:3000"
-    private const val BASE_URL = "http://ubuntu@ec2-3-35-11-60.ap-northeast-2.compute.amazonaws.com:3000"
+    private const val BASE_URL = "http://ubuntu@ec2-54-180-91-202.ap-northeast-2.compute.amazonaws.com:3000"
 
     //SingleTon
     fun getInstance(context: Context): Retrofit{

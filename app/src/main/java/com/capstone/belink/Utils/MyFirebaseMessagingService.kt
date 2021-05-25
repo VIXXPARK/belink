@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.capstone.belink.R
+import com.capstone.belink.UIActivity.MainActivity
 import com.capstone.belink.UIActivity.PopupActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -41,6 +42,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Log.d("팀 아이디",teamId)
             intent.putExtra("FirebaseStoreId",storeId)
             intent.putExtra("FirebaseTeamId",teamId)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }else{
+            intent = Intent(this, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
