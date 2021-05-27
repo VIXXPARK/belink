@@ -5,14 +5,14 @@
     <item android:id="@+id/action_setting"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="설정"
+        android:fontFamily="@font/wmp_semibold"
         app:showAsAction="always"
         android:visible="true"
         >
         <menu>
             <item android:id="@+id/action_setting_group_delete"
+                android:fontFamily="@font/wmp_semibold"
                 android:title="그룹 삭제"/>
-            <item android:id="@+id/action_setting_group_update"
-                android:title="그룹 수정"/>
         </menu>
     </item>
 </menu>

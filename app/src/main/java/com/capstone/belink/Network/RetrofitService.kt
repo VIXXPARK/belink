@@ -74,4 +74,12 @@ interface RetrofitService {
     @POST("api/sms/send-code")
     fun sendCode(@Field("phNum")phNum: String,@Field("certNum")certNum:String):Call<Map<String,Boolean>>
 
+    @FormUrlEncoded
+    @POST("api/location/search-places")
+    fun searchPlace(@Field("keyword")keyword: String):Call<Search>
+
+    @FormUrlEncoded
+    @POST("api/location/visited-place-save")
+    fun savePlace(@Field("userId")userId: String,@Field("storeId")storeId: String):Call<Map<Boolean,PlaceData>>
+
 }

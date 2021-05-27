@@ -3,18 +3,22 @@
 
    <item
        android:id="@+id/main"
+       android:fontFamily="@font/wmp_semibold"
        android:icon="@drawable/ic_baseline_person_24"
        android:title=""/>
     <item
         android:id="@+id/friend"
+        android:fontFamily="@font/wmp_semibold"
         android:icon="@drawable/group_mark"
         android:title=""/>
     <item
         android:id="@+id/map"
+        android:fontFamily="@font/wmp_semibold"
         android:icon="@drawable/place"
         android:title=""/>
     <item
         android:id="@+id/etcetra"
+        android:fontFamily="@font/wmp_semibold"
         android:icon="@drawable/setting"
         android:title="" />
 

@@ -6,7 +6,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.R
 import com.capstone.belink.Utils.ItemMoveCallbackListener

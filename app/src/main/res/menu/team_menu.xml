@@ -4,6 +4,7 @@
     <item
         android:id="@+id/action_check"
         android:icon="@drawable/ic_baseline_check_24"
+        android:fontFamily="@font/wmp_semibold"
         android:title="확인"
         app:showAsAction="always"/>
 
