@@ -59,51 +59,6 @@ import kotlin.math.pow
         return view
     }
 
-//       override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId){
-//           R.id.action_search ->{
-//               val searchView = item?.actionView as SearchView
-//               searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener{
-//                   override fun onQueryTextSubmit(query: String): Boolean {
-//                       // keyword : query
-//                       supplementService.searchPlace(query)
-//                               .enqueue(object : Callback<Search> {
-//                                   override fun onResponse(call: Call<Search>, response: Response<Search>) {
-//                                       val searchList= response.body()!!.data as MutableList<SearchLocation>
-//                                       Log.d("성공ff",searchList[0].place_name)
-//                                       for (i in 0 until searchList.size) {
-//                                           searchList[i].distance=getDistance(gpsx,gpsy,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
-//                                       }
-//                                       searchList.sortBy { it.distance }
-//                                       setSearchPref(xContext,"searchContext",searchList)
-//                                       true
-//                                       val searchListSub = getSearchPref(xContext,"searchContext")
-//                                       Log.d("성공",searchListSub[0].distance)
-//                                   }
-//                                   override fun onFailure(call: Call<Search>, t: Throwable) {
-//                                       Log.d("실패","$t")
-//                                   }
-//                               })
-//                       return false
-//                   }
-//
-//                   override fun onQueryTextChange(p0: String?): Boolean {
-//                       return false
-//                   }
-//               })
-//               true
-//           }
-//           else ->{
-//               false
-//           }
-//       }
-//       fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
-//           val dLat = Math.toRadians(lat2 - lat1)
-//           val dLon = Math.toRadians(lon2 - lon1)
-//           val a = Math.sin(dLat / 2).pow(2.0) + Math.sin(dLon / 2).pow(2.0) * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-//           val c = 2 * Math.asin(Math.sqrt(a))
-//           return (r * c).toInt()
-//       }
-
     override fun onAttach(context: Context) {
         mContext=context
         mActivity = activity as MainActivity?
