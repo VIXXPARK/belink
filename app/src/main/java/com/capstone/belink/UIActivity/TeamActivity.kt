@@ -87,12 +87,14 @@ class TeamActivity : AppCompatActivity() {
      * 연락처 조회를 하여 해당 전화번호가 데이터베이스에 존재하는 지 판단
      * */
     private fun retrofitIdContactUser(teamMember: MutableList<String>, teamName: String) {
-        teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
+
         supplementService.idContactUser(teamMember).enqueue(object : Callback<ContactInfo> {// id값 기준으로 연락처 조회
         override fun onResponse(call: Call<ContactInfo>, response: Response<ContactInfo>) {
             val data = response.body()?.data
+            teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
             setTeamName(data)
-            retrofitMakeTeam(teamName,teamMember)
+            this@TeamActivity.teamName +=" , "+getSharedPreferences("auto", MODE_PRIVATE).getString("inputName","")!!
+            retrofitMakeTeam(this@TeamActivity.teamName,teamMember)
         }
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
                 Log.d("contactUserFail", "$t")
@@ -115,13 +117,12 @@ class TeamActivity : AppCompatActivity() {
     private fun retrofitMakeTeam(teamName: String, teamMember: MutableList<String>) {
         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
         override fun onResponse(call: Call<Team>, response: Response<Team>) {
-            if (response.message() == "Created") {
-                val id = response.body()?.id
-                val teamList: MutableList<Member> = ArrayList()
-                if (id!!.isNotEmpty()) {
-                    retrofitMakeMember(teamList,teamMember,id)
-                }
+            val id = response.body()?.id
+            val teamList: MutableList<Member> = ArrayList()
+            if (id!!.isNotEmpty()) {
+                retrofitMakeMember(teamList, teamMember, id)
             }
+
         }
             override fun onFailure(call: Call<Team>, t: Throwable) {
                 Log.d("makeTeamFail", "$t")
@@ -130,9 +131,9 @@ class TeamActivity : AppCompatActivity() {
     }
 
     private fun retrofitMakeMember(
-        teamList: MutableList<Member>,
-        teamMember: MutableList<String>,
-        id: String
+            teamList: MutableList<Member>,
+            teamMember: MutableList<String>,
+            id: String
     ) {
         for (i in 0 until teamMember.size) {
             teamList.add(Member(id, teamMember[i]))
