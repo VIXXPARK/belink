@@ -7,12 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.capstone.belink.Model.Member
-import com.capstone.belink.Model.Sign
-import com.capstone.belink.Model.Team
-import com.capstone.belink.Model.TeamRoom
+import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
+import com.capstone.belink.Network.SessionManager
 import com.capstone.belink.Utils.getGroupPref
 import com.capstone.belink.Utils.setGroupPref
 import com.capstone.belink.databinding.ActivityCertificationBinding
@@ -31,11 +29,17 @@ class CertificationActivity : AppCompatActivity() {
     private lateinit var auto: SharedPreferences
     private lateinit var autoLogin: SharedPreferences.Editor
 
+    private lateinit var phoneNum:String
+    private lateinit var name :String
+
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding= ActivityCertificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSharedPreferences()
+        sessionManager = SessionManager(this)
         initRetrofit()
         btnCertificationListener()
         btnSignListener()
@@ -86,10 +90,10 @@ class CertificationActivity : AppCompatActivity() {
 
     private fun btnSignListener() {
         val TOKEN = auto.getString("token","")!!
-        val Phone = auto.getString("inputPhone","")!!
-        val name = auto.getString("inputName","")!!
+        phoneNum = auto.getString("inputPhone","")!!
+        name = auto.getString("inputName","")!!
         binding.btnCertification.setOnClickListener {
-                supplementService.registerUser(Phone, name,TOKEN).enqueue(object : Callback<Sign> {
+                supplementService.registerUser(phoneNum, name,TOKEN).enqueue(object : Callback<Sign> {
                     override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
                         if(response.message()=="Created"){
                             val userId = response.body()!!.data.id
@@ -130,12 +134,10 @@ class CertificationActivity : AppCompatActivity() {
                         val teamList = getGroupPref(this@CertificationActivity, "groupContext")
                         val userList: MutableList<String> = ArrayList()
                         userList.add(userId)
-                        val obj = TeamRoom(id = id!!, teamName = "나", data = userList)
+                        val obj = TeamRoom(id = id!!, teamName = auto.getString("inputName","")!!, data = userList)
                         teamList.add(obj)
                         setGroupPref(this@CertificationActivity, "groupContext", teamList)
-                        val intent = Intent(this@CertificationActivity,MainActivity::class.java)
-                        startActivity(intent)
-                        this@CertificationActivity.finish()
+                        login(phoneNum)
                     }
                 }
                 override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
@@ -143,5 +145,62 @@ class CertificationActivity : AppCompatActivity() {
             })
     }
 
+    private fun login(phoneNum: String) {
 
+        supplementService.login(phoneNum).enqueue(object : Callback<LoginResponse>{
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                val loginResponse = response.body()
+
+                if (response.message() == "OK" && loginResponse?.accessToken != null) {
+                    sessionManager.saveAuthToken(loginResponse!!.accessToken)
+                    val intent = Intent(this@CertificationActivity, MainActivity::class.java)
+                    setSharedPreferencesEdit(response)
+                    setGroupPreferencesEdit()
+                    val teamMember = response.body()!!.id
+                    supplementService.getMyTeam(teamMember).enqueue(object : Callback<GetMyTeam> {
+                        override fun onResponse(
+                            call: Call<GetMyTeam>,
+                            response: Response<GetMyTeam>
+                        ) {
+                            if(response.message()=="OK"){
+                                setGroupContentList(response)
+                                startActivity(intent)
+                                this@CertificationActivity.finish()
+                            }
+                        }
+                        override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
+                            Log.d("태그","$t")
+                        }
+                    })
+                }
+            }
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+            }
+        })
+    }
+
+    private fun setGroupPreferencesEdit(): SharedPreferences.Editor? {
+        val groupEdit = getSharedPreferences("groupContext",Activity.MODE_PRIVATE)!!.edit()
+        groupEdit.clear()
+        groupEdit.apply()
+        finish()
+        return groupEdit
+    }
+
+    private fun setSharedPreferencesEdit(response: Response<LoginResponse>) {
+        autoLogin.putString("userToken", response.body()!!.accessToken)
+        autoLogin.putString("inputName", name)
+        autoLogin.putString("inputPhone", phoneNum)
+        autoLogin.putString("userId", response.body()!!.id)
+        autoLogin.apply()
+    }
+
+    private fun setGroupContentList(response: Response<GetMyTeam>) {
+        val teamList:ArrayList<TeamRoom> = ArrayList()
+        response.body()!!.result.forEach{
+            val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
+            teamList.add(element)
+        }
+        setGroupPref(this@CertificationActivity,"groupContext",teamList)
+    }
 }

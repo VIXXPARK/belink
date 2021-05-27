@@ -22,7 +22,12 @@
         android:theme="@style/Theme.Belink"
         android:usesCleartextTraffic="true">
         <activity android:name=".UIActivity.CertificationActivity"></activity>
-        <activity android:name=".UIActivity.PopupActivity" />
+        <activity android:name=".UIActivity.PopupActivity" >
+            <intent-filter>
+                <action android:name="goActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".Utils.MyFirebaseMessagingService"

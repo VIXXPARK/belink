@@ -56,7 +56,11 @@ interface RetrofitService {
 
     @FormUrlEncoded
     @POST("api/push/accepted")
-    fun nfcAccepted(@Field("team_room")team_room: String,@Field("storeId")storeId: String):Call<Map<String,Boolean>>
+    fun nfcAccepted(@Field("team_room")team_room: String,@Field("storeId")storeId: String,@Field("userId")userId: String):Call<Map<String,Boolean>>
+
+    @FormUrlEncoded
+    @POST("api/push/rejected")
+    fun nfcRejected(@Field("team_room")team_room: String):Call<Map<String,Boolean>>
 
     @FormUrlEncoded
     @POST("api/user/get-my-team")
