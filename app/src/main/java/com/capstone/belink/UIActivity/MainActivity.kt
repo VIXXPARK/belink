@@ -13,16 +13,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.capstone.belink.Adapter.FragmentStateAdapter
-import com.capstone.belink.Adapter.IsoDepAdapter
-import com.capstone.belink.Adapter.IsoDepTransceiver
-import com.capstone.belink.Adapter.LoyaltyCardReader
+import com.capstone.belink.Adapter.*
 import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
@@ -61,6 +60,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
     //gps관련 변수
     private val r = 6372.8 * 1000
+    //임시 gps
     var gpsx=127.0
     var gpsy=30.0
 
@@ -357,6 +357,8 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         val c = 2 * asin(sqrt(a))
         return (r * c).toInt()
     }
+
+
 
     override fun onDestroy() {
         mBinding=null

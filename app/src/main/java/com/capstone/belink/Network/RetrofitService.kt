@@ -84,6 +84,9 @@ interface RetrofitService {
 
     @FormUrlEncoded
     @POST("api/location/visited-place-save")
-    fun savePlace(@Field("userId")userId: String,@Field("storeId")storeId: String):Call<Map<Boolean,PlaceData>>
+    fun savePlace(@Field("userId")userId: String,@Field("storeId")storeId: String):Call<Map<PlaceData,Boolean>>
 
+    @FormUrlEncoded
+    @POST("api/location/visited-place-list")
+    fun showPlace(@Field("userId")userId: String):Call<Map<Data,Boolean>>
 }

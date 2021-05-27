@@ -9,9 +9,11 @@ import android.view.*
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.belink.Adapter.FriendAdapter
+import com.capstone.belink.Adapter.GroupAdapter
 import com.capstone.belink.Adapter.SearchAdapter
-import com.capstone.belink.Model.Search
-import com.capstone.belink.Model.SearchLocation
+import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
@@ -22,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.http.Field
 import kotlin.math.pow
 
 
@@ -54,55 +57,35 @@ import kotlin.math.pow
 
         setHasOptionsMenu(true)
         // init() 초기 예측 목록 띄우기
-
+        // 액션바에서 검색 기능 실행 시
+        val searchList = getSearchPref(xContext,"searchContext")
+        adaptSearch(searchList)
         initRetrofit()
         return view
     }
-
-//       override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId){
-//           R.id.action_search ->{
-//               val searchView = item?.actionView as SearchView
-//               searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener{
-//                   override fun onQueryTextSubmit(query: String): Boolean {
-//                       // keyword : query
-//                       supplementService.searchPlace(query)
-//                               .enqueue(object : Callback<Search> {
-//                                   override fun onResponse(call: Call<Search>, response: Response<Search>) {
-//                                       val searchList= response.body()!!.data as MutableList<SearchLocation>
-//                                       Log.d("성공ff",searchList[0].place_name)
-//                                       for (i in 0 until searchList.size) {
-//                                           searchList[i].distance=getDistance(gpsx,gpsy,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
-//                                       }
-//                                       searchList.sortBy { it.distance }
-//                                       setSearchPref(xContext,"searchContext",searchList)
-//                                       true
-//                                       val searchListSub = getSearchPref(xContext,"searchContext")
-//                                       Log.d("성공",searchListSub[0].distance)
-//                                   }
-//                                   override fun onFailure(call: Call<Search>, t: Throwable) {
-//                                       Log.d("실패","$t")
-//                                   }
-//                               })
-//                       return false
-//                   }
-//
-//                   override fun onQueryTextChange(p0: String?): Boolean {
-//                       return false
-//                   }
-//               })
-//               true
-//           }
-//           else ->{
-//               false
-//           }
-//       }
-//       fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
-//           val dLat = Math.toRadians(lat2 - lat1)
-//           val dLon = Math.toRadians(lon2 - lon1)
-//           val a = Math.sin(dLat / 2).pow(2.0) + Math.sin(dLon / 2).pow(2.0) * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-//           val c = 2 * Math.asin(Math.sqrt(a))
-//           return (r * c).toInt()
-//       }
+       private fun adaptSearch(dataList:MutableList<SearchLocation>) {
+           binding.searchRecycler.layoutManager = LinearLayoutManager(mContext)
+           adapter = SearchAdapter(xContext,dataList)
+           // 체크인
+           adapter.setItemClickListener(object : SearchAdapter.OnItemClickListener{
+               override fun onClick(v: View, position: Int) {
+                   val storeId = dataList[position].id
+                   val userId = auto.getString("userId", null).toString()
+                   supplementService.savePlace(userId,storeId)
+                           .enqueue(object : Callback<Map<PlaceData,Boolean>>{
+                               override fun onResponse(call: Call<Map<PlaceData,Boolean>>, response: Response<Map<PlaceData,Boolean>>) {
+                                   Log.d("성공",response.body()!!.values.toString())
+                                   true
+                               }
+                               override fun onFailure(call: Call<Map<PlaceData,Boolean>>, t: Throwable) {
+                                   Log.d("실패","$t")
+                               }
+                           })
+                   //adapter.notifyDataSetChanged()
+               }
+           })
+           binding.searchRecycler.adapter=adapter
+       }
 
     override fun onAttach(context: Context) {
         mContext=context
