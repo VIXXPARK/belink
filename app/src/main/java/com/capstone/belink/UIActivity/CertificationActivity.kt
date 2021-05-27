@@ -93,19 +93,19 @@ class CertificationActivity : AppCompatActivity() {
         phoneNum = auto.getString("inputPhone","")!!
         name = auto.getString("inputName","")!!
         binding.btnCertification.setOnClickListener {
-                supplementService.registerUser(phoneNum, name,TOKEN).enqueue(object : Callback<Sign> {
-                    override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
-                        if(response.message()=="Created"){
-                            val userId = response.body()!!.data.id
-                            var teamList: MutableList<Member> = ArrayList()
-                            retrofitMakeTeam(response,teamList,userId)
-                        }
+            supplementService.registerUser(phoneNum, name,TOKEN).enqueue(object : Callback<Sign> {
+                override fun onResponse(call: Call<Sign>, response: Response<Sign>) {
+                    if(response.message()=="Created"){
+                        val userId = response.body()!!.data.id
+                        var teamList: MutableList<Member> = ArrayList()
+                        retrofitMakeTeam(response,teamList,userId)
                     }
-                    override fun onFailure(call: Call<Sign>, t: Throwable) {
-                        Log.d("fail", "$t")
-                    }
-                })
-            }
+                }
+                override fun onFailure(call: Call<Sign>, t: Throwable) {
+                    Log.d("fail", "$t")
+                }
+            })
+        }
     }
 
     private fun retrofitMakeTeam(response: Response<Sign>, teamList: MutableList<Member>, userId: String) {
@@ -127,22 +127,22 @@ class CertificationActivity : AppCompatActivity() {
 
     private fun retrofitMakeMember(teamList: MutableList<Member>, id: String, userId: String) {
         supplementService.makeMember(teamList)
-            .enqueue(object : Callback<Map<String, Boolean>> {
-                override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
-                    if (response.message() == "OK") {
-                        getSharedPreferences("groupContext",Activity.MODE_PRIVATE).edit().clear().apply()
-                        val teamList = getGroupPref(this@CertificationActivity, "groupContext")
-                        val userList: MutableList<String> = ArrayList()
-                        userList.add(userId)
-                        val obj = TeamRoom(id = id!!, teamName = auto.getString("inputName","")!!, data = userList)
-                        teamList.add(obj)
-                        setGroupPref(this@CertificationActivity, "groupContext", teamList)
-                        login(phoneNum)
+                .enqueue(object : Callback<Map<String, Boolean>> {
+                    override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
+                        if (response.message() == "OK") {
+                            getSharedPreferences("groupContext",Activity.MODE_PRIVATE).edit().clear().apply()
+                            val teamList = getGroupPref(this@CertificationActivity, "groupContext")
+                            val userList: MutableList<String> = ArrayList()
+                            userList.add(userId)
+                            val obj = TeamRoom(id = id!!, teamName = auto.getString("inputName","")!!, data = userList)
+                            teamList.add(obj)
+                            setGroupPref(this@CertificationActivity, "groupContext", teamList)
+                            login(phoneNum)
+                        }
                     }
-                }
-                override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
-                }
-            })
+                    override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
+                    }
+                })
     }
 
     private fun login(phoneNum: String) {
@@ -159,8 +159,8 @@ class CertificationActivity : AppCompatActivity() {
                     val teamMember = response.body()!!.id
                     supplementService.getMyTeam(teamMember).enqueue(object : Callback<GetMyTeam> {
                         override fun onResponse(
-                            call: Call<GetMyTeam>,
-                            response: Response<GetMyTeam>
+                                call: Call<GetMyTeam>,
+                                response: Response<GetMyTeam>
                         ) {
                             if(response.message()=="OK"){
                                 setGroupContentList(response)

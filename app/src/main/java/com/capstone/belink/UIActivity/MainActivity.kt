@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,18 +23,21 @@ import com.capstone.belink.Adapter.FragmentStateAdapter
 import com.capstone.belink.Adapter.IsoDepAdapter
 import com.capstone.belink.Adapter.IsoDepTransceiver
 import com.capstone.belink.Adapter.LoyaltyCardReader
-import com.capstone.belink.Model.GetMyTeam
-import com.capstone.belink.Model.TeamRoom
+import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
+import com.capstone.belink.Utils.getSearchPref
 import com.capstone.belink.Utils.setGroupPref
+import com.capstone.belink.Utils.setSearchPref
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.lang.Math.*
+import kotlin.math.pow
 
 
 class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {
@@ -55,9 +59,13 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     private lateinit var mLoyaltyCardReader: LoyaltyCardReader
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 1
 
+    //gps관련 변수
+    private val r = 6372.8 * 1000
+    var gpsx=127.0
+    var gpsy=30.0
+
     //페이지
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
-
 
     override fun onResume() {
         super.onResume()
@@ -80,8 +88,12 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         requestContactPermission()
         initRetrofit()
         init()
+        search()
     }
 
+    private fun search(){
+
+    }
     private fun setNfcModule() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         isoDepAdapter = IsoDepAdapter(layoutInflater)
@@ -264,8 +276,13 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
                 startActivity(intent)
                 true
             }
-            R.id.action_exchange -> {
+            R.id.action_exchange ->{
                 retrofitGetMyTeam()
+                true
+            }
+            R.id.action_setting_group_delete->{
+                val intent = Intent(this, TeamDeleteActivity::class.java)
+                startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -298,9 +315,48 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
      * menuInflater를 호출하여 여기에 해당하는 메뉴를 inflate 시키면 된다.*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.actionbar_menu,menu)
+        /**
+         * 검색 기능
+         */
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // keyword : query
+                supplementService.searchPlace(query)
+                        .enqueue(object : Callback<Search>{
+                            override fun onResponse(call: Call<Search>, response: Response<Search>) {
+                                val searchList= response.body()!!.data as MutableList<SearchLocation>
+                                Log.d("성공",searchList[0].place_name)
+                                for (i in 0 until searchList.size) {
+                                    searchList[i].distance=getDistance(gpsx,gpsy,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
+                                }
+                                searchList.sortBy { it.distance }
+                                setSearchPref(this@MainActivity,"searchContext",searchList)
+                               // val searchListSub = getSearchPref(this@MainActivity,"searchContext")
+                               // Log.d("성공",searchListSub[0].distance)
+                                true
+                            }
+                            override fun onFailure(call: Call<Search>, t: Throwable) {
+                                Log.d("실패","$t")
+                            }
+                        })
+                return false
+            }
+        })
         return true
     }
 
+    fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2))
+        val c = 2 * asin(sqrt(a))
+        return (r * c).toInt()
+    }
 
     override fun onDestroy() {
         mBinding=null
@@ -351,6 +407,10 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             }
         }
     }
+
+}
+
+private fun SearchView.setOnQueryTextListener() {
 
 }
 

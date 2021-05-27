@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".UIActivity.MainActivity"
     android:id="@+id/main_frame"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,12 +27,15 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
+            android:background="@drawable/bottom_menu_bar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:itemBackground="@drawable/menu_selector_color"
-            app:itemIconTint="@color/black"
+
+            app:layout_behavior="com.google.android.material.behavior.HideSea"
+
+            app:itemIconTint="@color/mainColor"
             app:itemTextColor="@color/black"
             app:menu="@menu/navi_menu"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

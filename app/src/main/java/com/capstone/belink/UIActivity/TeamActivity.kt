@@ -131,9 +131,9 @@ class TeamActivity : AppCompatActivity() {
     }
 
     private fun retrofitMakeMember(
-        teamList: MutableList<Member>,
-        teamMember: MutableList<String>,
-        id: String
+            teamList: MutableList<Member>,
+            teamMember: MutableList<String>,
+            id: String
     ) {
         for (i in 0 until teamMember.size) {
             teamList.add(Member(id, teamMember[i]))

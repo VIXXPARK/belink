@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_rect"
     tools:context=".UIActivity.EditInfoActivity">
 
     <EditText
@@ -13,6 +14,7 @@
         android:layout_marginTop="236dp"
         android:ems="10"
         android:hint="이름"
+        android:fontFamily="@font/wmp_bold"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -25,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="279dp"
         android:text="확인"
+        android:fontFamily="@font/wmp_bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -35,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="52dp"
         android:text="감염여부"
+        android:fontFamily="@font/wmp_regular"
         app:layout_constraintBottom_toTopOf="@+id/btn_edit_send"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

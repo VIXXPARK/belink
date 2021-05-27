@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_rect"
     tools:context=".Ui.FragmentEmpty">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,8 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="친구목록이 없습니다"
+        android:fontFamily="@font/wmp_semibold"
         android:gravity="center"
-        android:textSize="36sp"
+        android:textSize="33sp"
         android:textColor="@color/black"
         />
 

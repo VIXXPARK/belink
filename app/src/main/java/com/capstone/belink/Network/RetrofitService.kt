@@ -31,6 +31,11 @@ interface RetrofitService {
     @POST("api/user/id-contact-user")
     fun idContactUser(@Field("id")id:List<String>):Call<ContactInfo>
 
+    @DELETE("api/user/delete-team")
+    fun deleteTeam(@Query("id") team_room: String):Call<Map<String,Boolean>>
+
+    @PUT("api/user/edit-team")
+    fun editTeam(@Body teamName: String):Call<Boolean>
 
     @POST("api/user/make-member")
     fun makeMember(@Body teamList:MutableList<Member>):Call<Map<String,Boolean>>
@@ -72,5 +77,13 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("api/sms/send-code")
     fun sendCode(@Field("phNum")phNum: String,@Field("certNum")certNum:String):Call<Map<String,Boolean>>
+
+    @FormUrlEncoded
+    @POST("api/location/search-places")
+    fun searchPlace(@Field("keyword")keyword: String):Call<Search>
+
+    @FormUrlEncoded
+    @POST("api/location/visited-place-save")
+    fun savePlace(@Field("userId")userId: String,@Field("storeId")storeId: String):Call<Map<Boolean,PlaceData>>
 
 }

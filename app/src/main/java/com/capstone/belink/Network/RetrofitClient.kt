@@ -10,9 +10,8 @@ object RetrofitClient {
     private var instance: Retrofit?=null
     private val gson = GsonBuilder().setLenient().create()
 
-//    private const val BASE_URL = "http://10.0.2.2:3000"
-//    private const val BASE_URL = "http://172.16.57.86:3000"
-    private const val BASE_URL = "http://ubuntu@ec2-54-180-91-202.ap-northeast-2.compute.amazonaws.com:3000"
+    private const val BASE_URL = "http://192.168.0.15:3000"
+//    private const val BASE_URL = "http://ubuntu@ec2-52-79-237-74.ap-northeast-2.compute.amazonaws.com:3000"
 
     //SingleTon
     fun getInstance(context: Context): Retrofit{

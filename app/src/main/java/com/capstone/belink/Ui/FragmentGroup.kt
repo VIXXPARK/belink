@@ -6,7 +6,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.capstone.belink.Adapter.ProfileData
 import com.capstone.belink.Adapter.RecyclerAdapter
 import com.capstone.belink.R
 import com.capstone.belink.Utils.ItemMoveCallbackListener
@@ -59,6 +58,14 @@ class FragmentGroup : Fragment() {
     override fun onResume() {//생명주기 중 한 부분
         super.onResume()
         activity!!.invalidateOptionsMenu() // 메뉴를 다시 그리게 할 때 쓰이는 메소드
+        refreshAdapter()
+    }
+
+    fun refreshAdapter(){
+        val teamList= getGroupPref(xContext, "groupContext")
+        adapter = RecyclerAdapter(xContext)
+        adapter.dataList=teamList
+        binding.viewRecycler.adapter=adapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
