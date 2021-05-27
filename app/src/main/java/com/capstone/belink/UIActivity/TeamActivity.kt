@@ -94,11 +94,6 @@ class TeamActivity : AppCompatActivity() {
             teamMember.add(getSharedPreferences("auto", MODE_PRIVATE).getString("userId","")!!)
             setTeamName(data)
             this@TeamActivity.teamName +=" , "+getSharedPreferences("auto", MODE_PRIVATE).getString("inputName","")!!
-            println("#######################################")
-            println(this@TeamActivity.teamName)
-            println(teamMember.toString())
-            println("#######################################")
-            println("팀만들기 시행 전")
             retrofitMakeTeam(this@TeamActivity.teamName,teamMember)
         }
             override fun onFailure(call: Call<ContactInfo>, t: Throwable) {
@@ -120,18 +115,11 @@ class TeamActivity : AppCompatActivity() {
     }
 
     private fun retrofitMakeTeam(teamName: String, teamMember: MutableList<String>) {
-        println("팀 만들기 들어옴 ")
-        println(teamName)
         supplementService.makeTeam(teamName).enqueue(object : Callback<Team> {// 그룹 생성
         override fun onResponse(call: Call<Team>, response: Response<Team>) {
-
-            println("#######################################")
-            println("retrofitMakeTeam 안에 들어옴")
             val id = response.body()?.id
             val teamList: MutableList<Member> = ArrayList()
             if (id!!.isNotEmpty()) {
-                println("#######################################")
-                println("retrofixtMakeMember 전")
                 retrofitMakeMember(teamList, teamMember, id)
             }
 
@@ -153,8 +141,6 @@ class TeamActivity : AppCompatActivity() {
         supplementService.makeMember(teamList).enqueue(object : Callback<Map<String,Boolean>> { // 유저와 그룹 맵핑
             override fun onResponse(call: Call<Map<String,Boolean>>, response: Response<Map<String,Boolean>>) {
                 if (response.message() == "OK") {
-                    println("#######################################")
-                    println("retrofitMakeMember 전")
                     setRetrofitMember(id,teamMember)
                     setResult(Activity.RESULT_OK)
                     finish()
