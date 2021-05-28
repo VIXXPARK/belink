@@ -32,6 +32,6 @@ class PlaceAdapter(val context: Context):RecyclerView.Adapter<PlaceViewHolder>()
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return dataList.size
     }
 }

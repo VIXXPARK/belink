@@ -27,9 +27,6 @@ import com.capstone.belink.Network.RetrofitClient
 import com.capstone.belink.Network.RetrofitService
 import com.capstone.belink.R
 import com.capstone.belink.Ui.*
-import com.capstone.belink.Utils.getSearchPref
-import com.capstone.belink.Utils.setGroupPref
-import com.capstone.belink.Utils.setSearchPref
 import com.capstone.belink.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +34,18 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.lang.Math.*
 import kotlin.math.pow
-
+import android.app.AlertDialog
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.location.LocationManager
+import android.provider.Settings
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.capstone.belink.Utils.*
+import java.io.IOException
+import java.util.*
 
 class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {
     //layout bind
@@ -60,9 +68,13 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
     //gps관련 변수
     private val r = 6372.8 * 1000
-    //임시 gps
-    var gpsx=127.0
-    var gpsy=30.0
+    private lateinit var adapter: SearchAdapter
+    private var gpsTracker: GpsTracker? = null
+    private val GPS_ENABLE_REQUEST_CODE = 2001
+    private val PERMISSIONS_REQUEST_CODE = 100
+    var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION)
+
 
     //페이지
     private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
@@ -257,7 +269,18 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
                         Toast.makeText(this, "인증 되었습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
+
             }
+        when (requestCode) {
+            GPS_ENABLE_REQUEST_CODE ->                     //사용자가 GPS 활성 했는지 검사
+                if (checkLocationServicesStatus()) {
+                    if (checkLocationServicesStatus()) {
+                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음")
+                        checkRunTimePermission()
+                        return
+                    }
+                }
+        }
 
     }
 
@@ -318,6 +341,14 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         /**
          * 검색 기능
          */
+        if (!checkLocationServicesStatus()) {
+            showDialogForLocationServiceSetting()
+        } else {
+            checkRunTimePermission()
+        }
+        gpsTracker = GpsTracker(this@MainActivity)
+        val latitude = gpsTracker!!.getLatitude()
+        val longitude = gpsTracker!!.getLongitude()
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView
         searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
@@ -331,11 +362,13 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
                             override fun onResponse(call: Call<Search>, response: Response<Search>) {
                                 val searchList= response.body()!!.data as MutableList<SearchLocation>
                                 Log.d("성공",searchList[0].place_name)
+                                println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                                println("$latitude $longitude")
                                 for (i in 0 until searchList.size) {
-                                    searchList[i].distance=getDistance(gpsx,gpsy,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
+                                    searchList[i].distance=getDistance(latitude,longitude,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
                                 }
-                                searchList.sortBy { it.distance }
                                 setSearchPref(this@MainActivity,"searchContext",searchList)
+                                refreshAdapter()
                                // val searchListSub = getSearchPref(this@MainActivity,"searchContext")
                                // Log.d("성공",searchListSub[0].distance)
                                 true
@@ -348,6 +381,17 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             }
         })
         return true
+    }
+
+    fun refreshAdapter(){
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.add(R.id.main_frame,FragmentMain()).commit()
+    }
+
+    fun replaceFragment(fragment: Fragment){ //액티비티에서 프라그먼토 교체 함수
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.search_recycler,fragment).commit()
     }
 
     fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
@@ -396,6 +440,28 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        if (requestCode == PERMISSIONS_REQUEST_CODE &&
+                grantResults.size == REQUIRED_PERMISSIONS.size) {
+            var check_result = true
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false
+                    break
+                }
+            }
+            if (check_result) {
+                //위치 값을 가져올 수 있음
+            } else {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])
+                        || ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
+                    Toast.makeText(this@MainActivity, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해 주세요.", Toast.LENGTH_LONG).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@MainActivity, "퍼미션이 거부되었습니다. 설정에서 퍼미션을 허용해주세요", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         when (requestCode) {
             PERMISSIONS_REQUEST_READ_CONTACTS -> {
                 if (grantResults.isNotEmpty()
@@ -409,6 +475,91 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             }
         }
     }
+    //ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드
+
+
+    fun checkRunTimePermission() {
+        //런타임 퍼미션 처리
+        //1. 위치 퍼미션을 가지고 있는지 체크
+        val hasFineLocationPermission = ContextCompat.checkSelfPermission(this@MainActivity,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+        val hasCoarseLocationPermssion = ContextCompat.checkSelfPermission(this@MainActivity,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                hasCoarseLocationPermssion == PackageManager.PERMISSION_GRANTED) {
+            //2. 이미 퍼미션이 있을 경우
+            //3. 위치 값을 가져올 수 있음
+        } else {
+            //퍼미션 요청하지 않았을 경우 2가지 퍼미션 요청이 필요함
+            //3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
+                            REQUIRED_PERMISSIONS[0])) {
+                //3-2. 요청을 진행하기 전에 사용자에게 퍼미션이 필요한 이유를 설명해줘야함
+                Toast.makeText(this@MainActivity, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                //3-3. 사용자에게 퍼미션 요청, 요청 결과는 onRequestPermissionResult에서 수신
+                ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
+            } else {
+                //4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 함
+                //요청 결과는 onRequestPermissionResult에서 수신됨.
+                ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
+            }
+        }
+    }
+
+    fun getCurrentAddress(latitude: Double, longitude: Double): String {
+        //GeoCorder -> GPS를 주소로 변환
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses: List<Address>
+        addresses = try {
+            geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7)
+        } catch (ioException: IOException) {
+            //네트워크 문제
+            Toast.makeText(this, "지오코더 서비스 사용 불가", Toast.LENGTH_LONG).show()
+            return "지오코더 서비스 사용 불가"
+        } catch (illegalArgumentException: IllegalArgumentException) {
+            Toast.makeText(this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show()
+            return "잘못된 GPS 좌표"
+        }
+        if (addresses == null || addresses.size == 0) {
+            Toast.makeText(this, "주소 미발견", Toast.LENGTH_LONG).show()
+            return "주소 미발견"
+        }
+        val address = addresses[0]
+        return """
+            ${address.getAddressLine(0)}
+            
+            """.trimIndent()
+    }
+
+    //GPS 활성화를 위한 메소드
+
+    //GPS 활성화를 위한 메소드
+    private fun showDialogForLocationServiceSetting() {
+        val builder = AlertDialog.Builder(this@MainActivity)
+        builder.setTitle("위치 서비스 비활성화")
+        builder.setMessage("""
+    앱을 사용하기 위해서는 위치 서비스가 필요합니다
+    위치 설정을 수정하시겠습니까?
+    """.trimIndent())
+        builder.setCancelable(true)
+        builder.setPositiveButton("설정") { dialog, id ->
+            val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE)
+        }
+        builder.setNegativeButton("취소") { dialog, id -> dialog.cancel() }
+        builder.create().show()
+    }
+
+
+    fun checkLocationServicesStatus(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+    }
+
 
 }
 
