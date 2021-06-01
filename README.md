@@ -20,5 +20,5 @@ Git 규칙
 
 # 기술 스택
 
-tech_stack.png
+![tech_stack](https://user-images.githubusercontent.com/55678674/120316908-ec898900-c318-11eb-9af5-a1cd57eaeb05.png)
 
