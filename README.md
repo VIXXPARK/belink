@@ -22,3 +22,10 @@ Git 규칙
 
 ![tech_stack](https://user-images.githubusercontent.com/55678674/120316908-ec898900-c318-11eb-9af5-a1cd57eaeb05.png)
 
+# 역할 분담
+|박수한|김현진|김경재|
+|------|------|------|
+|UI 디자인 설계|Recyclerview 갱신|UI 디자인|
+|Retrofit 연결|검색 담당|Firebase 연동|
+|전체적인 설계|...|...|
+
