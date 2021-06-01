@@ -34,5 +34,7 @@ Git 규칙
 2.  연락처 정보 가져오기
 3.  GPS를 통한 위치 정보 가져오기
 4.  Firebase Push Service 사용
-5.  Retrofit2를 통한 
+5.  Retrofit2를 통한 통신 
+
+
 
