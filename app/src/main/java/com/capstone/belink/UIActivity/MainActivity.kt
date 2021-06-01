@@ -173,6 +173,37 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         binding.viewPager.adapter=adapter
         setViewPager()
         setBottomNavigationView()
+        // getPrediction
+        gpsTracker = GpsTracker(this@MainActivity)
+        val latitude = gpsTracker!!.getLatitude().toString()
+        val longitude = gpsTracker!!.getLongitude().toString()
+        val userId = pref.getString("userId", null).toString()
+        println("~~~~~~~~~~~~user Id INIT~~~~~~~~~~~~~~")
+        println(userId)
+        println(latitude)
+        println(longitude)
+        supplementService.getPrediction(x=longitude,y=latitude,id=userId)
+                .enqueue(object : Callback<Search>{
+                    override fun onResponse(call: Call<Search>, response: Response<Search>) {
+                        val searchList= response.body()!!.data
+                        Log.d("성공",searchList[0].place_name)
+                        println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                        println("~~~~~~~~~~~~~~~~~Prediction 성공~~~~~~~~~~~~~~~~~~")
+
+                        setSearchPref(this@MainActivity,"searchContext", searchList as MutableList<SearchLocation>)
+                        refreshAdapter()
+                        // val searchListSub = getSearchPref(this@MainActivity,"searchContext")
+                        // Log.d("성공",searchListSub[0].distance)
+                        true
+                    }
+                    override fun onFailure(call: Call<Search>, t: Throwable) {
+                        Log.d("실패","$t")
+                        println("~~~~~~~~~~~~~~~~~Prediction 실패~~~~~~~~~~~~~~~~~~")
+                    }
+                })
+
+        println("~~~~~~~~~~~~~~~~~Prediction~~~~~~~~~~~~~~~~~~")
+
     }
 
 
@@ -385,13 +416,13 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
     fun refreshAdapter(){
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.main_frame,FragmentMain()).commit()
+        fragmentTransaction.add(R.id.main_frag,FragmentMain()).commit()
     }
 
     fun replaceFragment(fragment: Fragment){ //액티비티에서 프라그먼토 교체 함수
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.search_recycler,fragment).commit()
+        fragmentTransaction.replace(R.id.main_frag,fragment).commit()
     }
 
     fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {

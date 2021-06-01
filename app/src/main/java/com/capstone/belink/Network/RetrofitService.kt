@@ -89,4 +89,9 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("api/location/visited-place-list")
     fun showPlace(@Field("userId")userId: String):Call<VisitLocation>
+
+    @FormUrlEncoded
+    @POST("api/prediction/get-prediction")
+    fun getPrediction(@Field("x")x: String,@Field("y")y: String,@Field("id")id: String):Call<Search>
+
 }

@@ -52,41 +52,60 @@ import retrofit2.Retrofit
         auto =(activity as MainActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         initRetrofit()
         setHasOptionsMenu(true)
-        // init() 초기 예측 목록 띄우기
-        // 액션바에서 검색 기능 실행 시
-        val searchList = getSearchPref(xContext,"searchContext")
-        adaptSearch(searchList)
+        val dataList = getSearchPref(xContext,"searchContext")
+        init(dataList)
+
+        adaptSearch(dataList)
 
         return view
     }
-       private fun adaptSearch(dataList:MutableList<SearchLocation>) {
+       private  fun init(dataList:MutableList<SearchLocation>){
            binding.searchRecycler.layoutManager = LinearLayoutManager(mContext)
+           adapter = SearchAdapter(xContext,dataList)
+           binding.searchRecycler.adapter=adapter
+       }
+
+       private fun adaptSearch(dataList:MutableList<SearchLocation>) {
+           // binding.searchRecycler.layoutManager = LinearLayoutManager(mContext)
            adapter = SearchAdapter(xContext,dataList)
            // 체크인
            adapter.setItemClickListener(object : SearchAdapter.OnItemClickListener{
                override fun onClick(v: View, position: Int) {
                    var storeId = dataList[position].id
                    val userId = auto.getString("userId", null).toString()
+                   val teamRoomId = auto.getString("teamRoomId", null).toString()
                    // storeId 임시 값
-                   storeId = 8439657.toString()
+                   // storeId = 8439657.toString()
+                   println(storeId)
                    println(userId)
-                   supplementService.savePlace(userId,storeId)
-                           .enqueue(object : Callback<VisitedPlace>{
-                               override fun onResponse(call: Call<VisitedPlace>, response: Response<VisitedPlace>) {
-                                   if(response.message()=="OK") {
-                                       Log.d("성공", response.body()!!.toString())
-                                       val textView = "인증되었습니다."
-                                       Toast.makeText(xContext, textView, Toast.LENGTH_SHORT).show()
-                                   }
-                                   else
-                                       Log.d("실패",response.message())
-                                   true
+                   println(teamRoomId)
+                   supplementService.nfcPushMsg(team_room = teamRoomId,userId = userId,storeId = storeId)
+                           .enqueue(object : Callback<Map<String,Boolean>>{
+                               override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
+                                   println("team_room = $teamRoomId,userId = $userId,storeId = $storeId")
+
                                }
-                               override fun onFailure(call: Call<VisitedPlace>, t: Throwable) {
+                               override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {
                                    Log.d("실패","$t")
                                }
                            })
-                   //adapter.notifyDataSetChanged()
+//                   supplementService.savePlace(userId,storeId)
+//                           .enqueue(object : Callback<VisitedPlace>{
+//                               override fun onResponse(call: Call<VisitedPlace>, response: Response<VisitedPlace>) {
+//                                   if(response.message()=="OK") {
+//                                       Log.d("성공", response.body()!!.toString())
+//                                       val textView = "인증되었습니다."
+//                                       Toast.makeText(xContext, textView, Toast.LENGTH_SHORT).show()
+//                                   }
+//                                   else
+//                                       Log.d("실패",response.message())
+//                                   true
+//                               }
+//                               override fun onFailure(call: Call<VisitedPlace>, t: Throwable) {
+//                                   Log.d("실패","$t")
+//                               }
+//                           })
+                   adapter.notifyDataSetChanged()
                }
            })
            binding.searchRecycler.adapter=adapter

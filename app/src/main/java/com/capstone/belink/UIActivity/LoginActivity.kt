@@ -173,6 +173,8 @@ class LoginActivity : AppCompatActivity() {
         val teamList:ArrayList<TeamRoom> = ArrayList()
         response.body()!!.result.forEach{
             val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
+            autoLogin.putString("teamRoomId", it.teamRoom.id)
+            autoLogin.apply()
             teamList.add(element)
         }
         setGroupPref(this@LoginActivity,"groupContext",teamList)

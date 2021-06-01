@@ -113,6 +113,8 @@ class CertificationActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Team>, response: Response<Team>) {
                 if (response.message() == "Created") {
                     val id = response.body()?.id
+                    autoLogin.putString("teamRoomId", response.body()!!.id)
+                    autoLogin.apply()
                     if (id!!.isNotEmpty()) {
                         teamList.add(Member(id, userId))
                     }

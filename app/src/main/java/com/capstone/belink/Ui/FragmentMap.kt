@@ -57,7 +57,6 @@ class FragmentMap:Fragment() {
         auto =(activity as MainActivity).getSharedPreferences("auto", Activity.MODE_PRIVATE)
         autoLogin=auto.edit()
         initRetrofit()
-        init()
         //user 방문기록 가져오기
         val userId = auto.getString("userId", null).toString()
         supplementService.showPlace(userId)
@@ -96,16 +95,26 @@ class FragmentMap:Fragment() {
                                 var parserSDF = SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy", Locale.ENGLISH)
                                 val strDate = saveList[i].store.createdAt
                                 val date = parserSDF.parse(strDate.toString())
-                                parserSDF = SimpleDateFormat("yyyy-MM-dd")
+                                parserSDF = SimpleDateFormat("yyyy-MM-dd-hh-mm")
                                 var dDate = parserSDF.format(date)
                                 println(dDate)
                                 println("~~~~~~~~~~~~~~~~~~~")
                                 val stryear = dDate.slice(IntRange(0,3)).toInt()
-                                val strmon = dDate.slice(IntRange(4,6)).toInt()
-                                val strday = dDate.slice(IntRange(7,9)).toInt()
+                                val strmon = dDate.slice(IntRange(5,6)).toInt()
+                                val strday = dDate.slice(IntRange(8,9)).toInt()
+                                val strhour = dDate.slice(IntRange(11,12)).toInt()
+                                val strmin = dDate.slice(IntRange(14,15)).toInt()
+                                println("~~~~~~~~날짜 slice~~~~~~~~~~~")
+                                println("$dDate")
+                                println("$stryear")
+                                println("$strmon $strday")
+                                println("$strhour 시  $strmin 분")
                                 if(stryear==year && strmon==(month+1) && strday==day){
-                                    visitList.add(saveList[i].store.storeName)
-                                    println("~~~~~~~~~~~~~~~~~~~")
+                                    val textTime = String.format("%d : %d", strhour, strmin)
+                                    println(textTime)
+                                    val textView = saveList[i].store.storeName + " " + textTime
+                                    visitList.add(textView)
+                                    println("~~~~~~~~날짜 비교~~~~~~~~~~~")
                                     println(saveList[i].store.storeName)
                                 }
                             }
@@ -121,20 +130,21 @@ class FragmentMap:Fragment() {
                     })
 
         }
-
+      //  init()
         return view
     }
 
     fun init(){
-        val visitList: MutableList<String> = arrayListOf()
-        visitList.add(strStoreName)
+      //  val visitList: MutableList<String> = arrayListOf()
+     //   visitList.add(strStoreName)
         binding.placeListView.layoutManager= LinearLayoutManager(mContext)
         adapter = PlaceAdapter(mContext!!)
-        adapter.dataList=visitList
+      //  adapter.dataList=visitList
         binding.placeListView.adapter=adapter
     }
 
     private fun adaptPlace(visitList: MutableList<String>) {
+        binding.placeListView.layoutManager= LinearLayoutManager(mContext)
         adapter = PlaceAdapter(mContext!!)
         adapter.dataList=visitList
         adapter.notifyDataSetChanged()
