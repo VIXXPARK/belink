@@ -29,3 +29,10 @@ Git 규칙
 |Retrofit 연결|검색 담당|Firebase 연동|
 |전체적인 설계|...|...|
 
+# 주요 기능
+1.  NFC 통신 기술
+2.  연락처 정보 가져오기
+3.  GPS를 통한 위치 정보 가져오기
+4.  Firebase Push Service 사용
+5.  Retrofit2를 통한 
+
