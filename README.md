@@ -14,4 +14,11 @@ Git 규칙
 2. github에 들어가서 pullRequest를 한 다음에 변경사항을 자세히 적는다.
 3. 예를 들어 fragment page를 바꿨다면 어느 프라그먼트를 바꿨으며 어떠한 기능을 추가했고, 어떠한 부분을 바꿨다 식으로 적자.
 ```
+# UI DESIGN
+[디자인](https://whimsical.com/copy-of-TfWGSidh1XrfS6EytSbD9p)
+
+
+# 기술 스택
+
+tech_stack.png
 
