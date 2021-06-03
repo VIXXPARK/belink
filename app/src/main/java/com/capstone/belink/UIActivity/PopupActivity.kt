@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.capstone.belink.Model.TeamRoom
 import com.capstone.belink.Network.RetrofitClient
@@ -48,7 +49,7 @@ class PopupActivity : AppCompatActivity() {
     private fun retrofitNfcAccepted() {
         val userId = getSharedPreferences("auto", Activity.MODE_PRIVATE)!!.getString("userId","")!!
         println("team_room =$teamId ,storeId=$storeId,userId=$userId")
-        Toast.makeText(this@PopupActivity,"team_room =$teamId ,storeId=$storeId,userId=$userId",Toast.LENGTH_LONG).show()
+        // Toast.makeText(this@PopupActivity,"team_room =$teamId ,storeId=$storeId,userId=$userId",Toast.LENGTH_LONG).show()
         supplementService.nfcAccepted(team_room =teamId ,storeId=storeId,userId=userId).enqueue(object :
             Callback<Map<String, Boolean>> {
             override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {

@@ -41,7 +41,7 @@ class SendGroupActivity : AppCompatActivity() {
         storeId = intent.getStringExtra("storeId")!!
         pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
         init()
-        Toast.makeText(this,pref.getString("userId","")!!,Toast.LENGTH_SHORT).show()
+      //  Toast.makeText(this,pref.getString("userId","")!!,Toast.LENGTH_SHORT).show()
     }
 
     private fun init() {
