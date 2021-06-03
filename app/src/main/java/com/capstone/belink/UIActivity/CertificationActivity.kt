@@ -57,6 +57,7 @@ class CertificationActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<Map<String, Boolean>>, response: Response<Map<String, Boolean>>) {
                     if(response.message()=="OK"){
                         Toast.makeText(this@CertificationActivity,"전송했습니다.",Toast.LENGTH_SHORT).show()
+                        binding.btnCertCheck.isEnabled=true
                     }
                 }
                 override fun onFailure(call: Call<Map<String, Boolean>>, t: Throwable) {

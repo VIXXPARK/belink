@@ -35,6 +35,7 @@ class PopupActivity : AppCompatActivity() {
         teamId = intent.getStringExtra("FirebaseTeamId")
         binding.btnYes.setOnClickListener {
             retrofitNfcAccepted()
+            binding.btnYes.isEnabled=false
         }
         binding.btnNo.setOnClickListener {
             retrofitNfcRejected()
