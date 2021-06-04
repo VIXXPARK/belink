@@ -27,7 +27,7 @@ Git 규칙
 |------|------|------|
 |UI 디자인 설계|Recyclerview 갱신|UI 디자인|
 |Retrofit 연결|검색 담당|Firebase 연동|
-|전체적인 설계|...|...|
+|전체적인 설계|belinkStore작성|...|
 
 # 주요 기능
 1.  NFC 통신 기술
