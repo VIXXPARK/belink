@@ -121,7 +121,7 @@ class CertificationActivity : AppCompatActivity() {
         }
 
         binding.btnCertLogin.setOnClickListener {
-            val user = User(phNum = phoneNum, token = TOKEN)
+            val user = User(phNum = phoneNum, token = TOKEN,username = name)
             supplementService.refreshToken(user).enqueue(object : Callback<Map<String, Boolean>> {
                 override fun onResponse(
                     call: Call<Map<String, Boolean>>,
