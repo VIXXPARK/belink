@@ -16,6 +16,9 @@ interface RetrofitService {
     @PUT("api/user/edit-info")
     fun editUser(@Body user: User): Call<Map<String,Boolean>>
 
+    @PUT("api/user/refreshToken")
+    fun refreshToken(@Body user: User): Call<Map<String,Boolean>>
+
     @GET("api/user/edit-info")
     fun deleteUser():Call<Map<String,Boolean>>
 
@@ -93,5 +96,6 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("api/prediction/get-prediction")
     fun getPrediction(@Field("x")x: String,@Field("y")y: String,@Field("id")id: String):Call<Search>
+
 
 }

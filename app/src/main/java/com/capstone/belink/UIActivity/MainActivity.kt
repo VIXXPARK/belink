@@ -47,14 +47,15 @@ import com.capstone.belink.Utils.*
 import java.io.IOException
 import java.util.*
 
-class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,LoyaltyCardReader.AccountCallback {
+class MainActivity : AppCompatActivity(), IsoDepTransceiver.OnMessageReceived,
+    LoyaltyCardReader.AccountCallback {
     //layout bind
-    private var mBinding:ActivityMainBinding?=null
+    private var mBinding: ActivityMainBinding? = null
     val binding get() = mBinding!!
 
     //http 통신
-    private lateinit var retrofit : Retrofit
-    private lateinit var supplementService : RetrofitService
+    private lateinit var retrofit: Retrofit
+    private lateinit var supplementService: RetrofitService
 
     //저장된 값 가져오는 변수
     private lateinit var pref: SharedPreferences
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
     //nfc관련 변수
     private lateinit var nfcAdapter: NfcAdapter
-    private lateinit var isoDepAdapter:IsoDepAdapter
+    private lateinit var isoDepAdapter: IsoDepAdapter
     private lateinit var mLoyaltyCardReader: LoyaltyCardReader
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 1
 
@@ -72,21 +73,24 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     private var gpsTracker: GpsTracker? = null
     private val GPS_ENABLE_REQUEST_CODE = 2001
     private val PERMISSIONS_REQUEST_CODE = 100
-    var REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION)
+    var REQUIRED_PERMISSIONS = arrayOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
 
 
     //페이지
-    private var fragmentLists = listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
+    private var fragmentLists =
+        listOf(FragmentMain(), FragmentGroup(), FragmentMap(), FragmentEtcetra())
 
     override fun onResume() {
         super.onResume()
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         nfcAdapter.enableReaderMode(
-                this,
-                mLoyaltyCardReader,
-                NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
-                null
+            this,
+            mLoyaltyCardReader,
+            NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+            null
         )
     }
 
@@ -103,9 +107,10 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         search()
     }
 
-    private fun search(){
+    private fun search() {
 
     }
+
     private fun setNfcModule() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         isoDepAdapter = IsoDepAdapter(layoutInflater)
@@ -113,18 +118,31 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     }
 
     private fun setSharedPreferences() {
-        pref =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
-        prefEdit=pref.edit()
+        pref = getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
+        prefEdit = pref.edit()
 
     }
 
     fun requestContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.READ_CONTACTS
+                    )
+                ) {
                     buildDiaglogue()
                 } else {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), PERMISSIONS_REQUEST_READ_CONTACTS) }
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.READ_CONTACTS),
+                        PERMISSIONS_REQUEST_READ_CONTACTS
+                    )
+                }
             } else {
                 checkContacts()
             }
@@ -151,7 +169,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     /**연락처 동의*/
 
     private fun checkContacts() {
-        Log.d("연락처","가져옴")
+        Log.d("연락처", "가져옴")
     }
 
     // 서버 관련 함수
@@ -169,8 +187,8 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
      * 처리한 구문이다.*/
     private fun init() {
         val adapter = FragmentStateAdapter(this)
-        adapter.fragmentList=fragmentLists
-        binding.viewPager.adapter=adapter
+        adapter.fragmentList = fragmentLists
+        binding.viewPager.adapter = adapter
         setViewPager()
         setBottomNavigationView()
         // getPrediction
@@ -178,59 +196,51 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         val latitude = gpsTracker!!.getLatitude().toString()
         val longitude = gpsTracker!!.getLongitude().toString()
         val userId = pref.getString("userId", null).toString()
-        println("~~~~~~~~~~~~user Id INIT~~~~~~~~~~~~~~")
-        println(userId)
-        println(latitude)
-        println(longitude)
-        supplementService.getPrediction(x=longitude,y=latitude,id=userId)
-                .enqueue(object : Callback<Search>{
-                    override fun onResponse(call: Call<Search>, response: Response<Search>) {
-                        val searchList= response.body()!!.data
-                        Log.d("성공",searchList[0].place_name)
-                        println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                        println("~~~~~~~~~~~~~~~~~Prediction 성공~~~~~~~~~~~~~~~~~~")
+        supplementService.getPrediction(x = longitude, y = latitude, id = userId)
+            .enqueue(object : Callback<Search> {
+                override fun onResponse(call: Call<Search>, response: Response<Search>) {
+                    val searchList = response.body()!!.data
+                    Log.d("성공", searchList[0].place_name)
+                    setSearchPref(
+                        this@MainActivity,
+                        "searchContext",
+                        searchList as MutableList<SearchLocation>
+                    )
+                    refreshAdapter()
+                    true
+                }
 
-                        setSearchPref(this@MainActivity,"searchContext", searchList as MutableList<SearchLocation>)
-                        refreshAdapter()
-                        // val searchListSub = getSearchPref(this@MainActivity,"searchContext")
-                        // Log.d("성공",searchListSub[0].distance)
-                        true
-                    }
-                    override fun onFailure(call: Call<Search>, t: Throwable) {
-                        Log.d("실패","$t")
-                        println("~~~~~~~~~~~~~~~~~Prediction 실패~~~~~~~~~~~~~~~~~~")
-                    }
-                })
-
-        println("~~~~~~~~~~~~~~~~~Prediction~~~~~~~~~~~~~~~~~~")
-
+                override fun onFailure(call: Call<Search>, t: Throwable) {
+                    Log.d("실패", "$t")
+                }
+            })
     }
 
 
     private fun setViewPager() {
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                when(position){
+                when (position) {
                     0 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.main
-                        supportActionBar?.title="개인"
+                        supportActionBar?.title = "개인"
                         println("개인페이지")
 
                     }
                     1 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.friend
-                        supportActionBar?.title="그룹"
+                        supportActionBar?.title = "그룹"
                         println("그룹페이지")
                     }
                     2 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.map
-                        supportActionBar?.title="방문장소"
+                        supportActionBar?.title = "방문장소"
                         println("방문장소페이지")
                     }
                     3 -> {
                         binding.bottomNavigationView.selectedItemId = R.id.etcetra
-                        supportActionBar?.title="설정"
+                        supportActionBar?.title = "설정"
                         println("설정페이지")
                     }
                 }
@@ -240,8 +250,8 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     }
 
     private fun setBottomNavigationView() {
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener{
-            when(it.itemId){
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
                 R.id.main -> {
                     binding.viewPager.currentItem = 0
                 }
@@ -263,12 +273,12 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if(NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action){
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent?.action) {
 
-            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages->
+            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)?.also { rawMessages ->
                 val messages: List<NdefMessage> = rawMessages.map { it as NdefMessage }
-                for(message in messages){
-                    for(record in message.records){
+                for (message in messages) {
+                    for (record in message.records) {
                         println(record.toString())
                     }
                 }
@@ -284,24 +294,24 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         println("requestCode: $requestCode, resultCode: $resultCode")
-            when(requestCode){
-                0 ->{
-                    if(resultCode==Activity.RESULT_OK ) {
-                        Toast.makeText(this, "방이 만들어졌습니다.", Toast.LENGTH_SHORT).show()
-                    }
+        when (requestCode) {
+            0 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "방이 만들어졌습니다.", Toast.LENGTH_SHORT).show()
                 }
-                1 ->{
-                    if(resultCode==Activity.RESULT_OK ) {
-                        Toast.makeText(this, "회원 정보 수정이 완료 되었습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                2 ->{
-                    if(resultCode==Activity.RESULT_OK ) {
-                        Toast.makeText(this, "인증 되었습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
             }
+            1 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "회원 정보 수정이 완료 되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            2 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Toast.makeText(this, "인증 되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
         when (requestCode) {
             GPS_ENABLE_REQUEST_CODE ->                     //사용자가 GPS 활성 했는지 검사
                 if (checkLocationServicesStatus()) {
@@ -319,48 +329,54 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     /**
      * 액션바의 메뉴를 클릭했을 때 그에 해당하는 내용을 처리할 수 있는 상속 함수
      * 반환값은 진리값으로 반환한다.*/
-    override fun onOptionsItemSelected(item: MenuItem): Boolean= when(item.itemId){
-            R.id.action_plus ->{
-                val intent = Intent(this, TeamActivity::class.java)
-                startActivityForResult(intent,0)
-                true
-            }
-            R.id.action_alert ->{
-                val intent = Intent(this, AlarmActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            R.id.action_exchange ->{
-                retrofitGetMyTeam()
-                true
-            }
-            R.id.action_setting_group_delete->{
-                val intent = Intent(this, TeamDeleteActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.action_plus -> {
+            val intent = Intent(this, TeamActivity::class.java)
+            startActivityForResult(intent, 0)
+            true
         }
+        R.id.action_alert -> {
+            val intent = Intent(this, AlarmActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        R.id.action_exchange -> {
+            retrofitGetMyTeam()
+            true
+        }
+        R.id.action_setting_group_delete -> {
+            val intent = Intent(this, TeamDeleteActivity::class.java)
+            startActivity(intent)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
 
     private fun retrofitGetMyTeam() {
-        supplementService.getMyTeam(pref.getString("userId","")!!).enqueue(object : Callback<GetMyTeam> {
-            override fun onResponse(
-                call: Call<GetMyTeam>,
-                response: Response<GetMyTeam>
-            ) {
-                if(response.message()=="OK"){
-                    val teamList:ArrayList<TeamRoom> = ArrayList()
-                    response.body()!!.result.forEach{
-                        val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
-                        teamList.add(element)
+        supplementService.getMyTeam(pref.getString("userId", "")!!)
+            .enqueue(object : Callback<GetMyTeam> {
+                override fun onResponse(
+                    call: Call<GetMyTeam>,
+                    response: Response<GetMyTeam>
+                ) {
+                    if (response.message() == "OK") {
+                        val teamList: ArrayList<TeamRoom> = ArrayList()
+                        response.body()!!.result.forEach {
+                            val element = TeamRoom(
+                                id = it.teamRoom.id,
+                                teamName = it.teamRoom.teamName,
+                                data = arrayListOf()
+                            )
+                            teamList.add(element)
+                        }
+                        setGroupPref(this@MainActivity, "groupContext", teamList)
                     }
-                    setGroupPref(this@MainActivity,"groupContext",teamList)
                 }
-            }
-            override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
-                Log.d("태그","$t")
-            }
-        })
+
+                override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
+                    Log.d("태그", "$t")
+                }
+            })
     }
 
 
@@ -368,7 +384,7 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
      * 우리가 원하는 메뉴를 추가하고 싶을 때에는 onCreateOptionMenu 상속 함수를 호출하고
      * menuInflater를 호출하여 여기에 해당하는 메뉴를 inflate 시키면 된다.*/
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.actionbar_menu,menu)
+        menuInflater.inflate(R.menu.actionbar_menu, menu)
         /**
          * 검색 기능
          */
@@ -382,61 +398,65 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         val longitude = gpsTracker!!.getLongitude()
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView
-        searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
             }
+
             override fun onQueryTextSubmit(query: String): Boolean {
                 // keyword : query
                 supplementService.searchPlace(query)
-                        .enqueue(object : Callback<Search>{
-                            override fun onResponse(call: Call<Search>, response: Response<Search>) {
-                                val searchList= response.body()!!.data as MutableList<SearchLocation>
-                                Log.d("성공",searchList[0].place_name)
-                                println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                                println("$latitude $longitude")
-                                for (i in 0 until searchList.size) {
-                                    searchList[i].distance=getDistance(latitude,longitude,searchList[i].x.toDouble(),searchList[i].y.toDouble()).toString()
-                                }
-                                setSearchPref(this@MainActivity,"searchContext",searchList)
-                                refreshAdapter()
-                               // val searchListSub = getSearchPref(this@MainActivity,"searchContext")
-                               // Log.d("성공",searchListSub[0].distance)
-                                true
+                    .enqueue(object : Callback<Search> {
+                        override fun onResponse(call: Call<Search>, response: Response<Search>) {
+                            val searchList = response.body()!!.data as MutableList<SearchLocation>
+                            Log.d("성공", searchList[0].place_name)
+                            for (i in 0 until searchList.size) {
+                                searchList[i].distance = getDistance(
+                                    latitude,
+                                    longitude,
+                                    searchList[i].x.toDouble(),
+                                    searchList[i].y.toDouble()
+                                ).toString()
                             }
-                            override fun onFailure(call: Call<Search>, t: Throwable) {
-                                Log.d("실패","$t")
-                            }
-                        })
+                            setSearchPref(this@MainActivity, "searchContext", searchList)
+                            refreshAdapter()
+                            true
+                        }
+
+                        override fun onFailure(call: Call<Search>, t: Throwable) {
+                            Log.d("실패", "$t")
+                        }
+                    })
                 return false
             }
         })
         return true
     }
 
-    fun refreshAdapter(){
+    fun refreshAdapter() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.main_frag,FragmentMain()).commit()
+        fragmentTransaction.add(R.id.main_frag, FragmentMain()).commit()
     }
 
-    fun replaceFragment(fragment: Fragment){ //액티비티에서 프라그먼토 교체 함수
+    fun replaceFragment(fragment: Fragment) { //액티비티에서 프라그먼토 교체 함수
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.main_frag,fragment).commit()
+        fragmentTransaction.replace(R.id.main_frag, fragment).commit()
     }
 
     fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Int {
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
-        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2))
+        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(lat1)) * cos(
+            Math.toRadians(lat2)
+        )
         val c = 2 * asin(sqrt(a))
         return (r * c).toInt()
     }
 
 
-
     override fun onDestroy() {
-        mBinding=null
+        mBinding = null
         super.onDestroy()
     }
 
@@ -459,9 +479,9 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         runOnUiThread {
             println("TEST:${mLoyaltyCardReader.gotData}")
             isoDepAdapter.addMessage(account)
-            val intent = Intent(this,SendGroupActivity::class.java)
-            intent.putExtra("storeId",mLoyaltyCardReader.gotData)
-            startActivityForResult(intent,2)
+            val intent = Intent(this, SendGroupActivity::class.java)
+            intent.putExtra("storeId", mLoyaltyCardReader.gotData)
+            startActivityForResult(intent, 2)
         }
     }
 
@@ -472,7 +492,8 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         grantResults: IntArray
     ) {
         if (requestCode == PERMISSIONS_REQUEST_CODE &&
-                grantResults.size == REQUIRED_PERMISSIONS.size) {
+            grantResults.size == REQUIRED_PERMISSIONS.size
+        ) {
             var check_result = true
             for (result in grantResults) {
                 if (result != PackageManager.PERMISSION_GRANTED) {
@@ -483,12 +504,27 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
             if (check_result) {
                 //위치 값을 가져올 수 있음
             } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[0])
-                        || ActivityCompat.shouldShowRequestPermissionRationale(this, REQUIRED_PERMISSIONS[1])) {
-                    Toast.makeText(this@MainActivity, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해 주세요.", Toast.LENGTH_LONG).show()
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        REQUIRED_PERMISSIONS[0]
+                    )
+                    || ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        REQUIRED_PERMISSIONS[1]
+                    )
+                ) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해 주세요.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     finish()
                 } else {
-                    Toast.makeText(this@MainActivity, "퍼미션이 거부되었습니다. 설정에서 퍼미션을 허용해주세요", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "퍼미션이 거부되었습니다. 설정에서 퍼미션을 허용해주세요",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -512,27 +548,44 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     fun checkRunTimePermission() {
         //런타임 퍼미션 처리
         //1. 위치 퍼미션을 가지고 있는지 체크
-        val hasFineLocationPermission = ContextCompat.checkSelfPermission(this@MainActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-        val hasCoarseLocationPermssion = ContextCompat.checkSelfPermission(this@MainActivity,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
+        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
+            this@MainActivity,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+        val hasCoarseLocationPermssion = ContextCompat.checkSelfPermission(
+            this@MainActivity,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
         if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
-                hasCoarseLocationPermssion == PackageManager.PERMISSION_GRANTED) {
+            hasCoarseLocationPermssion == PackageManager.PERMISSION_GRANTED
+        ) {
             //2. 이미 퍼미션이 있을 경우
             //3. 위치 값을 가져올 수 있음
         } else {
             //퍼미션 요청하지 않았을 경우 2가지 퍼미션 요청이 필요함
             //3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this@MainActivity,
-                            REQUIRED_PERMISSIONS[0])) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this@MainActivity,
+                    REQUIRED_PERMISSIONS[0]
+                )
+            ) {
                 //3-2. 요청을 진행하기 전에 사용자에게 퍼미션이 필요한 이유를 설명해줘야함
-                Toast.makeText(this@MainActivity, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@MainActivity, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG)
+                    .show()
                 //3-3. 사용자에게 퍼미션 요청, 요청 결과는 onRequestPermissionResult에서 수신
-                ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
+                ActivityCompat.requestPermissions(
+                    this@MainActivity,
+                    REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
             } else {
                 //4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 함
                 //요청 결과는 onRequestPermissionResult에서 수신됨.
-                ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE)
+                ActivityCompat.requestPermissions(
+                    this@MainActivity,
+                    REQUIRED_PERMISSIONS,
+                    PERMISSIONS_REQUEST_CODE
+                )
             }
         }
     }
@@ -543,9 +596,10 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
         val addresses: List<Address>
         addresses = try {
             geocoder.getFromLocation(
-                    latitude,
-                    longitude,
-                    7)
+                latitude,
+                longitude,
+                7
+            )
         } catch (ioException: IOException) {
             //네트워크 문제
             Toast.makeText(this, "지오코더 서비스 사용 불가", Toast.LENGTH_LONG).show()
@@ -571,10 +625,12 @@ class MainActivity : AppCompatActivity(),IsoDepTransceiver.OnMessageReceived,Loy
     private fun showDialogForLocationServiceSetting() {
         val builder = AlertDialog.Builder(this@MainActivity)
         builder.setTitle("위치 서비스 비활성화")
-        builder.setMessage("""
+        builder.setMessage(
+            """
     앱을 사용하기 위해서는 위치 서비스가 필요합니다
     위치 설정을 수정하시겠습니까?
-    """.trimIndent())
+    """.trimIndent()
+        )
         builder.setCancelable(true)
         builder.setPositiveButton("설정") { dialog, id ->
             val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)

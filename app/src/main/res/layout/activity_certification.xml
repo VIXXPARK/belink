@@ -28,12 +28,12 @@
         android:id="@+id/btn_certification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="확인"
-        android:fontFamily="@font/wmp_semibold"
+        android:layout_marginTop="36dp"
         android:enabled="false"
+        android:fontFamily="@font/wmp_semibold"
+        android:text="회원가입"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.739"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_cert_check" />
 
@@ -62,4 +62,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/et_certification"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_cert_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:enabled="false"
+        android:text="로그인"
+        app:layout_constraintEnd_toStartOf="@+id/btn_certification"
+        app:layout_constraintHorizontal_bias="0.463"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_cert_check" />
 </androidx.constraintlayout.widget.ConstraintLayout>

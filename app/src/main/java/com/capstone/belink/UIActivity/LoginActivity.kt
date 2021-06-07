@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.belink.Model.*
 import com.capstone.belink.Network.RetrofitClient
@@ -28,26 +29,26 @@ import kotlin.collections.ArrayList
  * saveAuthToken메소드를 호출한다.
  * */
 class LoginActivity : AppCompatActivity() {
-    private var mBinding:ActivityLoginBinding?=null
+    private var mBinding: ActivityLoginBinding? = null
     private val binding get() = mBinding!!
 
-    private var firstNum=""
-    private var secondNum=""
-    private var thirdNum=""
+    private var firstNum = ""
+    private var secondNum = ""
+    private var thirdNum = ""
 
-    private var phoneNum:String?=null
-    private var name:String?=null
+    private var phoneNum: String? = null
+    private var name: String? = null
 
-    private lateinit var retrofit : Retrofit
-    private lateinit var supplementService : RetrofitService
+    private lateinit var retrofit: Retrofit
+    private lateinit var supplementService: RetrofitService
 
-    private lateinit var auto:SharedPreferences
-    private lateinit var autoLogin:SharedPreferences.Editor
+    private lateinit var auto: SharedPreferences
+    private lateinit var autoLogin: SharedPreferences.Editor
 
     private lateinit var sessionManager: SessionManager
 
 
-    private var TOKEN=""
+    private var TOKEN = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
         btnListener()
 
     }
+
     private fun initRetrofit() {
         retrofit = RetrofitClient.getInstance(this)
         supplementService = retrofit.create(RetrofitService::class.java)
@@ -80,108 +82,46 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setPhoneNumAndUsername() {
         sessionManager = SessionManager(this)
-        auto =getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
-        autoLogin=auto.edit()
+        auto = getSharedPreferences("auto", Activity.MODE_PRIVATE)!!
+        autoLogin = auto.edit()
 
-        phoneNum=auto.getString("inputPhone", null)
-        name=auto.getString("inputName", null)
+        phoneNum = auto.getString("inputPhone", null)
+        name = auto.getString("inputName", null)
     }
 
     private fun btnListener() {
-        if(!name.isNullOrBlank() && !phoneNum.isNullOrBlank()){
-            login(phoneNum!!)
-        }
         binding.btnLoginSignup.setOnClickListener {
             getEditString()
-            autoLogin.putString("token",TOKEN)
-            autoLogin.apply()
-            val intent = Intent(this,CertificationActivity::class.java)
-            startActivity(intent)
-        }
-        binding.btnLoginLogin.setOnClickListener {
-            getEditString()
-            login(phoneNum!!)
+            if(phoneNum==null || name==null|| phoneNum==""||name==""){
+                Toast.makeText(this, "이름과 전화번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+            }else{
+                autoLogin.putString("token", TOKEN)
+                autoLogin.apply()
+                val intent = Intent(this, CertificationActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
 
-    private fun getEditString(){
+    private fun getEditString() {
         getPhoneNumber()
-        name=binding.etLoginName.text.toString()
-        phoneNum= "$firstNum-$secondNum-$thirdNum"
+        name = binding.etLoginName.text.toString()
+        phoneNum = "$firstNum-$secondNum-$thirdNum"
         autoLogin.clear()
         autoLogin.putString("inputPhone", phoneNum)
         autoLogin.putString("inputName", name)
     }
 
     private fun getPhoneNumber() {
-        firstNum=binding.etLoginPhoneFirst.text.toString()
-        secondNum=binding.etLoginPhoneSecond.text.toString()
-        thirdNum=binding.etLoginPhoneThird.text.toString()    }
-
-    private fun login(phoneNum: String) {
-
-        supplementService.login(phoneNum).enqueue(object : Callback<LoginResponse>{
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                val loginResponse = response.body()
-
-                if (response.message() == "OK" && loginResponse?.accessToken != null) {
-                    sessionManager.saveAuthToken(loginResponse!!.accessToken)
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    setSharedPreferencesEdit(response)
-                    setGroupPreferencesEdit()
-                    val teamMember = response.body()!!.id
-                    supplementService.getMyTeam(teamMember).enqueue(object : Callback<GetMyTeam> {
-                        override fun onResponse(
-                            call: Call<GetMyTeam>,
-                            response: Response<GetMyTeam>
-                        ) {
-                            if(response.message()=="OK"){
-                                setGroupContentList(response)
-                                startActivity(intent)
-                                this@LoginActivity.finish()
-                            }
-                        }
-                        override fun onFailure(call: Call<GetMyTeam>, t: Throwable) {
-                            Log.d("태그","$t")
-                        }
-                    })
-                }
-            }
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-            }
-        })
+        firstNum = binding.etLoginPhoneFirst.text.toString()
+        secondNum = binding.etLoginPhoneSecond.text.toString()
+        thirdNum = binding.etLoginPhoneThird.text.toString()
     }
 
-    private fun setGroupPreferencesEdit(): SharedPreferences.Editor? {
-        val groupEdit = getSharedPreferences("groupContext",Activity.MODE_PRIVATE)!!.edit()
-        groupEdit.clear()
-        groupEdit.apply()
-        finish()
-        return groupEdit
-    }
-
-    private fun setSharedPreferencesEdit(response: Response<LoginResponse>) {
-        autoLogin.putString("userToken", response.body()!!.accessToken)
-        autoLogin.putString("inputName", name)
-        autoLogin.putString("inputPhone", phoneNum)
-        autoLogin.putString("userId", response.body()!!.id)
-        autoLogin.apply()
-    }
-
-    private fun setGroupContentList(response: Response<GetMyTeam>) {
-        val teamList:ArrayList<TeamRoom> = ArrayList()
-        response.body()!!.result.forEach{
-            val element = TeamRoom(id =it.teamRoom.id, teamName = it.teamRoom.teamName,data = arrayListOf())
-            autoLogin.putString("teamRoomId", it.teamRoom.id)
-            autoLogin.apply()
-            teamList.add(element)
-        }
-        setGroupPref(this@LoginActivity,"groupContext",teamList)
-    }
 
     override fun onDestroy() {
-        mBinding=null
+        mBinding = null
         super.onDestroy()
     }
 }
